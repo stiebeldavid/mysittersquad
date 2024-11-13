@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Plus, Calendar, Users, Children } from "lucide-react";
+import { Plus, Calendar, Users, Baby } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,7 +26,7 @@ const Index = () => {
       color: "bg-purple-500",
     },
     {
-      icon: Children,
+      icon: Baby,
       title: "Kids",
       description: "Update your children's profiles",
       path: "/kids",
