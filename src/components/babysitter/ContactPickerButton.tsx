@@ -2,6 +2,19 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Babysitter } from "@/types/babysitter";
+
+// Add type definitions for the Contact Picker API
+declare global {
+  interface Navigator {
+    contacts?: {
+      select: (properties: string[], options?: { multiple?: boolean }) => Promise<any>;
+    };
+  }
+  interface Window {
+    ContactsManager?: any;
+  }
+}
 
 interface ContactPickerProps {
   onContactsSelected: (contacts: Babysitter[]) => void;
@@ -18,8 +31,10 @@ export const ContactPickerButton = ({ onContactsSelected }: ContactPickerProps) 
   const handleSelectContacts = async () => {
     try {
       const properties = ['name', 'tel'];
-      const contacts = await (navigator.contacts as any).select(properties, { multiple: true });
+      const contacts = await navigator.contacts?.select(properties, { multiple: true });
       
+      if (!contacts) return;
+
       const babysitters = contacts.map((contact: any) => ({
         id: Date.now().toString() + Math.random(),
         firstName: contact.name[0]?.split(' ')[0] || '',
