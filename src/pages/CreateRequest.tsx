@@ -19,27 +19,33 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
+import { KidSelector } from "@/components/create-request/KidSelector";
+import { BabysitterSelector } from "@/components/create-request/BabysitterSelector";
+import { AddressInput } from "@/components/create-request/AddressInput";
 
 const CreateRequest = () => {
   const [date, setDate] = useState<Date>();
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [selectedKids, setSelectedKids] = useState<string[]>([]);
+  const [selectedBabysitters, setSelectedBabysitters] = useState<string[]>([]);
+  const [address, setAddress] = useState("");
+  const [notes, setNotes] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!date || !startTime || !endTime) {
+    if (!date || !startTime || !endTime || selectedKids.length === 0 || selectedBabysitters.length === 0) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields.",
+        description: "Please fill in all required fields and select at least one kid and babysitter.",
         variant: "destructive",
       });
       return;
     }
 
-    // In a real app, this would send the request to the backend
     toast({
       title: "Request Created",
       description: "Your babysitting request has been created successfully.",
@@ -110,10 +116,24 @@ const CreateRequest = () => {
               </div>
             </div>
 
+            <AddressInput address={address} onAddressChange={setAddress} />
+            
+            <KidSelector
+              selectedKids={selectedKids}
+              onKidsChange={setSelectedKids}
+            />
+
+            <BabysitterSelector
+              selectedBabysitters={selectedBabysitters}
+              onBabysittersChange={setSelectedBabysitters}
+            />
+
             <div className="space-y-2">
               <Label htmlFor="notes">Additional Notes</Label>
               <Textarea
                 id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any special instructions or requirements..."
                 className="min-h-[100px]"
               />
