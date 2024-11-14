@@ -1,28 +1,26 @@
 import { useState } from "react";
-import { Plus, Trash2, Edit } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { KidList } from "@/components/my-family/KidList";
 import { FamilyAddress } from "@/components/my-family/FamilyAddress";
 import { EmergencyContacts } from "@/components/my-family/EmergencyContacts";
 import { Kid } from "@/types/kid";
+import { EmergencyContact } from "@/types/emergency-contact";
+import { useFamilyStore } from "@/store/familyStore";
 
 const MyFamily = () => {
-  const [kids, setKids] = useState<Kid[]>([]);
-  const [address, setAddress] = useState("123 Main St, Anytown, CA 12345");
-  const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentKid, setCurrentKid] = useState<Kid | null>(null);
   const { toast } = useToast();
+
+  const {
+    address,
+    kids,
+    emergencyContacts,
+    setAddress,
+    setKids,
+    setEmergencyContacts,
+  } = useFamilyStore();
 
   const handleAddressChange = (newAddress: string) => {
     setAddress(newAddress);
@@ -58,15 +56,13 @@ const MyFamily = () => {
     };
 
     if (currentKid) {
-      setKids(prev =>
-        prev.map(k => (k.id === currentKid.id ? newKid : k))
-      );
+      setKids(kids.map(k => (k.id === currentKid.id ? newKid : k)));
       toast({
         title: "Kid Profile Updated",
         description: "The profile has been updated successfully.",
       });
     } else {
-      setKids(prev => [...prev, newKid]);
+      setKids([...kids, newKid]);
       toast({
         title: "Kid Profile Added",
         description: "New profile has been added successfully.",
@@ -77,7 +73,7 @@ const MyFamily = () => {
   };
 
   const handleDeleteKid = (id: string) => {
-    setKids(prev => prev.filter(k => k.id !== id));
+    setKids(kids.filter(k => k.id !== id));
     toast({
       title: "Profile Removed",
       description: "The profile has been removed.",
