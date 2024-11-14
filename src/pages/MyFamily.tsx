@@ -17,20 +17,39 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { KidList } from "@/components/my-family/KidList";
+import { FamilyAddress } from "@/components/my-family/FamilyAddress";
+import { EmergencyContacts } from "@/components/my-family/EmergencyContacts";
+import { Kid } from "@/types/kid";
 
-interface Kid {
+interface EmergencyContact {
   id: string;
-  firstName: string;
-  age: number;
-  notes?: string;
-  tags: string[];
+  name: string;
+  phone: string;
+  relation: string;
 }
 
-const KidProfiles = () => {
+const MyFamily = () => {
   const [kids, setKids] = useState<Kid[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentKid, setCurrentKid] = useState<Kid | null>(null);
+  const [address, setAddress] = useState("123 Main St, Anytown, CA 12345");
+  const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([]);
   const { toast } = useToast();
+
+  const handleAddressChange = (newAddress: string) => {
+    setAddress(newAddress);
+    toast({
+      title: "Address Updated",
+      description: "Your home address has been updated successfully.",
+    });
+  };
+
+  const handleContactsChange = (newContacts: EmergencyContact[]) => {
+    setEmergencyContacts(newContacts);
+    toast({
+      title: "Emergency Contacts Updated",
+      description: "Your emergency contacts have been updated successfully.",
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,7 +86,7 @@ const KidProfiles = () => {
     setCurrentKid(null);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDeleteKid = (id: string) => {
     setKids(prev => prev.filter(k => k.id !== id));
     toast({
       title: "Profile Removed",
@@ -76,136 +95,100 @@ const KidProfiles = () => {
     });
   };
 
-  const handleEdit = (kid: Kid) => {
+  const handleEditKid = (kid: Kid) => {
     setCurrentKid(kid);
     setIsDialogOpen(true);
   };
 
+  const handleAddNewKid = () => {
+    setCurrentKid(null);
+    setIsDialogOpen(true);
+  };
+
   return (
-    <div className="page-container">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Kid Profiles</h1>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button
-              onClick={() => setCurrentKid(null)}
-              className="flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" /> Add Kid Profile
+    <div className="container mx-auto p-4 space-y-6">
+      <h1 className="text-3xl font-bold mb-6">My Family</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FamilyAddress 
+          address={address} 
+          onAddressChange={handleAddressChange} 
+        />
+        <EmergencyContacts 
+          contacts={emergencyContacts}
+          onContactsChange={handleContactsChange}
+        />
+      </div>
+
+      <KidList
+        kids={kids}
+        onEdit={handleEditKid}
+        onDelete={handleDeleteKid}
+        onAddNew={handleAddNewKid}
+      />
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogTrigger asChild>
+          <Button
+            onClick={() => setCurrentKid(null)}
+            className="flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" /> Add Kid Profile
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {currentKid ? "Edit Profile" : "Add New Profile"}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                name="firstName"
+                defaultValue={currentKid?.firstName}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="age">Age</Label>
+              <Input
+                id="age"
+                name="age"
+                type="number"
+                defaultValue={currentKid?.age}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tags">
+                Tags (comma-separated, e.g., "Asleep, Potty trained")
+              </Label>
+              <Input
+                id="tags"
+                name="tags"
+                defaultValue={currentKid?.tags.join(", ")}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Input
+                id="notes"
+                name="notes"
+                defaultValue={currentKid?.notes}
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              {currentKid ? "Update" : "Add"} Profile
             </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {currentKid ? "Edit Profile" : "Add New Profile"}
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First Name</Label>
-                <Input
-                  id="firstName"
-                  name="firstName"
-                  defaultValue={currentKid?.firstName}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="age">Age</Label>
-                <Input
-                  id="age"
-                  name="age"
-                  type="number"
-                  defaultValue={currentKid?.age}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="tags">
-                  Tags (comma-separated, e.g., "Asleep, Potty trained")
-                </Label>
-                <Input
-                  id="tags"
-                  name="tags"
-                  defaultValue={currentKid?.tags.join(", ")}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="notes">Notes</Label>
-                <Input
-                  id="notes"
-                  name="notes"
-                  defaultValue={currentKid?.notes}
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                {currentKid ? "Update" : "Add"} Profile
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {kids.map((kid) => (
-          <Card key={kid.id} className="card-hover">
-            <CardHeader>
-              <CardTitle className="flex justify-between items-center">
-                <span>{kid.firstName}</span>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEdit(kid)}
-                  >
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(kid.id)}
-                  >
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p className="text-sm">
-                  <span className="font-medium">Age:</span> {kid.age}
-                </p>
-                {kid.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {kid.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                {kid.notes && (
-                  <p className="text-sm">
-                    <span className="font-medium">Notes:</span> {kid.notes}
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {kids.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">No kid profiles added yet.</p>
-          <p className="text-gray-500">Click the "Add Kid Profile" button to get started!</p>
-        </div>
-      )}
     </div>
   );
 };
 
-export default KidProfiles;
+export default MyFamily;
