@@ -8,36 +8,46 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useFamilyStore } from "@/store/familyStore";
 
 const Index = () => {
-  const quickActions = [
+  const { kids, babysitters } = useFamilyStore();
+  
+  const setupActions = [
+    {
+      icon: Baby,
+      title: "Set Up Family Profile",
+      description: "Add your family details and kids' information",
+      path: "/family",
+      color: "bg-pink-500",
+      isComplete: kids.length > 0,
+    },
+    {
+      icon: Users,
+      title: "Add Babysitters",
+      description: "Import or add your trusted babysitters",
+      path: "/babysitters",
+      color: "bg-purple-500",
+      isComplete: babysitters.length > 0,
+    },
+  ];
+
+  const mainActions = [
     {
       icon: Plus,
       title: "New Request",
       description: "Create a new babysitting request",
       path: "/create-request",
       color: "bg-primary",
-    },
-    {
-      icon: Users,
-      title: "Babysitters",
-      description: "Manage your babysitter contacts",
-      path: "/babysitters",
-      color: "bg-purple-500",
-    },
-    {
-      icon: Baby,
-      title: "My Family",
-      description: "Update your family's profiles",
-      path: "/family",
-      color: "bg-pink-500",
+      isComplete: true,
     },
     {
       icon: Calendar,
-      title: "Requests",
+      title: "Request Dashboard",
       description: "View and manage your requests",
       path: "/requests",
       color: "bg-blue-500",
+      isComplete: true,
     },
   ];
 
@@ -46,33 +56,64 @@ const Index = () => {
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome to SitterSync</h1>
         <p className="text-gray-600">
-          Manage your babysitting needs with ease
+          Your personal babysitting coordinator
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {quickActions.map(({ icon: Icon, title, description, path, color }) => (
-          <Link key={path} to={path}>
-            <Card className="card-hover cursor-pointer h-full">
-              <CardHeader>
-                <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle>{title}</CardTitle>
-                <CardDescription>{description}</CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
-        ))}
+      <div className="space-y-8">
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Setup Required</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {setupActions.map(({ icon: Icon, title, description, path, color, isComplete }) => (
+              <Link key={path} to={path}>
+                <Card className={`card-hover cursor-pointer h-full ${isComplete ? 'border-green-500' : 'border-orange-500'}`}>
+                  <CardHeader>
+                    <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="flex items-center justify-between">
+                      {title}
+                      {isComplete && (
+                        <span className="text-green-500 text-sm">✓ Complete</span>
+                      )}
+                    </CardTitle>
+                    <CardDescription>{description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Main Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {mainActions.map(({ icon: Icon, title, description, path, color }) => (
+              <Link key={path} to={path}>
+                <Card className="card-hover cursor-pointer h-full">
+                  <CardHeader>
+                    <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle>{title}</CardTitle>
+                    <CardDescription>{description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="mt-12 text-center">
-        <Button asChild size="lg" className="animate-slide-up">
-          <Link to="/create-request">
-            Create New Request
-          </Link>
-        </Button>
-      </div>
+      {kids.length > 0 && babysitters.length > 0 && (
+        <div className="mt-12 text-center">
+          <Button asChild size="lg" className="animate-slide-up">
+            <Link to="/create-request">
+              Create New Request
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Users, Baby, Calendar, Menu } from "lucide-react";
+import { Home, Baby, Users, Calendar, Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -14,9 +14,9 @@ const Navbar = () => {
 
   const navItems = [
     { path: "/", icon: Home, label: "Home" },
-    { path: "/babysitters", icon: Users, label: "Babysitters" },
     { path: "/family", icon: Baby, label: "My Family" },
-    { path: "/requests", icon: Calendar, label: "Requests" },
+    { path: "/babysitters", icon: Users, label: "Babysitters" },
+    { path: "/requests", icon: Calendar, label: "Request Dashboard" },
   ];
 
   return (
