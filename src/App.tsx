@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Index from "./pages/Index";
 import BabysitterList from "./pages/BabysitterList";
-import KidProfiles from "./pages/KidProfiles";
+import MyFamily from "./pages/MyFamily";
 import CreateRequest from "./pages/CreateRequest";
 import RequestDashboard from "./pages/RequestDashboard";
 
@@ -23,7 +23,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/babysitters" element={<BabysitterList />} />
-            <Route path="/kids" element={<KidProfiles />} />
+            <Route path="/family" element={<MyFamily />} />
             <Route path="/create-request" element={<CreateRequest />} />
             <Route path="/requests" element={<RequestDashboard />} />
           </Routes>
