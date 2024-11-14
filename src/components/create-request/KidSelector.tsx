@@ -12,6 +12,7 @@ import { Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Kid } from "@/types/kid";
+import { useFamilyStore } from "@/store/familyStore";
 
 interface KidSelectorProps {
   selectedKids: string[];
@@ -20,15 +21,7 @@ interface KidSelectorProps {
 
 export const KidSelector = ({ selectedKids, onKidsChange }: KidSelectorProps) => {
   const navigate = useNavigate();
-  const [kids, setKids] = useState<Kid[]>([]);
-
-  useEffect(() => {
-    // In a real app, this would fetch from an API or local storage
-    const storedKids = localStorage.getItem('kids');
-    if (storedKids) {
-      setKids(JSON.parse(storedKids));
-    }
-  }, []);
+  const { kids } = useFamilyStore();
 
   const handleKidToggle = (kidId: string) => {
     if (selectedKids.includes(kidId)) {

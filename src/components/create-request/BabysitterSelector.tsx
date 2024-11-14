@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { Babysitter } from "@/types/babysitter";
+import { useFamilyStore } from "@/store/familyStore";
 
 interface BabysitterSelectorProps {
   selectedBabysitters: string[];
@@ -13,15 +14,7 @@ export const BabysitterSelector = ({
   selectedBabysitters,
   onBabysittersChange,
 }: BabysitterSelectorProps) => {
-  const [babysitters, setBabysitters] = useState<Babysitter[]>([]);
-
-  useEffect(() => {
-    // In a real app, this would fetch from an API or local storage
-    const storedBabysitters = localStorage.getItem('babysitters');
-    if (storedBabysitters) {
-      setBabysitters(JSON.parse(storedBabysitters));
-    }
-  }, []);
+  const { babysitters } = useFamilyStore();
 
   const handleBabysitterToggle = (babysitterId: string) => {
     if (selectedBabysitters.includes(babysitterId)) {
