@@ -27,9 +27,9 @@ const Index = () => {
     },
     {
       icon: Baby,
-      title: "Kids",
-      description: "Update your children's profiles",
-      path: "/kids",
+      title: "My Family",
+      description: "Update your family's profiles",
+      path: "/family",
       color: "bg-pink-500",
     },
     {
