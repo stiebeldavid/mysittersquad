@@ -2,12 +2,6 @@ import { useState } from "react";
 import { Plus, Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -22,17 +16,12 @@ import { FamilyAddress } from "@/components/my-family/FamilyAddress";
 import { EmergencyContacts } from "@/components/my-family/EmergencyContacts";
 import { Kid } from "@/types/kid";
 
-interface EmergencyContact {
-  id: string;
-  name: string;
-  phone: string;
-  relation: string;
-}
-
 const MyFamily = () => {
   const [kids, setKids] = useState<Kid[]>([]);
   const [address, setAddress] = useState("123 Main St, Anytown, CA 12345");
   const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentKid, setCurrentKid] = useState<Kid | null>(null);
   const { toast } = useToast();
 
   const handleAddressChange = (newAddress: string) => {
@@ -63,7 +52,8 @@ const MyFamily = () => {
       id: currentKid?.id || Date.now().toString(),
       firstName: formData.get("firstName") as string,
       age: Number(formData.get("age")),
-      notes: formData.get("notes") as string,
+      allergies: formData.get("allergies") as string,
+      medicalInfo: formData.get("medicalInfo") as string,
       tags,
     };
 
@@ -128,14 +118,6 @@ const MyFamily = () => {
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogTrigger asChild>
-          <Button
-            onClick={() => setCurrentKid(null)}
-            className="flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" /> Add Kid Profile
-          </Button>
-        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
@@ -163,21 +145,29 @@ const MyFamily = () => {
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="allergies">Allergies</Label>
+              <Input
+                id="allergies"
+                name="allergies"
+                defaultValue={currentKid?.allergies}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="medicalInfo">Medical Information</Label>
+              <Input
+                id="medicalInfo"
+                name="medicalInfo"
+                defaultValue={currentKid?.medicalInfo}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="tags">
                 Tags (comma-separated, e.g., "Asleep, Potty trained")
               </Label>
               <Input
                 id="tags"
                 name="tags"
-                defaultValue={currentKid?.tags.join(", ")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Input
-                id="notes"
-                name="notes"
-                defaultValue={currentKid?.notes}
+                defaultValue={currentKid?.tags?.join(", ")}
               />
             </div>
             <Button type="submit" className="w-full">
@@ -186,7 +176,6 @@ const MyFamily = () => {
           </form>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 };
