@@ -55,44 +55,46 @@ const CreateRequest = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label>Date</Label>
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                className="rounded-md border"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="startTime">Start Time</Label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                  <Input
-                    id="startTime"
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
+                <Label>Date</Label>
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  className="rounded-md border"
+                />
               </div>
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="startTime">Start Time</Label>
+                  <div className="relative">
+                    <Clock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                    <Input
+                      id="startTime"
+                      type="time"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="endTime">End Time</Label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                  <Input
-                    id="endTime"
-                    type="time"
-                    value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
+                <div className="space-y-2">
+                  <Label htmlFor="endTime">End Time</Label>
+                  <div className="relative">
+                    <Clock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                    <Input
+                      id="endTime"
+                      type="time"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
             </div>

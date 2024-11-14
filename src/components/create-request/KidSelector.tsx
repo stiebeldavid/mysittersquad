@@ -9,14 +9,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface Kid {
-  id: string;
-  firstName: string;
-  age: number;
-}
+import { Kid } from "@/types/kid";
 
 interface KidSelectorProps {
   selectedKids: string[];
@@ -25,10 +20,15 @@ interface KidSelectorProps {
 
 export const KidSelector = ({ selectedKids, onKidsChange }: KidSelectorProps) => {
   const navigate = useNavigate();
-  const [kids] = useState<Kid[]>([
-    { id: "1", firstName: "Alice", age: 5 },
-    { id: "2", firstName: "Bob", age: 3 },
-  ]);
+  const [kids, setKids] = useState<Kid[]>([]);
+
+  useEffect(() => {
+    // In a real app, this would fetch from an API or local storage
+    const storedKids = localStorage.getItem('kids');
+    if (storedKids) {
+      setKids(JSON.parse(storedKids));
+    }
+  }, []);
 
   const handleKidToggle = (kidId: string) => {
     if (selectedKids.includes(kidId)) {
@@ -53,25 +53,32 @@ export const KidSelector = ({ selectedKids, onKidsChange }: KidSelectorProps) =>
             <DialogHeader>
               <DialogTitle>Add New Kid</DialogTitle>
             </DialogHeader>
-            <Button onClick={() => navigate("/kids")}>
-              Go to Kid Profiles
+            <Button onClick={() => navigate("/family")}>
+              Go to Family Profiles
             </Button>
           </DialogContent>
         </Dialog>
       </div>
       <div className="space-y-2">
-        {kids.map((kid) => (
-          <div key={kid.id} className="flex items-center space-x-2">
-            <Checkbox
-              id={`kid-${kid.id}`}
-              checked={selectedKids.includes(kid.id)}
-              onCheckedChange={() => handleKidToggle(kid.id)}
-            />
-            <Label htmlFor={`kid-${kid.id}`}>
-              {kid.firstName} ({kid.age} years old)
-            </Label>
-          </div>
-        ))}
+        {kids.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            No kids added yet. Add kids in the Family Profile section.
+          </p>
+        ) : (
+          kids.map((kid) => (
+            <div key={kid.id} className="flex items-center space-x-2">
+              <Checkbox
+                id={`kid-${kid.id}`}
+                checked={selectedKids.includes(kid.id)}
+                onCheckedChange={() => handleKidToggle(kid.id)}
+              />
+              <Label htmlFor={`kid-${kid.id}`}>
+                {kid.firstName} ({kid.age} years old)
+                {kid.allergies && <span className="text-red-500 ml-2">Has allergies</span>}
+              </Label>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
