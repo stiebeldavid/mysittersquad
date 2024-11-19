@@ -1,7 +1,17 @@
 export const formatTimeRange = (startTime: string, endTime: string) => {
+  // Return early if either time is missing
+  if (!startTime || !endTime) {
+    return '';
+  }
+
   // Convert times to Date objects for easier manipulation
   const [startHour, startMinute] = startTime.split(":").map(Number);
   const [endHour, endMinute] = endTime.split(":").map(Number);
+  
+  // Validate parsed values
+  if (isNaN(startHour) || isNaN(startMinute) || isNaN(endHour) || isNaN(endMinute)) {
+    return '';
+  }
   
   // Format start time
   const startHour12 = startHour % 12 || 12;
