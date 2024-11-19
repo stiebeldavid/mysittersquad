@@ -35,14 +35,17 @@ const BabysitterList = () => {
         throw new Error('User not logged in');
       }
 
-      await createBabysitter(
+      const newBabysitter = await createBabysitter(
         formData.get("firstName") as string,
         formData.get("lastName") as string,
         formData.get("mobile") as string,
         user.mobile
       );
 
-      queryClient.invalidateQueries({ queryKey: ['babysitters'] });
+      // Update the cache with the new babysitter
+      queryClient.setQueryData(['babysitters', user.mobile], (old: Babysitter[] | undefined) => 
+        old ? [...old, newBabysitter] : [newBabysitter]
+      );
       
       toast({
         title: "Babysitter Added",

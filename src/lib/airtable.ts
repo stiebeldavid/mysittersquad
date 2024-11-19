@@ -56,7 +56,19 @@ export const createBabysitter = async (
         },
       },
     ]);
-    return records[0];
+
+    const record = records[0];
+    return {
+      id: record.id,
+      firstName: record.get('First Name') as string,
+      lastName: record.get('Last Name') as string,
+      mobile: record.get('Mobile') as string,
+      home: record.get('Home') as string || '',
+      age: record.get('Age') as number | undefined,
+      rate: record.get('Rate') as number | undefined,
+      specialties: record.get('Specialties') as string || '',
+      notes: record.get('Notes') as string || '',
+    };
   } catch (error) {
     console.error('Error creating babysitter:', error);
     throw error;
