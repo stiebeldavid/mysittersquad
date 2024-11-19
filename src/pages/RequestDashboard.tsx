@@ -13,8 +13,10 @@ interface Request {
   date: string;
   timeRange: string;
   babysitterId: string;
-  babysitterName: string;
   status: string;
+  babysitter: {
+    name: string;
+  };
 }
 
 interface GroupedRequest {
@@ -57,7 +59,7 @@ const RequestDashboard = () => {
     if (existingGroup) {
       existingGroup.babysitters.push({
         id: request.babysitterId,
-        name: request.babysitterName,
+        name: request.babysitter.name,
         status: request.status,
       });
     } else {
@@ -67,7 +69,7 @@ const RequestDashboard = () => {
         babysitters: [
           {
             id: request.babysitterId,
-            name: request.babysitterName,
+            name: request.babysitter.name,
             status: request.status,
           },
         ],
