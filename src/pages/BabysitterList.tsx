@@ -5,6 +5,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { BabysitterForm } from "@/components/babysitter/BabysitterForm";
 import { BabysitterCard } from "@/components/babysitter/BabysitterCard";
+import { AddBabysitterCard } from "@/components/babysitter/AddBabysitterCard";
 import { ContactPickerButton } from "@/components/babysitter/ContactPickerButton";
 import { Babysitter } from "@/types/babysitter";
 import { useAuthStore } from "@/store/authStore";
@@ -119,6 +120,7 @@ const BabysitterList = () => {
             onDelete={() => handleDelete(babysitter.id)}
           />
         ))}
+        <AddBabysitterCard onClick={() => setIsDialogOpen(true)} />
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
