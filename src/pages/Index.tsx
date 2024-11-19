@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Plus, Calendar, Users, Baby } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -29,6 +30,7 @@ const Index = () => {
       path: "/babysitters",
       color: "bg-purple-500",
       isComplete: babysitters.length > 0,
+      count: babysitters.length,
     },
   ];
 
@@ -64,7 +66,7 @@ const Index = () => {
         <div>
           <h2 className="text-xl font-semibold mb-4">Setup Required</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {setupActions.map(({ icon: Icon, title, description, path, color, isComplete }) => (
+            {setupActions.map(({ icon: Icon, title, description, path, color, isComplete, count }) => (
               <Link key={path} to={path}>
                 <Card className={`card-hover cursor-pointer h-full ${isComplete ? 'border-green-500' : 'border-orange-500'}`}>
                   <CardHeader>
@@ -72,10 +74,17 @@ const Index = () => {
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <CardTitle className="flex items-center justify-between">
-                      {title}
-                      {isComplete && (
-                        <span className="text-green-500 text-sm">✓ Complete</span>
-                      )}
+                      <span>{title}</span>
+                      <div className="flex items-center gap-2">
+                        {count !== undefined && (
+                          <Badge variant="secondary" className="text-xs">
+                            {count} {count === 1 ? 'babysitter' : 'babysitters'}
+                          </Badge>
+                        )}
+                        {isComplete && (
+                          <span className="text-green-500 text-sm">✓</span>
+                        )}
+                      </div>
                     </CardTitle>
                     <CardDescription>{description}</CardDescription>
                   </CardHeader>
