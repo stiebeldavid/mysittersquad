@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBabysitters } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
+import { useToast } from "@/components/ui/use-toast";
 
 interface BabysitterSelectorProps {
   selectedBabysitters: string[];
@@ -15,10 +16,21 @@ export const BabysitterSelector = ({
   onBabysittersChange,
 }: BabysitterSelectorProps) => {
   const user = useAuthStore((state) => state.user);
+  const { toast } = useToast();
   
-  const { data: babysitters = [], isLoading } = useQuery({
+  const { data: babysitters = [], isLoading, error } = useQuery({
     queryKey: ['babysitters', user?.mobile],
-    queryFn: () => fetchBabysitters(user?.mobile || ''),
+    queryFn: () => {
+      if (!user?.mobile) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "User information is missing. Please try logging in again.",
+        });
+        return [];
+      }
+      return fetchBabysitters(user.mobile);
+    },
     enabled: !!user?.mobile,
   });
 
@@ -32,6 +44,10 @@ export const BabysitterSelector = ({
 
   if (isLoading) {
     return <div>Loading babysitters...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading babysitters. Please try again.</div>;
   }
 
   return (
