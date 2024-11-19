@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
 import { useState, useEffect } from "react";
-import { updateUserAddress, fetchUserAddress } from "@/lib/airtable";
+import { updateUserAddress, fetchUserAddressFields } from "@/lib/airtable";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/authStore";
 import { useQuery } from "@tanstack/react-query";
@@ -23,17 +23,30 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
   const { toast } = useToast();
   const user = useAuthStore((state) => state.user);
 
-  const { data: fetchedAddress } = useQuery({
-    queryKey: ['userAddress', user?.mobile],
-    queryFn: () => user?.mobile ? fetchUserAddress(user.mobile) : Promise.resolve(''),
+  const { data: addressFields } = useQuery({
+    queryKey: ['userAddressFields', user?.mobile],
+    queryFn: () => user?.mobile ? fetchUserAddressFields(user.mobile) : Promise.resolve({
+      streetAddress: '',
+      city: '',
+      state: '',
+      zipCode: '',
+    }),
     enabled: !!user?.mobile,
   });
 
   useEffect(() => {
-    if (fetchedAddress) {
-      onAddressChange(fetchedAddress);
+    if (addressFields) {
+      setStreetAddress(addressFields.streetAddress);
+      setCity(addressFields.city);
+      setState(addressFields.state);
+      setZipCode(addressFields.zipCode);
+      
+      if (addressFields.streetAddress && addressFields.city && addressFields.state && addressFields.zipCode) {
+        const fullAddress = `${addressFields.streetAddress}, ${addressFields.city}, ${addressFields.state} ${addressFields.zipCode}`;
+        onAddressChange(fullAddress);
+      }
     }
-  }, [fetchedAddress, onAddressChange]);
+  }, [addressFields, onAddressChange]);
 
   const handleSave = async () => {
     try {
