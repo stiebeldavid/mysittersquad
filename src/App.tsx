@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import Navbar from "./components/Navbar";
+import FloatingActionButton from "./components/FloatingActionButton";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -75,6 +76,7 @@ const App = () => {
                 }
               />
             </Routes>
+            {user && <FloatingActionButton />}
           </div>
         </BrowserRouter>
       </TooltipProvider>

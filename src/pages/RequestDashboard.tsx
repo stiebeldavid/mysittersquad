@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Calendar, Clock } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { fetchRequests } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 
@@ -11,7 +13,18 @@ interface Request {
   date: string;
   timeRange: string;
   babysitterId: string;
+  babysitterName: string;
   status: string;
+}
+
+interface GroupedRequest {
+  date: string;
+  timeRange: string;
+  babysitters: {
+    id: string;
+    name: string;
+    status: string;
+  }[];
 }
 
 const RequestDashboard = () => {
@@ -34,13 +47,40 @@ const RequestDashboard = () => {
     }
   };
 
-  const groupedRequests = requests.reduce((acc: Record<string, Request[]>, request) => {
-    if (!acc[request.status]) {
-      acc[request.status] = [];
+  // Group requests by date and time range
+  const groupedRequests = requests.reduce((acc: GroupedRequest[], request) => {
+    const key = `${request.date}-${request.timeRange}`;
+    const existingGroup = acc.find(
+      (group) => group.date === request.date && group.timeRange === request.timeRange
+    );
+
+    if (existingGroup) {
+      existingGroup.babysitters.push({
+        id: request.babysitterId,
+        name: request.babysitterName,
+        status: request.status,
+      });
+    } else {
+      acc.push({
+        date: request.date,
+        timeRange: request.timeRange,
+        babysitters: [
+          {
+            id: request.babysitterId,
+            name: request.babysitterName,
+            status: request.status,
+          },
+        ],
+      });
     }
-    acc[request.status].push(request);
+
     return acc;
-  }, {});
+  }, []);
+
+  // Sort requests in reverse chronological order
+  const sortedRequests = groupedRequests.sort((a, b) => 
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 
   if (isLoading) {
     return <div className="page-container">Loading...</div>;
@@ -48,41 +88,46 @@ const RequestDashboard = () => {
 
   return (
     <div className="page-container">
-      <h1 className="text-3xl font-bold mb-6">Babysitting Requests</h1>
-
-      {Object.entries(groupedRequests).map(([status, statusRequests]) => (
-        <div key={status} className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">{status}</h2>
-          <div className="space-y-4">
-            {statusRequests.map((request) => (
-              <Card key={request.id} className="card-hover">
-                <CardHeader>
-                  <CardTitle className="flex justify-between items-center">
-                    <span>Request for {format(new Date(request.date), "MMMM d, yyyy")}</span>
-                    <Badge className={getStatusColor(request.status)}>
-                      {request.status}
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-gray-500" />
-                        <span>{format(new Date(request.date), "EEEE, MMMM d")}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-gray-500" />
-                        <span>{request.timeRange}</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <h1 className="text-3xl font-bold">Babysitting Requests</h1>
         </div>
-      ))}
+      </div>
+
+      <div className="space-y-4">
+        {sortedRequests.map((groupedRequest) => (
+          <Card key={`${groupedRequest.date}-${groupedRequest.timeRange}`} className="card-hover">
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                <span>{format(new Date(groupedRequest.date), "MMMM d, yyyy")}</span>
+                <span className="text-sm font-normal text-gray-600">
+                  {groupedRequest.timeRange}
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {groupedRequest.babysitters.map((babysitter) => (
+                  <div
+                    key={babysitter.id}
+                    className="flex justify-between items-center py-2 border-b last:border-0"
+                  >
+                    <span>{babysitter.name}</span>
+                    <Badge className={getStatusColor(babysitter.status)}>
+                      {babysitter.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {requests.length === 0 && (
         <div className="text-center py-12">
