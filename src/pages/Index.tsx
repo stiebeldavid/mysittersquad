@@ -40,15 +40,13 @@ const Index = () => {
       description: "Create a new babysitting request",
       path: "/create-request",
       color: "bg-primary",
-      isComplete: true,
     },
     {
       icon: Calendar,
-      title: "Request Dashboard",
+      title: "My Requests",
       description: "View and manage your requests",
       path: "/requests",
       color: "bg-blue-500",
-      isComplete: true,
     },
     {
       icon: Baby,
