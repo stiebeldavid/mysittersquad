@@ -52,14 +52,10 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <span>Home Address</span>
-            <Badge variant="secondary" className="gap-1">
-              <Clock className="h-3 w-3" />
-              Coming Soon
-            </Badge>
-          </div>
+        <CardTitle>Home Address</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col items-end gap-2 mb-4">
           <Button
             variant="ghost"
             size="icon"
@@ -68,9 +64,11 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
           >
             <Edit className="h-4 w-4" />
           </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+          <Badge variant="secondary" className="bg-primary/10 text-primary">
+            <Clock className="h-3 w-3 mr-1" />
+            Coming Soon
+          </Badge>
+        </div>
         {isEditing ? (
           <div className="space-y-4">
             <div className="space-y-2">
