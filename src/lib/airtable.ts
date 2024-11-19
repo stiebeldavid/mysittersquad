@@ -87,36 +87,6 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
   }
 };
 
-export const fetchRequests = async (parentRequestorMobile: string) => {
-  try {
-    const records = await base('Requests')
-      .select({
-        filterByFormula: `{Parent Requestor Mobile}='${parentRequestorMobile}'`,
-        sort: [{ field: 'Request Date', direction: 'desc' }],
-      })
-      .all();
-
-    const requests = await Promise.all(records.map(async (record) => {
-      const babysitterId = (record.get('Babysitter') as string[])[0];
-      const babysitterRecord = await base('Babysitters').find(babysitterId);
-      
-      return {
-        id: record.id,
-        date: record.get('Request Date') as string,
-        timeRange: record.get('Time Range') as string,
-        babysitterId: babysitterId,
-        status: record.get('Status') as string,
-        babysitterName: `${babysitterRecord.get('First Name')} ${babysitterRecord.get('Last Name')}`,
-      };
-    }));
-
-    return requests;
-  } catch (error) {
-    console.error('Error fetching requests:', error);
-    throw error;
-  }
-};
-
 export const createRequest = async (
   date: Date,
   startTime: string,
@@ -161,6 +131,7 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       timeRange: record.get('Time Range') as string,
       babysitterId: (record.get('Babysitter') as string[])[0],
       status: record.get('Status') as string,
+      babysitterName: `${record.get('First Name (from Babysitter)')} ${record.get('Last Name (from Babysitter)')}`,
     }));
   } catch (error) {
     console.error('Error fetching requests:', error);

@@ -1,127 +1,69 @@
-import { useState } from "react";
+```tsx
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
-import { BabysitterForm } from "@/components/babysitter/BabysitterForm";
-import { BabysitterCard } from "@/components/babysitter/BabysitterCard";
-import { ContactPickerButton } from "@/components/babysitter/ContactPickerButton";
-import { Babysitter } from "@/types/babysitter";
-import { useFamilyStore } from "@/store/familyStore";
+import { fetchBabysitters } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
-import { createBabysitter, fetchBabysitters } from "@/lib/airtable";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useFamilyStore } from "@/store/familyStore";
+import AddBabysitterForm from "@/components/AddBabysitterForm";
 
 const BabysitterList = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentBabysitter, setCurrentBabysitter] = useState<Babysitter | null>(null);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  
-  const { user } = useAuthStore();
-  const { setBabysitters } = useFamilyStore();
+  const user = useAuthStore((state) => state.user);
+  const setBabysitters = useFamilyStore((state) => state.setBabysitters);
+  const [showForm, setShowForm] = useState(false);
 
-  const { data: babysitters = [], isLoading } = useQuery({
+  const { data: babysitters } = useQuery({
     queryKey: ['babysitters', user?.mobile],
     queryFn: () => fetchBabysitters(user?.mobile || ''),
     enabled: !!user?.mobile,
   });
 
-  // Update babysitters in store whenever data changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (babysitters) {
       setBabysitters(babysitters);
     }
   }, [babysitters, setBabysitters]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    
-    try {
-      if (!user?.mobile) {
-        throw new Error('User not logged in');
-      }
-
-      await createBabysitter(
-        formData.get("firstName") as string,
-        formData.get("lastName") as string,
-        formData.get("mobile") as string,
-        user.mobile
-      );
-
-      queryClient.invalidateQueries({ queryKey: ['babysitters'] });
-      
-      toast({
-        title: "Babysitter Added",
-        description: "New babysitter has been added successfully."
-      });
-      
-      setIsDialogOpen(false);
-      setCurrentBabysitter(null);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add babysitter. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleDelete = (id: string) => {
-    setBabysitters(babysitters.filter(b => b.id !== id));
-    toast({
-      title: "Babysitter Removed",
-      description: "The babysitter has been removed successfully.",
-      variant: "destructive"
-    });
-  };
-
-  const handleEdit = (babysitter: Babysitter) => {
-    setCurrentBabysitter(babysitter);
-    setIsDialogOpen(true);
-  };
-
-  const handleContactsSelected = (newBabysitters: Babysitter[]) => {
-    setBabysitters([...babysitters, ...newBabysitters]);
-  };
-
-  if (isLoading) {
-    return <div className="container mx-auto p-4">Loading...</div>;
-  }
-
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Babysitters</h1>
-        <div className="flex gap-2">
-          <ContactPickerButton onContactsSelected={handleContactsSelected} />
-          <Button onClick={() => setIsDialogOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Babysitter
-          </Button>
-        </div>
+    <div className="page-container">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Your Babysitters</h1>
+        <Button onClick={() => setShowForm(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Add Babysitter
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {babysitters.map((babysitter) => (
-          <BabysitterCard
-            key={babysitter.id}
-            babysitter={babysitter}
-            onEdit={() => handleEdit(babysitter)}
-            onDelete={() => handleDelete(babysitter.id)}
-          />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {babysitters?.map((babysitter) => (
+          <Link key={babysitter.id} to={`/request/${babysitter.id}`}>
+            <Card className="cursor-pointer card-hover">
+              <CardHeader>
+                <CardTitle>
+                  {babysitter.firstName} {babysitter.lastName}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-500">{babysitter.mobile}</p>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <BabysitterForm
-          onSubmit={handleSubmit}
-          currentBabysitter={currentBabysitter}
-        />
-      </Dialog>
+      {babysitters?.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500">No babysitters added yet.</p>
+          <p className="text-gray-500">Add your first babysitter to get started!</p>
+        </div>
+      )}
+
+      <AddBabysitterForm open={showForm} onClose={() => setShowForm(false)} />
     </div>
   );
 };
 
 export default BabysitterList;
+```
