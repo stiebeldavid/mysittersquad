@@ -20,10 +20,26 @@ const BabysitterList = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
 
-  const { data: babysitters = [], isLoading } = useQuery({
+  console.log('BabysitterList - Current user:', user);
+
+  const { data: babysitters = [], isLoading, error } = useQuery({
     queryKey: ['babysitters', user?.mobile],
-    queryFn: () => fetchBabysitters(user?.mobile || ''),
+    queryFn: () => {
+      console.log('BabysitterList - Fetching babysitters for user mobile:', user?.mobile);
+      if (!user?.mobile) {
+        console.error('BabysitterList - No user mobile found in auth store');
+        return [];
+      }
+      return fetchBabysitters(user.mobile);
+    },
     enabled: !!user?.mobile,
+  });
+
+  console.log('BabysitterList - Query results:', { 
+    isLoading, 
+    error, 
+    babysittersCount: babysitters.length,
+    babysitters 
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

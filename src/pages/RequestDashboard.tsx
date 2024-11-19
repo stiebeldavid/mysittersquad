@@ -58,10 +58,26 @@ const RequestDashboard = () => {
   const user = useAuthStore((state) => state.user);
   const [sortBy, setSortBy] = useState<"created" | "date">("created");
 
-  const { data: requests = [], isLoading } = useQuery({
+  console.log('RequestDashboard - Current user:', user);
+
+  const { data: requests = [], isLoading, error } = useQuery({
     queryKey: ['requests', user?.mobile],
-    queryFn: () => fetchRequests(user?.mobile || ''),
+    queryFn: () => {
+      console.log('RequestDashboard - Fetching requests for user mobile:', user?.mobile);
+      if (!user?.mobile) {
+        console.error('RequestDashboard - No user mobile found in auth store');
+        return [];
+      }
+      return fetchRequests(user.mobile);
+    },
     enabled: !!user?.mobile,
+  });
+
+  console.log('RequestDashboard - Query results:', { 
+    isLoading, 
+    error, 
+    requestsCount: requests.length,
+    requests 
   });
 
   const getStatusColor = (status: string) => {
