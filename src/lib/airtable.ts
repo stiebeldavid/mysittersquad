@@ -123,7 +123,7 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
     const records = await base('Requests')
       .select({
         filterByFormula: `{Parent Requestor Mobile}='${parentRequestorMobile}'`,
-        sort: [{ field: 'Created time', direction: 'desc' }],
+        sort: [{ field: 'Created Time', direction: 'desc' }],
       })
       .all();
 
@@ -134,7 +134,7 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       babysitterId: (record.get('Babysitter') as string[])[0],
       babysitterName: `${record.get('First Name (from Babysitter)') || ''} ${record.get('Last Name (from Babysitter)') || ''}`.trim(),
       status: record.get('Status') as string,
-      createdAt: record.get('Created time') as string,
+      createdAt: record.get('Created Time') as string,
     }));
   } catch (error) {
     console.error('Error fetching requests:', error);
