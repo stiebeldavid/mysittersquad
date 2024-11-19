@@ -23,16 +23,8 @@ const Index = () => {
     queryFn: () => fetchBabysitters(user?.mobile || ''),
     enabled: !!user?.mobile,
   });
-  
-  const setupActions = [
-    {
-      icon: Baby,
-      title: "Set Up Family Profile",
-      description: "Add your family details and kids' information",
-      path: "/family",
-      color: "bg-pink-500",
-      isComplete: kids.length > 0,
-    },
+
+  const allActions = [
     {
       icon: Users,
       title: "Add Babysitters",
@@ -42,9 +34,6 @@ const Index = () => {
       isComplete: babysitters.length > 0,
       count: babysitters.length,
     },
-  ];
-
-  const mainActions = [
     {
       icon: Plus,
       title: "New Request",
@@ -61,6 +50,14 @@ const Index = () => {
       color: "bg-blue-500",
       isComplete: true,
     },
+    {
+      icon: Baby,
+      title: "Set Up Family Profile",
+      description: "Add your family details and kids' information",
+      path: "/family",
+      color: "bg-pink-500",
+      isComplete: kids.length > 0,
+    },
   ];
 
   return (
@@ -72,56 +69,32 @@ const Index = () => {
         </p>
       </div>
 
-      <div className="space-y-8">
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Setup Required</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {setupActions.map(({ icon: Icon, title, description, path, color, isComplete, count }) => (
-              <Link key={path} to={path}>
-                <Card className={`card-hover cursor-pointer h-full ${isComplete ? 'border-green-500' : 'border-orange-500'}`}>
-                  <CardHeader>
-                    <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle className="flex items-center justify-between">
-                      <span>{title}</span>
-                      <div className="flex items-center gap-2">
-                        {count !== undefined && (
-                          <Badge variant="secondary" className="text-xs">
-                            {count} {count === 1 ? 'babysitter' : 'babysitters'}
-                          </Badge>
-                        )}
-                        {isComplete && (
-                          <span className="text-green-500 text-sm">✓</span>
-                        )}
-                      </div>
-                    </CardTitle>
-                    <CardDescription>{description}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Main Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {mainActions.map(({ icon: Icon, title, description, path, color }) => (
-              <Link key={path} to={path}>
-                <Card className="card-hover cursor-pointer h-full">
-                  <CardHeader>
-                    <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle>{title}</CardTitle>
-                    <CardDescription>{description}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {allActions.map(({ icon: Icon, title, description, path, color, isComplete, count }) => (
+          <Link key={path} to={path}>
+            <Card className={`card-hover cursor-pointer h-full ${isComplete ? 'border-green-500' : 'border-orange-500'}`}>
+              <CardHeader>
+                <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="flex items-center justify-between">
+                  <span>{title}</span>
+                  <div className="flex items-center gap-2">
+                    {count !== undefined && (
+                      <Badge variant="secondary" className="text-xs">
+                        {count} {count === 1 ? 'babysitter' : 'babysitters'}
+                      </Badge>
+                    )}
+                    {isComplete && (
+                      <span className="text-green-500 text-sm">✓</span>
+                    )}
+                  </div>
+                </CardTitle>
+                <CardDescription>{description}</CardDescription>
+              </CardHeader>
+            </Card>
+          </Link>
+        ))}
       </div>
 
       {kids.length > 0 && babysitters.length > 0 && (
