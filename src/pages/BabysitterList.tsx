@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
@@ -25,10 +25,13 @@ const BabysitterList = () => {
     queryKey: ['babysitters', user?.mobile],
     queryFn: () => fetchBabysitters(user?.mobile || ''),
     enabled: !!user?.mobile,
-    onSuccess: (data) => {
-      setBabysitters(data);
-    },
   });
+
+  useEffect(() => {
+    if (babysitters) {
+      setBabysitters(babysitters);
+    }
+  }, [babysitters, setBabysitters]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
