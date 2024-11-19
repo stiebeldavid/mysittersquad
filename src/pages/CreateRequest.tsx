@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { KidSelector } from "@/components/create-request/KidSelector";
 import { BabysitterSelector } from "@/components/create-request/BabysitterSelector";
 import { AddressInput } from "@/components/create-request/AddressInput";
 import { createRequest } from "@/lib/airtable";
@@ -18,7 +17,6 @@ const CreateRequest = () => {
   const [date, setDate] = useState<Date>();
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [selectedKids, setSelectedKids] = useState<string[]>([]);
   const [selectedBabysitters, setSelectedBabysitters] = useState<string[]>([]);
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
@@ -29,10 +27,10 @@ const CreateRequest = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!date || !startTime || !endTime || selectedKids.length === 0 || selectedBabysitters.length === 0 || !user) {
+    if (!date || !startTime || !endTime || selectedBabysitters.length === 0 || !user) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields and select at least one kid and babysitter.",
+        description: "Please fill in all required fields and select at least one babysitter.",
         variant: "destructive",
       });
       return;
@@ -115,11 +113,6 @@ const CreateRequest = () => {
 
             <AddressInput address={address} onAddressChange={setAddress} />
             
-            <KidSelector
-              selectedKids={selectedKids}
-              onKidsChange={setSelectedKids}
-            />
-
             <BabysitterSelector
               selectedBabysitters={selectedBabysitters}
               onBabysittersChange={setSelectedBabysitters}

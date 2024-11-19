@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useState, useEffect } from "react";
-import { Babysitter } from "@/types/babysitter";
-import { useFamilyStore } from "@/store/familyStore";
+import { useQuery } from "@tanstack/react-query";
+import { fetchBabysitters } from "@/lib/airtable";
+import { useAuthStore } from "@/store/authStore";
 
 interface BabysitterSelectorProps {
   selectedBabysitters: string[];
@@ -14,7 +14,13 @@ export const BabysitterSelector = ({
   selectedBabysitters,
   onBabysittersChange,
 }: BabysitterSelectorProps) => {
-  const { babysitters } = useFamilyStore();
+  const user = useAuthStore((state) => state.user);
+  
+  const { data: babysitters = [], isLoading } = useQuery({
+    queryKey: ['babysitters', user?.mobile],
+    queryFn: () => fetchBabysitters(user?.mobile || ''),
+    enabled: !!user?.mobile,
+  });
 
   const handleBabysitterToggle = (babysitterId: string) => {
     if (selectedBabysitters.includes(babysitterId)) {
@@ -23,6 +29,10 @@ export const BabysitterSelector = ({
       onBabysittersChange([...selectedBabysitters, babysitterId]);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading babysitters...</div>;
+  }
 
   return (
     <div className="space-y-4">
