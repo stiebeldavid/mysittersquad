@@ -1,5 +1,6 @@
 import { base } from './config';
 import { Babysitter } from '@/types/babysitter';
+import { formatPhoneWithCountryCode } from '@/utils/phoneNumber';
 
 export const createBabysitter = async (
   firstName: string,
@@ -13,13 +14,16 @@ export const createBabysitter = async (
   }
 
   try {
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
+    const formattedParentMobile = formatPhoneWithCountryCode(parentOwnerMobile);
+
     const records = await base('Babysitters').create([
       {
         fields: {
           'First Name': firstName,
           'Last Name': lastName || '',
-          'Mobile': mobile,
-          'Parent Owner Mobile': parentOwnerMobile,
+          'Mobile': formattedMobile,
+          'Parent Owner Mobile': formattedParentMobile,
           'Deleted': false,
         },
       },
@@ -52,7 +56,8 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
   }
 
   try {
-    const filterFormula = `AND({Parent Owner Mobile}='${parentOwnerMobile}', {Deleted}!=1)`;
+    const formattedParentMobile = formatPhoneWithCountryCode(parentOwnerMobile);
+    const filterFormula = `AND({Parent Owner Mobile}='${formattedParentMobile}', {Deleted}!=1)`;
     console.log('Using filter formula:', filterFormula);
     
     const records = await base('Babysitters')

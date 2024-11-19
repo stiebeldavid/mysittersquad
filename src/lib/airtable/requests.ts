@@ -1,4 +1,5 @@
 import { base } from './config';
+import { formatPhoneWithCountryCode } from '@/utils/phoneNumber';
 
 export const createRequest = async (
   date: Date,
@@ -16,6 +17,7 @@ export const createRequest = async (
   try {
     const formattedDate = date.toISOString().split('T')[0];
     const timeRange = `${startTime} to ${endTime}`;
+    const formattedParentMobile = formatPhoneWithCountryCode(parentRequestorMobile);
     
     const records = await base('Requests').create([
       {
@@ -23,7 +25,7 @@ export const createRequest = async (
           'Request Date': formattedDate,
           'Time Range': timeRange,
           'Babysitter': [babysitterId],
-          'Parent Requestor Mobile': parentRequestorMobile,
+          'Parent Requestor Mobile': formattedParentMobile,
           'Status': 'Created',
           'Request Group ID': requestGroupId,
         },
@@ -45,7 +47,8 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
   }
 
   try {
-    const filterFormula = `{Parent Requestor Mobile}='${parentRequestorMobile}'`;
+    const formattedParentMobile = formatPhoneWithCountryCode(parentRequestorMobile);
+    const filterFormula = `{Parent Requestor Mobile}='${formattedParentMobile}'`;
     console.log('Using filter formula:', filterFormula);
     
     const records = await base('Requests')

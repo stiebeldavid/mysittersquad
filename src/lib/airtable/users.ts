@@ -1,4 +1,5 @@
 import { base } from './config';
+import { formatPhoneWithCountryCode } from '@/utils/phoneNumber';
 
 export const findUserByMobile = async (mobile: string) => {
   if (!mobile) {
@@ -7,9 +8,10 @@ export const findUserByMobile = async (mobile: string) => {
   }
 
   try {
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
     const records = await base('Users')
       .select({
-        filterByFormula: `{Mobile}='${mobile}'`,
+        filterByFormula: `{Mobile}='${formattedMobile}'`,
         maxRecords: 1,
       })
       .firstPage();
@@ -28,12 +30,13 @@ export const findUserByMobile = async (mobile: string) => {
 
 export const createUser = async (firstName: string, lastName: string, mobile: string) => {
   try {
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
     const records = await base('Users').create([
       {
         fields: {
           'First Name': firstName,
           'Last Name': lastName,
-          Mobile: mobile,
+          Mobile: formattedMobile,
         },
       },
     ]);
@@ -57,9 +60,10 @@ export const updateUserAddress = async (
   }
 
   try {
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
     const records = await base('Users')
       .select({
-        filterByFormula: `{Mobile}='${mobile}'`,
+        filterByFormula: `{Mobile}='${formattedMobile}'`,
         maxRecords: 1,
       })
       .firstPage();
