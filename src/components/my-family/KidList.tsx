@@ -14,15 +14,15 @@ export const KidList = ({ kids, onEdit, onDelete, onAddNew }: KidListProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          <span>Children Profiles</span>
+        <CardTitle>Children Profiles</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex justify-end mb-4">
           <Button onClick={onAddNew} variant="outline" size="sm" disabled={true}>
             <Plus className="h-4 w-4 mr-2" />
             Add Child
           </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {kids.map((kid) => (
             <Card key={kid.id} className="card-hover">

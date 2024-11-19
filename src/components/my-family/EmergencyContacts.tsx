@@ -39,8 +39,10 @@ export const EmergencyContacts = ({ contacts, onContactsChange }: EmergencyConta
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          <span>Emergency Contacts</span>
+        <CardTitle>Emergency Contacts</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex justify-end mb-4">
           <Button
             variant="outline"
             size="sm"
@@ -50,9 +52,7 @@ export const EmergencyContacts = ({ contacts, onContactsChange }: EmergencyConta
             <Plus className="h-4 w-4 mr-2" />
             Add Contact
           </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </div>
         {isAdding && (
           <div className="space-y-4 mb-4">
             <div className="space-y-2">
