@@ -14,9 +14,7 @@ interface Request {
   timeRange: string;
   babysitterId: string;
   status: string;
-  babysitter: {
-    name: string;
-  };
+  babysitterName: string;
 }
 
 interface GroupedRequest {
@@ -49,7 +47,6 @@ const RequestDashboard = () => {
     }
   };
 
-  // Group requests by date and time range
   const groupedRequests = requests.reduce((acc: GroupedRequest[], request) => {
     const key = `${request.date}-${request.timeRange}`;
     const existingGroup = acc.find(
@@ -59,7 +56,7 @@ const RequestDashboard = () => {
     if (existingGroup) {
       existingGroup.babysitters.push({
         id: request.babysitterId,
-        name: request.babysitter.name,
+        name: request.babysitterName,
         status: request.status,
       });
     } else {
@@ -69,7 +66,7 @@ const RequestDashboard = () => {
         babysitters: [
           {
             id: request.babysitterId,
-            name: request.babysitter.name,
+            name: request.babysitterName,
             status: request.status,
           },
         ],
@@ -79,7 +76,6 @@ const RequestDashboard = () => {
     return acc;
   }, []);
 
-  // Sort requests in reverse chronological order
   const sortedRequests = groupedRequests.sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );

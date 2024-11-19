@@ -25,10 +25,14 @@ const BabysitterList = () => {
     queryKey: ['babysitters', user?.mobile],
     queryFn: () => fetchBabysitters(user?.mobile || ''),
     enabled: !!user?.mobile,
-    onSuccess: (data) => {
-      setBabysitters(data);
-    },
   });
+
+  // Update babysitters in store whenever data changes
+  React.useEffect(() => {
+    if (babysitters) {
+      setBabysitters(babysitters);
+    }
+  }, [babysitters, setBabysitters]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
