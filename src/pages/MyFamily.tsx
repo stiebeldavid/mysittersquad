@@ -10,11 +10,14 @@ import { EmergencyContacts } from "@/components/my-family/EmergencyContacts";
 import { Kid } from "@/types/kid";
 import { EmergencyContact } from "@/types/emergency-contact";
 import { useFamilyStore } from "@/store/familyStore";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const MyFamily = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentKid, setCurrentKid] = useState<Kid | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const {
     address,
@@ -96,7 +99,17 @@ const MyFamily = () => {
 
   return (
     <div className="container mx-auto p-4 space-y-6">
-      <h1 className="text-3xl font-bold mb-6">My Family</h1>
+      <div className="flex items-center mb-6">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => navigate(-1)}
+          className="mr-4"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <h1 className="text-3xl font-bold">My Family</h1>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FamilyAddress 

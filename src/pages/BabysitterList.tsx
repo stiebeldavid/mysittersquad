@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
@@ -10,6 +10,7 @@ import { Babysitter } from "@/types/babysitter";
 import { useAuthStore } from "@/store/authStore";
 import { createBabysitter, fetchBabysitters } from "@/lib/airtable";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const BabysitterList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -17,6 +18,7 @@ const BabysitterList = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
 
   const { data: babysitters = [], isLoading } = useQuery({
     queryKey: ['babysitters', user?.mobile],
@@ -82,9 +84,17 @@ const BabysitterList = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex items-center mb-6">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => navigate(-1)}
+          className="mr-4"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
         <h1 className="text-3xl font-bold">Babysitters</h1>
-        <div className="flex gap-2">
+        <div className="flex gap-2 ml-auto">
           <ContactPickerButton onContactsSelected={handleContactsSelected} />
           <Button onClick={() => setIsDialogOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
