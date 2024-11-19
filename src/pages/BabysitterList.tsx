@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
@@ -7,7 +7,6 @@ import { BabysitterForm } from "@/components/babysitter/BabysitterForm";
 import { BabysitterCard } from "@/components/babysitter/BabysitterCard";
 import { ContactPickerButton } from "@/components/babysitter/ContactPickerButton";
 import { Babysitter } from "@/types/babysitter";
-import { useFamilyStore } from "@/store/familyStore";
 import { useAuthStore } from "@/store/authStore";
 import { createBabysitter, fetchBabysitters } from "@/lib/airtable";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -17,21 +16,13 @@ const BabysitterList = () => {
   const [currentBabysitter, setCurrentBabysitter] = useState<Babysitter | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  
-  const { user } = useAuthStore();
-  const { setBabysitters } = useFamilyStore();
+  const user = useAuthStore((state) => state.user);
 
   const { data: babysitters = [], isLoading } = useQuery({
     queryKey: ['babysitters', user?.mobile],
     queryFn: () => fetchBabysitters(user?.mobile || ''),
     enabled: !!user?.mobile,
   });
-
-  useEffect(() => {
-    if (babysitters) {
-      setBabysitters(babysitters);
-    }
-  }, [babysitters, setBabysitters]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
