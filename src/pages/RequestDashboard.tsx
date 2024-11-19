@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { format, isThisYear, parseISO } from "date-fns";
+import { format, isThisYear } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,26 +34,21 @@ interface GroupedRequest {
 const formatTimeRange = (timeRange: string) => {
   const [startTime, endTime] = timeRange.split(" to ");
   
-  // Convert times to Date objects for easier manipulation
   const [startHour, startMinute] = startTime.split(":").map(Number);
   const [endHour, endMinute] = endTime.split(":").map(Number);
   
-  // Format start time
   const startHour12 = startHour % 12 || 12;
   const startPeriod = startHour >= 12 ? 'pm' : 'am';
   const formattedStart = `${startHour12}:${startMinute.toString().padStart(2, '0')}`;
   
-  // Format end time
   const endHour12 = endHour % 12 || 12;
   const endPeriod = endHour >= 12 ? 'pm' : 'am';
   const formattedEnd = `${endHour12}:${endMinute.toString().padStart(2, '0')}`;
   
-  // If periods are the same, only show it once at the end
   if (startPeriod === endPeriod) {
     return `${formattedStart}-${formattedEnd}${endPeriod}`;
   }
   
-  // If periods are different, show both
   return `${formattedStart}${startPeriod}-${formattedEnd}${endPeriod}`;
 };
 
@@ -78,14 +73,12 @@ const RequestDashboard = () => {
     }
   };
 
-  // Modified handler to prevent deselection
   const handleSortChange = (value: string | undefined) => {
     if (value) {
       setSortBy(value as "created" | "date");
     }
   };
 
-  // Group requests by date and time range
   const groupedRequests = requests.reduce((acc: GroupedRequest[], request) => {
     const key = `${request.date}-${request.timeRange}`;
     const existingGroup = acc.find(
@@ -116,7 +109,6 @@ const RequestDashboard = () => {
     return acc;
   }, []);
 
-  // Sort requests based on selected sorting method
   const sortedRequests = [...groupedRequests].sort((a, b) => {
     if (sortBy === "created") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();

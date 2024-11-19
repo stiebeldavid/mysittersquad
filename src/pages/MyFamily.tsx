@@ -11,13 +11,12 @@ import { Kid } from "@/types/kid";
 import { EmergencyContact } from "@/types/emergency-contact";
 import { useFamilyStore } from "@/store/familyStore";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const MyFamily = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentKid, setCurrentKid] = useState<Kid | null>(null);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   const {
     address,
@@ -103,10 +102,11 @@ const MyFamily = () => {
         <Button 
           variant="ghost" 
           size="icon"
-          onClick={() => navigate(-1)}
-          className="mr-4"
+          asChild
         >
-          <ArrowLeft className="h-4 w-4" />
+          <Link to="/">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
         </Button>
         <h1 className="text-3xl font-bold">My Family Info</h1>
       </div>

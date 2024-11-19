@@ -11,7 +11,7 @@ import { Babysitter } from "@/types/babysitter";
 import { useAuthStore } from "@/store/authStore";
 import { createBabysitter, fetchBabysitters, deleteBabysitter } from "@/lib/airtable";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const BabysitterList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -19,7 +19,6 @@ const BabysitterList = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
-  const navigate = useNavigate();
 
   const { data: babysitters = [], isLoading } = useQuery({
     queryKey: ['babysitters', user?.mobile],
@@ -99,10 +98,11 @@ const BabysitterList = () => {
         <Button 
           variant="ghost" 
           size="icon"
-          onClick={() => navigate(-1)}
-          className="mr-4"
+          asChild
         >
-          <ArrowLeft className="h-4 w-4" />
+          <Link to="/">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
         </Button>
         <h1 className="text-3xl font-bold">Babysitters</h1>
         <div className="flex gap-2 ml-auto max-w-[200px]">
