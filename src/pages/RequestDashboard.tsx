@@ -78,6 +78,13 @@ const RequestDashboard = () => {
     }
   };
 
+  // Modified handler to prevent deselection
+  const handleSortChange = (value: string | undefined) => {
+    if (value) {
+      setSortBy(value as "created" | "date");
+    }
+  };
+
   // Group requests by date and time range
   const groupedRequests = requests.reduce((acc: GroupedRequest[], request) => {
     const key = `${request.date}-${request.timeRange}`;
@@ -136,7 +143,7 @@ const RequestDashboard = () => {
         <ToggleGroup 
           type="single" 
           value={sortBy} 
-          onValueChange={(value) => setSortBy(value as "created" | "date")}
+          onValueChange={handleSortChange}
           className="justify-start"
         >
           <ToggleGroupItem value="created">Sort by Created Date</ToggleGroupItem>
