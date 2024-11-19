@@ -134,6 +134,13 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       .select({
         filterByFormula: `{Parent Requestor Mobile}='${parentRequestorMobile}'`,
         sort: [{ field: 'Created Time', direction: 'desc' }],
+        fields: [
+          'Request Date',
+          'Time Range',
+          'Status',
+          'Created Time',
+          'Babysitter Name', // This should be a text field in the Requests table
+        ]
       })
       .all();
 
@@ -141,8 +148,8 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       id: record.id,
       date: record.get('Request Date') as string,
       timeRange: record.get('Time Range') as string,
-      babysitterId: (record.get('Babysitter') as string[])[0],
-      babysitterName: `${record.get('First Name (from Babysitter)') || ''} ${record.get('Last Name (from Babysitter)') || ''}`.trim(),
+      babysitterId: record.id, // Using record.id as babysitterId since we don't need the actual babysitter reference
+      babysitterName: record.get('Babysitter Name') as string || 'Unknown Babysitter',
       status: record.get('Status') as string,
       createdAt: record.get('Created Time') as string,
     }));
