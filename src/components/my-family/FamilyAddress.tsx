@@ -34,19 +34,23 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
     enabled: !!user?.mobile,
   });
 
+  // Update form fields when address data is fetched
   useEffect(() => {
     if (addressFields) {
       setStreetAddress(addressFields.streetAddress);
       setCity(addressFields.city);
       setState(addressFields.state);
       setZipCode(addressFields.zipCode);
-      
-      if (addressFields.streetAddress && addressFields.city && addressFields.state && addressFields.zipCode) {
-        const fullAddress = `${addressFields.streetAddress}, ${addressFields.city}, ${addressFields.state} ${addressFields.zipCode}`;
-        onAddressChange(fullAddress);
-      }
     }
-  }, [addressFields, onAddressChange]);
+  }, [addressFields]);
+
+  // Update parent component's address state only when all fields are present
+  useEffect(() => {
+    if (streetAddress && city && state && zipCode) {
+      const fullAddress = `${streetAddress}, ${city}, ${state} ${zipCode}`;
+      onAddressChange(fullAddress);
+    }
+  }, [streetAddress, city, state, zipCode, onAddressChange]);
 
   const handleSave = async () => {
     try {
