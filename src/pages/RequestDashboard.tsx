@@ -123,16 +123,22 @@ const RequestDashboard = () => {
 
   return (
     <div className="page-container">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-6 mb-8">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
             <Link to="/">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold">Babysitting Requests</h1>
+          <h1 className="text-3xl font-bold">My Requests</h1>
         </div>
-        <ToggleGroup type="single" value={sortBy} onValueChange={(value) => setSortBy(value as "created" | "date")}>
+        
+        <ToggleGroup 
+          type="single" 
+          value={sortBy} 
+          onValueChange={(value) => setSortBy(value as "created" | "date")}
+          className="justify-start"
+        >
           <ToggleGroupItem value="created">Sort by Created Date</ToggleGroupItem>
           <ToggleGroupItem value="date">Sort by Babysitting Date</ToggleGroupItem>
         </ToggleGroup>
@@ -148,14 +154,9 @@ const RequestDashboard = () => {
             <Card key={`${groupedRequest.date}-${groupedRequest.timeRange}`} className="card-hover">
               <CardHeader className="pb-2">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                  <div className="space-y-1">
-                    <CardTitle className="text-lg font-semibold">
-                      {format(requestDate, dateFormat)}
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      Request Created: {format(createdDate, "MMM d, yyyy")}
-                    </p>
-                  </div>
+                  <CardTitle className="text-lg font-semibold">
+                    {format(requestDate, dateFormat)}
+                  </CardTitle>
                   <span className="text-sm font-medium text-muted-foreground tracking-wide">
                     {formatTimeRange(groupedRequest.timeRange)}
                   </span>
@@ -174,6 +175,9 @@ const RequestDashboard = () => {
                       </Badge>
                     </div>
                   ))}
+                  <p className="text-sm text-muted-foreground pt-2">
+                    Request Created: {format(createdDate, "MMM d, yyyy")}
+                  </p>
                 </div>
               </CardContent>
             </Card>
