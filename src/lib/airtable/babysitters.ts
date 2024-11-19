@@ -44,17 +44,25 @@ export const deleteBabysitter = async (id: string) => {
 };
 
 export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babysitter[]> => {
+  console.log('Fetching babysitters for parent mobile:', parentOwnerMobile);
+  
   if (!parentOwnerMobile) {
     console.error('No parent mobile number provided to fetchBabysitters');
     return [];
   }
 
   try {
+    const filterFormula = `AND({Parent Owner Mobile}='${parentOwnerMobile}', {Deleted}!=1)`;
+    console.log('Using filter formula:', filterFormula);
+    
     const records = await base('Babysitters')
       .select({
-        filterByFormula: `AND({Parent Owner Mobile}='${parentOwnerMobile}', {Deleted}!=1)`,
+        filterByFormula: filterFormula,
       })
       .all();
+
+    console.log('Found babysitters records:', records.length);
+    console.log('Raw records:', records.map(record => record.fields));
 
     return records.map((record) => ({
       id: record.id,

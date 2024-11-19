@@ -37,18 +37,26 @@ export const createRequest = async (
 };
 
 export const fetchRequests = async (parentRequestorMobile: string) => {
+  console.log('Fetching requests for parent mobile:', parentRequestorMobile);
+  
   if (!parentRequestorMobile) {
     console.error('No parent mobile number provided to fetchRequests');
     return [];
   }
 
   try {
+    const filterFormula = `{Parent Requestor Mobile}='${parentRequestorMobile}'`;
+    console.log('Using filter formula:', filterFormula);
+    
     const records = await base('Requests')
       .select({
-        filterByFormula: `{Parent Requestor Mobile}='${parentRequestorMobile}'`,
+        filterByFormula: filterFormula,
         sort: [{ field: 'Created Time', direction: 'desc' }],
       })
       .all();
+
+    console.log('Found request records:', records.length);
+    console.log('Raw records:', records.map(record => record.fields));
 
     return records.map((record) => ({
       id: record.id,
