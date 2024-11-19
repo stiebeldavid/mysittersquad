@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { format, isThisYear } from "date-fns";
+import { format, isThisYear, parseISO } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { fetchRequests } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
+import { useState } from "react";
 
 interface Request {
   id: string;
@@ -15,11 +17,13 @@ interface Request {
   babysitterId: string;
   babysitterName: string;
   status: string;
+  createdAt: string;
 }
 
 interface GroupedRequest {
   date: string;
   timeRange: string;
+  createdAt: string;
   babysitters: {
     id: string;
     name: string;
@@ -55,6 +59,7 @@ const formatTimeRange = (timeRange: string) => {
 
 const RequestDashboard = () => {
   const user = useAuthStore((state) => state.user);
+  const [sortBy, setSortBy] = useState<"created" | "date">("created");
 
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ['requests', user?.mobile],
@@ -90,6 +95,7 @@ const RequestDashboard = () => {
       acc.push({
         date: request.date,
         timeRange: request.timeRange,
+        createdAt: request.createdAt,
         babysitters: [
           {
             id: request.babysitterId,
@@ -103,10 +109,13 @@ const RequestDashboard = () => {
     return acc;
   }, []);
 
-  // Sort requests in reverse chronological order
-  const sortedRequests = groupedRequests.sort((a, b) => 
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  // Sort requests based on selected sorting method
+  const sortedRequests = [...groupedRequests].sort((a, b) => {
+    if (sortBy === "created") {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
 
   if (isLoading) {
     return <div className="page-container">Loading...</div>;
@@ -123,20 +132,30 @@ const RequestDashboard = () => {
           </Button>
           <h1 className="text-3xl font-bold">Babysitting Requests</h1>
         </div>
+        <ToggleGroup type="single" value={sortBy} onValueChange={(value) => setSortBy(value as "created" | "date")}>
+          <ToggleGroupItem value="created">Sort by Created Date</ToggleGroupItem>
+          <ToggleGroupItem value="date">Sort by Babysitting Date</ToggleGroupItem>
+        </ToggleGroup>
       </div>
 
       <div className="space-y-4">
         {sortedRequests.map((groupedRequest) => {
           const requestDate = new Date(groupedRequest.date);
+          const createdDate = new Date(groupedRequest.createdAt);
           const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
           
           return (
             <Card key={`${groupedRequest.date}-${groupedRequest.timeRange}`} className="card-hover">
               <CardHeader className="pb-2">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                  <CardTitle className="text-lg font-semibold">
-                    {format(requestDate, dateFormat)}
-                  </CardTitle>
+                  <div className="space-y-1">
+                    <CardTitle className="text-lg font-semibold">
+                      {format(requestDate, dateFormat)}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Request Created: {format(createdDate, "MMM d, yyyy 'at' h:mm a")}
+                    </p>
+                  </div>
                   <span className="text-sm font-medium text-muted-foreground tracking-wide">
                     {formatTimeRange(groupedRequest.timeRange)}
                   </span>
