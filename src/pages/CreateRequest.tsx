@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { BabysitterSelector } from "@/components/create-request/BabysitterSelector";
@@ -22,6 +24,7 @@ const CreateRequest = () => {
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
   const user = useAuthStore((state) => state.user);
 
@@ -84,7 +87,7 @@ const CreateRequest = () => {
     <div className="page-container">
       <div className="flex items-center gap-4 mb-6">
         <Button variant="ghost" size="icon" asChild>
-          <Link to="/">
+          <Link to="/requests">
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>

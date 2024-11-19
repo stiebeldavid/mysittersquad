@@ -10,13 +10,15 @@ import { EmergencyContacts } from "@/components/my-family/EmergencyContacts";
 import { Kid } from "@/types/kid";
 import { EmergencyContact } from "@/types/emergency-contact";
 import { useFamilyStore } from "@/store/familyStore";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowLeft, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 
 const MyFamily = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentKid, setCurrentKid] = useState<Kid | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const {
     address,
@@ -102,11 +104,10 @@ const MyFamily = () => {
         <Button 
           variant="ghost" 
           size="icon"
-          asChild
+          onClick={() => navigate(-1)}
+          className="mr-4"
         >
-          <Link to="/">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
+          <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-3xl font-bold">My Family Info</h1>
       </div>
@@ -122,12 +123,15 @@ const MyFamily = () => {
         />
       </div>
 
-      <KidList
-        kids={kids}
-        onEdit={handleEditKid}
-        onDelete={handleDeleteKid}
-        onAddNew={handleAddNewKid}
-      />
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Children</h2>
+        <KidList
+          kids={kids}
+          onEdit={handleEditKid}
+          onDelete={handleDeleteKid}
+          onAddNew={handleAddNewKid}
+        />
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
