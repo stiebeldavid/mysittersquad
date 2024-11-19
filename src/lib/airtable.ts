@@ -52,6 +52,7 @@ export const createBabysitter = async (
           'Last Name': lastName || '',
           'Mobile': mobile,
           'Parent Owner Mobile': parentOwnerMobile,
+          'Deleted': false,
         },
       },
     ]);
@@ -64,7 +65,9 @@ export const createBabysitter = async (
 
 export const deleteBabysitter = async (id: string) => {
   try {
-    const record = await base('Babysitters').destroy(id);
+    const record = await base('Babysitters').update(id, {
+      'Deleted': true
+    });
     return record;
   } catch (error) {
     console.error('Error deleting babysitter:', error);
@@ -76,7 +79,7 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
   try {
     const records = await base('Babysitters')
       .select({
-        filterByFormula: `{Parent Owner Mobile}='${parentOwnerMobile}'`,
+        filterByFormula: `AND({Parent Owner Mobile}='${parentOwnerMobile}', NOT({Deleted}=1))`,
       })
       .all();
 
