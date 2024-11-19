@@ -153,7 +153,7 @@ const RequestDashboard = () => {
                       {format(requestDate, dateFormat)}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      Request Created: {format(createdDate, "MMM d, yyyy 'at' h:mm a")}
+                      Request Created: {format(createdDate, "MMM d, yyyy")}
                     </p>
                   </div>
                   <span className="text-sm font-medium text-muted-foreground tracking-wide">
