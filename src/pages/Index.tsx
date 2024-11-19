@@ -27,7 +27,7 @@ const Index = () => {
   const allActions = [
     {
       icon: Users,
-      title: babysitters.length > 0 ? "My Babysitters" : "Add Babysitters",
+      title: "Add Babysitters",
       description: "Import or add your trusted babysitters",
       path: "/babysitters",
       color: "bg-purple-500",

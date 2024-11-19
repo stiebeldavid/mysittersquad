@@ -56,19 +56,7 @@ export const createBabysitter = async (
         },
       },
     ]);
-
-    const record = records[0];
-    return {
-      id: record.id,
-      firstName: record.get('First Name') as string,
-      lastName: record.get('Last Name') as string,
-      mobile: record.get('Mobile') as string,
-      home: record.get('Home') as string || '',
-      age: record.get('Age') as number | undefined,
-      rate: record.get('Rate') as number | undefined,
-      specialties: record.get('Specialties') as string || '',
-      notes: record.get('Notes') as string || '',
-    };
+    return records[0];
   } catch (error) {
     console.error('Error creating babysitter:', error);
     throw error;
@@ -100,11 +88,11 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
       firstName: record.get('First Name') as string,
       lastName: record.get('Last Name') as string,
       mobile: record.get('Mobile') as string,
-      home: record.get('Home') as string || '',
-      age: record.get('Age') as number | undefined,
-      rate: record.get('Rate') as number | undefined,
-      specialties: record.get('Specialties') as string || '',
-      notes: record.get('Notes') as string || '',
+      home: '',
+      age: undefined,
+      rate: undefined,
+      specialties: '',
+      notes: '',
     }));
   } catch (error) {
     console.error('Error fetching babysitters:', error);
