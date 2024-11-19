@@ -57,12 +57,13 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
       <CardContent>
         <div className="flex flex-col items-end gap-2 mb-4">
           <Button
-            variant="ghost"
-            size="icon"
+            variant="outline"
+            size="sm"
             onClick={() => setIsEditing(!isEditing)}
             disabled={true}
           >
-            <Edit className="h-4 w-4" />
+            <Edit className="h-4 w-4 mr-2" />
+            Edit Address
           </Button>
           <Badge variant="secondary" className="bg-primary/10 text-primary">
             <Clock className="h-3 w-3 mr-1" />
