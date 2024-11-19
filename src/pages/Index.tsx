@@ -10,9 +10,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useFamilyStore } from "@/store/familyStore";
+import { useQuery } from "@tanstack/react-query";
+import { fetchBabysitters } from "@/lib/airtable";
+import { useAuthStore } from "@/store/authStore";
 
 const Index = () => {
-  const { kids, babysitters } = useFamilyStore();
+  const { kids } = useFamilyStore();
+  const user = useAuthStore((state) => state.user);
+  
+  const { data: babysitters = [] } = useQuery({
+    queryKey: ['babysitters', user?.mobile],
+    queryFn: () => fetchBabysitters(user?.mobile || ''),
+    enabled: !!user?.mobile,
+  });
   
   const setupActions = [
     {
