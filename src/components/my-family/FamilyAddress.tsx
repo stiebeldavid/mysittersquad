@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Clock } from "lucide-react";
 import { Edit } from "lucide-react";
 import { useState } from "react";
 import { updateUserAddress } from "@/lib/airtable";
@@ -51,11 +53,18 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
     <Card>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
-          <span>Home Address</span>
+          <div className="flex items-center gap-2">
+            <span>Home Address</span>
+            <Badge variant="secondary" className="gap-1">
+              <Clock className="h-3 w-3" />
+              Coming Soon
+            </Badge>
+          </div>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsEditing(!isEditing)}
+            disabled={true}
           >
             <Edit className="h-4 w-4" />
           </Button>
