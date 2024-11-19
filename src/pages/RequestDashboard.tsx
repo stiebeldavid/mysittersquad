@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, isThisYear } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -126,35 +126,40 @@ const RequestDashboard = () => {
       </div>
 
       <div className="space-y-4">
-        {sortedRequests.map((groupedRequest) => (
-          <Card key={`${groupedRequest.date}-${groupedRequest.timeRange}`} className="card-hover">
-            <CardHeader className="pb-2">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                <CardTitle className="text-lg font-semibold">
-                  {format(new Date(groupedRequest.date), "EEEE, MMMM d")}
-                </CardTitle>
-                <span className="text-sm font-medium text-muted-foreground tracking-wide">
-                  {formatTimeRange(groupedRequest.timeRange)}
-                </span>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {groupedRequest.babysitters.map((babysitter) => (
-                  <div
-                    key={babysitter.id}
-                    className="flex justify-between items-center py-2 border-b last:border-0"
-                  >
-                    <span>{babysitter.name}</span>
-                    <Badge className={getStatusColor(babysitter.status)}>
-                      {babysitter.status}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {sortedRequests.map((groupedRequest) => {
+          const requestDate = new Date(groupedRequest.date);
+          const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
+          
+          return (
+            <Card key={`${groupedRequest.date}-${groupedRequest.timeRange}`} className="card-hover">
+              <CardHeader className="pb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                  <CardTitle className="text-lg font-semibold">
+                    {format(requestDate, dateFormat)}
+                  </CardTitle>
+                  <span className="text-sm font-medium text-muted-foreground tracking-wide">
+                    {formatTimeRange(groupedRequest.timeRange)}
+                  </span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {groupedRequest.babysitters.map((babysitter) => (
+                    <div
+                      key={babysitter.id}
+                      className="flex justify-between items-center py-2 border-b last:border-0"
+                    >
+                      <span>{babysitter.name}</span>
+                      <Badge className={getStatusColor(babysitter.status)}>
+                        {babysitter.status}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {requests.length === 0 && (
