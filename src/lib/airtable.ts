@@ -92,7 +92,8 @@ export const createRequest = async (
   startTime: string,
   endTime: string,
   babysitterId: string,
-  parentRequestorMobile: string
+  parentRequestorMobile: string,
+  requestGroupId: string
 ) => {
   try {
     const formattedDate = date.toISOString().split('T')[0];
@@ -105,7 +106,8 @@ export const createRequest = async (
           'Time Range': timeRange,
           'Babysitter': [babysitterId],
           'Parent Requestor Mobile': parentRequestorMobile,
-          'Status': 'Created'
+          'Status': 'Created',
+          'Request Group ID': requestGroupId
         },
       },
     ]);

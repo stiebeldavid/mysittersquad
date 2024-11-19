@@ -24,6 +24,10 @@ const CreateRequest = () => {
   const { toast } = useToast();
   const user = useAuthStore((state) => state.user);
 
+  const generateRequestGroupId = () => {
+    return `REQ-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -37,6 +41,7 @@ const CreateRequest = () => {
     }
 
     try {
+      const requestGroupId = generateRequestGroupId();
       // Create a request for each selected babysitter
       const requests = await Promise.all(
         selectedBabysitters.map(babysitterId =>
@@ -45,7 +50,8 @@ const CreateRequest = () => {
             startTime,
             endTime,
             babysitterId,
-            user.mobile
+            user.mobile,
+            requestGroupId
           )
         )
       );
