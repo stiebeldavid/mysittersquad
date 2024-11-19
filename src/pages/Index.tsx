@@ -54,7 +54,7 @@ const Index = () => {
   return (
     <div className="page-container">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome to MySitterSquad</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome to SitterSync</h1>
         <p className="text-gray-600">
           Your personal babysitting coordinator
         </p>

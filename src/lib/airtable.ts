@@ -131,7 +131,6 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       timeRange: record.get('Time Range') as string,
       babysitterId: (record.get('Babysitter') as string[])[0],
       status: record.get('Status') as string,
-      babysitterName: `${record.get('First Name (from Babysitter)')} ${record.get('Last Name (from Babysitter)')}`,
     }));
   } catch (error) {
     console.error('Error fetching requests:', error);
