@@ -88,11 +88,11 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
       firstName: record.get('First Name') as string,
       lastName: record.get('Last Name') as string,
       mobile: record.get('Mobile') as string,
-      home: '',
-      age: undefined,
-      rate: undefined,
-      specialties: '',
-      notes: '',
+      home: record.get('Home') as string || '',
+      age: record.get('Age') as number | undefined,
+      rate: record.get('Rate') as number | undefined,
+      specialties: record.get('Specialties') as string || '',
+      notes: record.get('Notes') as string || '',
     }));
   } catch (error) {
     console.error('Error fetching babysitters:', error);
