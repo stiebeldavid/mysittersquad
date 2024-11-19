@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
-import { useState } from "react";
-import { updateUserAddress } from "@/lib/airtable";
+import { useState, useEffect } from "react";
+import { updateUserAddress, fetchUserAddress } from "@/lib/airtable";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/authStore";
+import { useQuery } from "@tanstack/react-query";
 
 interface FamilyAddressProps {
   address: string;
@@ -21,6 +22,18 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
   const [zipCode, setZipCode] = useState("");
   const { toast } = useToast();
   const user = useAuthStore((state) => state.user);
+
+  const { data: fetchedAddress } = useQuery({
+    queryKey: ['userAddress', user?.mobile],
+    queryFn: () => user?.mobile ? fetchUserAddress(user.mobile) : Promise.resolve(''),
+    enabled: !!user?.mobile,
+  });
+
+  useEffect(() => {
+    if (fetchedAddress) {
+      onAddressChange(fetchedAddress);
+    }
+  }, [fetchedAddress, onAddressChange]);
 
   const handleSave = async () => {
     try {
@@ -107,7 +120,7 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
             <Button onClick={handleSave}>Save Address</Button>
           </div>
         ) : (
-          <p className="text-sm">{address}</p>
+          <p className="text-sm">{address || 'No address set'}</p>
         )}
       </CardContent>
     </Card>

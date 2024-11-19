@@ -100,6 +100,33 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
   }
 };
 
+export const fetchUserAddress = async (mobile: string) => {
+  try {
+    const records = await base('Users')
+      .select({
+        filterByFormula: `{Mobile}='${mobile}'`,
+        maxRecords: 1,
+      })
+      .firstPage();
+
+    if (records.length > 0) {
+      const record = records[0];
+      const streetAddress = record.get('Street Address') as string || '';
+      const city = record.get('City') as string || '';
+      const state = record.get('State') as string || '';
+      const zipCode = record.get('Zip Code') as string || '';
+      
+      if (streetAddress && city && state && zipCode) {
+        return `${streetAddress}, ${city}, ${state} ${zipCode}`;
+      }
+    }
+    return '';
+  } catch (error) {
+    console.error('Error fetching user address:', error);
+    throw error;
+  }
+};
+
 export const createRequest = async (
   date: Date,
   startTime: string,
