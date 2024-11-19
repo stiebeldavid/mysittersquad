@@ -8,7 +8,7 @@ interface AddBabysitterCardProps {
 export const AddBabysitterCard = ({ onClick }: AddBabysitterCardProps) => {
   return (
     <Card 
-      className="card-hover cursor-pointer flex items-center justify-center min-h-[200px]"
+      className="card-hover cursor-pointer flex items-center justify-center"
       onClick={onClick}
     >
       <CardContent className="flex flex-col items-center justify-center p-6 text-center">
