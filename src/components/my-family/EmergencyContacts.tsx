@@ -45,6 +45,7 @@ export const EmergencyContacts = ({ contacts, onContactsChange }: EmergencyConta
             variant="outline"
             size="sm"
             onClick={() => setIsAdding(true)}
+            disabled={true}
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Contact

@@ -16,7 +16,7 @@ export const KidList = ({ kids, onEdit, onDelete, onAddNew }: KidListProps) => {
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           <span>Children Profiles</span>
-          <Button onClick={onAddNew} variant="outline" size="sm">
+          <Button onClick={onAddNew} variant="outline" size="sm" disabled={true}>
             <Plus className="h-4 w-4 mr-2" />
             Add Child
           </Button>
