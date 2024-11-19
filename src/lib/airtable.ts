@@ -129,7 +129,14 @@ export const createRequest = async (
 };
 
 export const fetchRequests = async (parentRequestorMobile: string) => {
+  if (!parentRequestorMobile) {
+    console.error('No mobile number provided to fetchRequests');
+    return [];
+  }
+
   try {
+    console.log('Fetching requests for mobile:', parentRequestorMobile);
+    
     const records = await base('Requests')
       .select({
         filterByFormula: `{Parent Requestor Mobile}='${parentRequestorMobile}'`,
@@ -137,15 +144,22 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       })
       .all();
 
-    return records.map((record) => ({
-      id: record.id,
-      date: record.get('Request Date') as string,
-      timeRange: record.get('Time Range') as string,
-      babysitterId: (record.get('Babysitter') as string[])[0],
-      babysitterName: `${record.get('First Name (from Babysitter)') || ''} ${record.get('Last Name (from Babysitter)') || ''}`.trim(),
-      status: record.get('Status') as string,
-      createdAt: record.get('Created Time') as string,
-    }));
+    console.log('Found records:', records.length);
+    
+    return records.map((record) => {
+      const babysitterIds = record.get('Babysitter');
+      const babysitterId = Array.isArray(babysitterIds) ? babysitterIds[0] : undefined;
+      
+      return {
+        id: record.id,
+        date: record.get('Request Date') as string,
+        timeRange: record.get('Time Range') as string,
+        babysitterId: babysitterId,
+        babysitterName: `${record.get('First Name (from Babysitter)') || ''} ${record.get('Last Name (from Babysitter)') || ''}`.trim(),
+        status: record.get('Status') as string,
+        createdAt: record.get('Created Time') as string,
+      };
+    });
   } catch (error) {
     console.error('Error fetching requests:', error);
     throw error;
