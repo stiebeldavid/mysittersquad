@@ -130,6 +130,7 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       date: record.get('Request Date') as string,
       timeRange: record.get('Time Range') as string,
       babysitterId: (record.get('Babysitter') as string[])[0],
+      babysitterName: `${record.get('First Name (from Babysitter)') || ''} ${record.get('Last Name (from Babysitter)') || ''}`.trim(),
       status: record.get('Status') as string,
     }));
   } catch (error) {
