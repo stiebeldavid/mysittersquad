@@ -18,6 +18,7 @@ interface Request {
   babysitterName: string;
   status: string;
   createdAt: string;
+  babysitterDeleted?: boolean;
 }
 
 interface GroupedRequest {
@@ -28,6 +29,7 @@ interface GroupedRequest {
     id: string;
     name: string;
     status: string;
+    deleted?: boolean;
   }[];
 }
 
@@ -90,6 +92,7 @@ const RequestDashboard = () => {
         id: request.babysitterId,
         name: request.babysitterName,
         status: request.status,
+        deleted: request.babysitterDeleted,
       });
     } else {
       acc.push({
@@ -101,6 +104,7 @@ const RequestDashboard = () => {
             id: request.babysitterId,
             name: request.babysitterName,
             status: request.status,
+            deleted: request.babysitterDeleted,
           },
         ],
       });
@@ -168,7 +172,12 @@ const RequestDashboard = () => {
                       key={babysitter.id}
                       className="flex justify-between items-center py-2 border-b last:border-0"
                     >
-                      <span>{babysitter.name}</span>
+                      <span>
+                        {babysitter.name}
+                        {babysitter.deleted && (
+                          <span className="text-muted-foreground ml-1">(deleted)</span>
+                        )}
+                      </span>
                       <Badge className={getStatusColor(babysitter.status)}>
                         {babysitter.status}
                       </Badge>
