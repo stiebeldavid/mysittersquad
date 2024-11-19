@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
 interface AddressInputProps {
   address: string;
@@ -7,19 +8,70 @@ interface AddressInputProps {
 }
 
 export const AddressInput = ({ address, onAddressChange }: AddressInputProps) => {
-  // In a real app, this would be fetched from the user's profile
-  const homeAddress = "123 Main St, Anytown, CA 12345";
+  const [streetAddress, setStreetAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("California");
+  const [zipCode, setZipCode] = useState("");
+
+  const handleAddressChange = () => {
+    const fullAddress = `${streetAddress}, ${city}, ${state} ${zipCode}`;
+    onAddressChange(fullAddress);
+  };
 
   return (
-    <div className="space-y-2">
-      <Label htmlFor="address">Address</Label>
-      <Input
-        id="address"
-        value={address}
-        onChange={(e) => onAddressChange(e.target.value)}
-        placeholder="Enter address"
-        defaultValue={homeAddress}
-      />
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="streetAddress">Street Address</Label>
+        <Input
+          id="streetAddress"
+          value={streetAddress}
+          onChange={(e) => {
+            setStreetAddress(e.target.value);
+            handleAddressChange();
+          }}
+          placeholder="Enter street address"
+        />
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="city">City</Label>
+        <Input
+          id="city"
+          value={city}
+          onChange={(e) => {
+            setCity(e.target.value);
+            handleAddressChange();
+          }}
+          placeholder="Enter city"
+        />
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="state">State</Label>
+        <Input
+          id="state"
+          value={state}
+          onChange={(e) => {
+            setState(e.target.value);
+            handleAddressChange();
+          }}
+          placeholder="Enter state"
+          readOnly
+        />
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="zipCode">Zip Code</Label>
+        <Input
+          id="zipCode"
+          value={zipCode}
+          onChange={(e) => {
+            setZipCode(e.target.value);
+            handleAddressChange();
+          }}
+          placeholder="Enter zip code"
+        />
+      </div>
     </div>
   );
 };

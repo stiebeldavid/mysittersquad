@@ -151,3 +151,34 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
     throw error;
   }
 };
+
+export const updateUserAddress = async (
+  mobile: string,
+  streetAddress: string,
+  city: string,
+  state: string,
+  zipCode: string
+) => {
+  try {
+    const records = await base('Users')
+      .select({
+        filterByFormula: `{Mobile}='${mobile}'`,
+        maxRecords: 1,
+      })
+      .firstPage();
+
+    if (records.length > 0) {
+      const record = await base('Users').update(records[0].id, {
+        'Street Address': streetAddress,
+        'City': city,
+        'State': state,
+        'Zip Code': zipCode,
+      });
+      return record;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error updating user address:', error);
+    throw error;
+  }
+};
