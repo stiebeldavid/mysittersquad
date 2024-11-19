@@ -10,9 +10,8 @@ import { EmergencyContacts } from "@/components/my-family/EmergencyContacts";
 import { Kid } from "@/types/kid";
 import { EmergencyContact } from "@/types/emergency-contact";
 import { useFamilyStore } from "@/store/familyStore";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 
 const MyFamily = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -109,7 +108,7 @@ const MyFamily = () => {
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-3xl font-bold">My Family Info</h1>
+        <h1 className="text-3xl font-bold">My Family</h1>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -123,15 +122,12 @@ const MyFamily = () => {
         />
       </div>
 
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Children</h2>
-        <KidList
-          kids={kids}
-          onEdit={handleEditKid}
-          onDelete={handleDeleteKid}
-          onAddNew={handleAddNewKid}
-        />
-      </div>
+      <KidList
+        kids={kids}
+        onEdit={handleEditKid}
+        onDelete={handleDeleteKid}
+        onAddNew={handleAddNewKid}
+      />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
