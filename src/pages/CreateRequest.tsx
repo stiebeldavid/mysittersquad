@@ -37,23 +37,28 @@ const CreateRequest = () => {
     }
 
     try {
-      await createRequest(
-        date,
-        startTime,
-        endTime,
-        selectedBabysitters[0],
-        user.mobile
+      // Create a request for each selected babysitter
+      const requests = await Promise.all(
+        selectedBabysitters.map(babysitterId =>
+          createRequest(
+            date,
+            startTime,
+            endTime,
+            babysitterId,
+            user.mobile
+          )
+        )
       );
 
       toast({
-        title: "Request Created",
-        description: "Your babysitting request has been created successfully.",
+        title: "Requests Created",
+        description: `Successfully created ${requests.length} babysitting request(s).`,
       });
       navigate("/requests");
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to create request. Please try again.",
+        description: "Failed to create requests. Please try again.",
         variant: "destructive",
       });
     }
@@ -131,7 +136,7 @@ const CreateRequest = () => {
 
             <div className="pt-4">
               <Button type="submit" className="w-full">
-                Create Request
+                Create Request{selectedBabysitters.length > 1 ? 's' : ''}
               </Button>
             </div>
           </form>
