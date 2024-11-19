@@ -86,3 +86,54 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
     throw error;
   }
 };
+
+export const createRequest = async (
+  date: Date,
+  startTime: string,
+  endTime: string,
+  babysitterId: string,
+  parentRequestorMobile: string
+) => {
+  try {
+    const formattedDate = date.toISOString().split('T')[0];
+    const timeRange = `${startTime} to ${endTime}`;
+    
+    const records = await base('Requests').create([
+      {
+        fields: {
+          'Request Date': formattedDate,
+          'Time Range': timeRange,
+          'Babysitter': [babysitterId],
+          'Parent Requestor Mobile': parentRequestorMobile,
+          'Status': 'Created'
+        },
+      },
+    ]);
+    return records[0];
+  } catch (error) {
+    console.error('Error creating request:', error);
+    throw error;
+  }
+};
+
+export const fetchRequests = async (parentRequestorMobile: string) => {
+  try {
+    const records = await base('Requests')
+      .select({
+        filterByFormula: `{Parent Requestor Mobile}='${parentRequestorMobile}'`,
+        sort: [{ field: 'Request Date', direction: 'desc' }],
+      })
+      .all();
+
+    return records.map((record) => ({
+      id: record.id,
+      date: record.get('Request Date') as string,
+      timeRange: record.get('Time Range') as string,
+      babysitterId: (record.get('Babysitter') as string[])[0],
+      status: record.get('Status') as string,
+    }));
+  } catch (error) {
+    console.error('Error fetching requests:', error);
+    throw error;
+  }
+};

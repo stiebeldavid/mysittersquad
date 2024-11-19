@@ -3,12 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +11,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { KidSelector } from "@/components/create-request/KidSelector";
 import { BabysitterSelector } from "@/components/create-request/BabysitterSelector";
 import { AddressInput } from "@/components/create-request/AddressInput";
+import { createRequest } from "@/lib/airtable";
+import { useAuthStore } from "@/store/authStore";
 
 const CreateRequest = () => {
   const [date, setDate] = useState<Date>();
@@ -27,11 +24,12 @@ const CreateRequest = () => {
   const [notes, setNotes] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const user = useAuthStore((state) => state.user);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!date || !startTime || !endTime || selectedKids.length === 0 || selectedBabysitters.length === 0) {
+    if (!date || !startTime || !endTime || selectedKids.length === 0 || selectedBabysitters.length === 0 || !user) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields and select at least one kid and babysitter.",
@@ -40,11 +38,27 @@ const CreateRequest = () => {
       return;
     }
 
-    toast({
-      title: "Request Created",
-      description: "Your babysitting request has been created successfully.",
-    });
-    navigate("/requests");
+    try {
+      await createRequest(
+        date,
+        startTime,
+        endTime,
+        selectedBabysitters[0],
+        user.mobile
+      );
+
+      toast({
+        title: "Request Created",
+        description: "Your babysitting request has been created successfully.",
+      });
+      navigate("/requests");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create request. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
