@@ -61,7 +61,11 @@ const BabysitterList = () => {
   };
 
   const handleDelete = (id: string) => {
-    setBabysitters(babysitters.filter(b => b.id !== id));
+    // We'll use the query client to update the data instead of direct state manipulation
+    queryClient.setQueryData(['babysitters', user?.mobile], (oldData: Babysitter[] | undefined) => 
+      (oldData || []).filter(b => b.id !== id)
+    );
+    
     toast({
       title: "Babysitter Removed",
       description: "The babysitter has been removed successfully.",
@@ -75,7 +79,10 @@ const BabysitterList = () => {
   };
 
   const handleContactsSelected = (newBabysitters: Babysitter[]) => {
-    setBabysitters([...babysitters, ...newBabysitters]);
+    // We'll use the query client to update the data instead of direct state manipulation
+    queryClient.setQueryData(['babysitters', user?.mobile], (oldData: Babysitter[] | undefined) => 
+      [...(oldData || []), ...newBabysitters]
+    );
   };
 
   if (isLoading) {
@@ -94,11 +101,11 @@ const BabysitterList = () => {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-3xl font-bold">Babysitters</h1>
-        <div className="flex gap-2 ml-auto">
+        <div className="flex gap-2 ml-auto max-w-[200px]">
           <ContactPickerButton onContactsSelected={handleContactsSelected} />
-          <Button onClick={() => setIsDialogOpen(true)}>
+          <Button onClick={() => setIsDialogOpen(true)} className="whitespace-nowrap">
             <Plus className="w-4 h-4 mr-2" />
-            Add Babysitter
+            Add
           </Button>
         </div>
       </div>
