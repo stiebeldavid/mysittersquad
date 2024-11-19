@@ -117,29 +117,14 @@ const MyFamily = () => {
           address={address} 
           onAddressChange={handleAddressChange} 
         />
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-xl font-semibold">Emergency Contacts</h2>
-            <Badge variant="secondary" className="bg-primary/10 text-primary">
-              <Clock className="h-3 w-3 mr-1" />
-              Coming Soon
-            </Badge>
-          </div>
-          <EmergencyContacts 
-            contacts={emergencyContacts}
-            onContactsChange={handleContactsChange}
-          />
-        </div>
+        <EmergencyContacts 
+          contacts={emergencyContacts}
+          onContactsChange={handleContactsChange}
+        />
       </div>
 
       <div>
-        <div className="flex items-center gap-2 mb-4">
-          <h2 className="text-xl font-semibold">Children</h2>
-          <Badge variant="secondary" className="bg-primary/10 text-primary">
-            <Clock className="h-3 w-3 mr-1" />
-            Coming Soon
-          </Badge>
-        </div>
+        <h2 className="text-xl font-semibold mb-4">Children</h2>
         <KidList
           kids={kids}
           onEdit={handleEditKid}

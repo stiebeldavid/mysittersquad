@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Clock } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface EmergencyContact {
   id: string;
@@ -42,7 +43,7 @@ export const EmergencyContacts = ({ contacts, onContactsChange }: EmergencyConta
         <CardTitle>Emergency Contacts</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-end mb-4">
+        <div className="flex flex-col items-end gap-2 mb-4">
           <Button
             variant="outline"
             size="sm"
@@ -52,6 +53,10 @@ export const EmergencyContacts = ({ contacts, onContactsChange }: EmergencyConta
             <Plus className="h-4 w-4 mr-2" />
             Add Contact
           </Button>
+          <Badge variant="secondary" className="bg-primary/10 text-primary">
+            <Clock className="h-3 w-3 mr-1" />
+            Coming Soon
+          </Badge>
         </div>
         {isAdding && (
           <div className="space-y-4 mb-4">
