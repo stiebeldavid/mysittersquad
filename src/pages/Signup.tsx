@@ -49,7 +49,7 @@ const Signup = () => {
         });
         navigate('/');
         toast({
-          title: "Welcome to SitterSync!",
+          title: "Welcome to MySitterSquad!",
           description: "Your account has been created successfully.",
         });
       }

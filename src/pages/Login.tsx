@@ -53,7 +53,7 @@ const Login = () => {
   return (
     <div className="page-container">
       <div className="max-w-md mx-auto">
-        <h1 className="text-2xl font-bold text-center mb-6">Login to SitterSync</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Login to MySitterSquad</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Input
