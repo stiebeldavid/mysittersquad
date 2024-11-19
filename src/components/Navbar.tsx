@@ -53,13 +53,17 @@ const Navbar = () => {
                   <Menu className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent
+                align="end"
+                className="w-56 bg-white shadow-lg rounded-md border mt-2 z-[100]"
+                sideOffset={5}
+              >
                 {navItems.map(({ path, icon: Icon, label }) => (
                   <DropdownMenuItem key={path} asChild>
                     <Link
                       to={path}
-                      className={`flex items-center space-x-2 w-full ${
-                        isActive(path) ? "text-primary" : ""
+                      className={`flex items-center space-x-2 w-full px-3 py-2 ${
+                        isActive(path) ? "text-primary bg-primary/10" : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
                       <Icon className="w-4 h-4" />
