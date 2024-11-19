@@ -3,11 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
-import { useState, useEffect } from "react";
-import { updateUserAddress, fetchUserAddressFields } from "@/lib/airtable";
+import { useState } from "react";
+import { updateUserAddress } from "@/lib/airtable";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/authStore";
-import { useQuery } from "@tanstack/react-query";
 
 interface FamilyAddressProps {
   address: string;
@@ -22,35 +21,6 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
   const [zipCode, setZipCode] = useState("");
   const { toast } = useToast();
   const user = useAuthStore((state) => state.user);
-
-  const { data: addressFields } = useQuery({
-    queryKey: ['userAddressFields', user?.mobile],
-    queryFn: () => user?.mobile ? fetchUserAddressFields(user.mobile) : Promise.resolve({
-      streetAddress: '',
-      city: '',
-      state: '',
-      zipCode: '',
-    }),
-    enabled: !!user?.mobile,
-  });
-
-  // Update form fields when address data is fetched
-  useEffect(() => {
-    if (addressFields) {
-      setStreetAddress(addressFields.streetAddress);
-      setCity(addressFields.city);
-      setState(addressFields.state);
-      setZipCode(addressFields.zipCode);
-    }
-  }, [addressFields]);
-
-  // Update parent component's address state only when all fields are present
-  useEffect(() => {
-    if (streetAddress && city && state && zipCode) {
-      const fullAddress = `${streetAddress}, ${city}, ${state} ${zipCode}`;
-      onAddressChange(fullAddress);
-    }
-  }, [streetAddress, city, state, zipCode, onAddressChange]);
 
   const handleSave = async () => {
     try {
@@ -137,7 +107,7 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
             <Button onClick={handleSave}>Save Address</Button>
           </div>
         ) : (
-          <p className="text-sm">{address || 'No address set'}</p>
+          <p className="text-sm">{address}</p>
         )}
       </CardContent>
     </Card>

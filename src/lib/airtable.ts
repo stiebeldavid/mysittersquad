@@ -5,43 +5,6 @@ const base = new Airtable({ apiKey: 'patXl1omFaUIAE61b.65020a5523d7b3110d0914ffc
   'appbQPN6CeEmayzz1'
 );
 
-interface UserAddress {
-  streetAddress: string;
-  city: string;
-  state: string;
-  zipCode: string;
-}
-
-export const fetchUserAddressFields = async (mobile: string): Promise<UserAddress> => {
-  try {
-    const records = await base('Users')
-      .select({
-        filterByFormula: `{Mobile}='${mobile}'`,
-        maxRecords: 1,
-      })
-      .firstPage();
-
-    if (records.length > 0) {
-      const record = records[0];
-      return {
-        streetAddress: (record.get('Street Address') as string) || '',
-        city: (record.get('City') as string) || '',
-        state: (record.get('State') as string) || '',
-        zipCode: (record.get('Zip Code') as string) || '',
-      };
-    }
-    return {
-      streetAddress: '',
-      city: '',
-      state: '',
-      zipCode: '',
-    };
-  } catch (error) {
-    console.error('Error fetching user address fields:', error);
-    throw error;
-  }
-};
-
 export const findUserByMobile = async (mobile: string) => {
   try {
     const records = await base('Users')
@@ -133,33 +96,6 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
     }));
   } catch (error) {
     console.error('Error fetching babysitters:', error);
-    throw error;
-  }
-};
-
-export const fetchUserAddress = async (mobile: string) => {
-  try {
-    const records = await base('Users')
-      .select({
-        filterByFormula: `{Mobile}='${mobile}'`,
-        maxRecords: 1,
-      })
-      .firstPage();
-
-    if (records.length > 0) {
-      const record = records[0];
-      const streetAddress = record.get('Street Address') as string || '';
-      const city = record.get('City') as string || '';
-      const state = record.get('State') as string || '';
-      const zipCode = record.get('Zip Code') as string || '';
-      
-      if (streetAddress && city && state && zipCode) {
-        return `${streetAddress}, ${city}, ${state} ${zipCode}`;
-      }
-    }
-    return '';
-  } catch (error) {
-    console.error('Error fetching user address:', error);
     throw error;
   }
 };

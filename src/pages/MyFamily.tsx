@@ -29,6 +29,10 @@ const MyFamily = () => {
 
   const handleAddressChange = (newAddress: string) => {
     setAddress(newAddress);
+    toast({
+      title: "Address Updated",
+      description: "Your home address has been updated successfully.",
+    });
   };
 
   const handleContactsChange = (newContacts: EmergencyContact[]) => {
