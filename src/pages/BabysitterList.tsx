@@ -9,7 +9,7 @@ import { AddBabysitterCard } from "@/components/babysitter/AddBabysitterCard";
 import { ContactPickerButton } from "@/components/babysitter/ContactPickerButton";
 import { Babysitter } from "@/types/babysitter";
 import { useAuthStore } from "@/store/authStore";
-import { createBabysitter, fetchBabysitters } from "@/lib/airtable";
+import { createBabysitter, fetchBabysitters, deleteBabysitter } from "@/lib/airtable";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -61,17 +61,21 @@ const BabysitterList = () => {
     }
   };
 
-  const handleDelete = (id: string) => {
-    // We'll use the query client to update the data instead of direct state manipulation
-    queryClient.setQueryData(['babysitters', user?.mobile], (oldData: Babysitter[] | undefined) => 
-      (oldData || []).filter(b => b.id !== id)
-    );
-    
-    toast({
-      title: "Babysitter Removed",
-      description: "The babysitter has been removed successfully.",
-      variant: "destructive"
-    });
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteBabysitter(id);
+      queryClient.invalidateQueries({ queryKey: ['babysitters'] });
+      toast({
+        title: "Babysitter Deleted",
+        description: "The babysitter has been removed successfully."
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete babysitter. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleEdit = (babysitter: Babysitter) => {
@@ -80,7 +84,6 @@ const BabysitterList = () => {
   };
 
   const handleContactsSelected = (newBabysitters: Babysitter[]) => {
-    // We'll use the query client to update the data instead of direct state manipulation
     queryClient.setQueryData(['babysitters', user?.mobile], (oldData: Babysitter[] | undefined) => 
       [...(oldData || []), ...newBabysitters]
     );
@@ -116,8 +119,8 @@ const BabysitterList = () => {
           <BabysitterCard
             key={babysitter.id}
             babysitter={babysitter}
-            onEdit={() => handleEdit(babysitter)}
-            onDelete={() => handleDelete(babysitter.id)}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         ))}
         <AddBabysitterCard onClick={() => setIsDialogOpen(true)} />

@@ -62,6 +62,16 @@ export const createBabysitter = async (
   }
 };
 
+export const deleteBabysitter = async (id: string) => {
+  try {
+    const record = await base('Babysitters').destroy(id);
+    return record;
+  } catch (error) {
+    console.error('Error deleting babysitter:', error);
+    throw error;
+  }
+};
+
 export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babysitter[]> => {
   try {
     const records = await base('Babysitters')
