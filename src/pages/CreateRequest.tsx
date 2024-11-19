@@ -12,6 +12,19 @@ import { BabysitterSelector } from "@/components/create-request/BabysitterSelect
 import { AddressInput } from "@/components/create-request/AddressInput";
 import { createRequest } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { fetchBabysitters } from "@/lib/airtable";
 
 const CreateRequest = () => {
   const [date, setDate] = useState<Date>();
@@ -20,9 +33,16 @@ const CreateRequest = () => {
   const [selectedBabysitters, setSelectedBabysitters] = useState<string[]>([]);
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const user = useAuthStore((state) => state.user);
+
+  const { data: babysitters = [] } = useQuery({
+    queryKey: ['babysitters', user?.mobile],
+    queryFn: () => fetchBabysitters(user?.mobile || ''),
+    enabled: !!user?.mobile,
+  });
 
   const generateRequestGroupId = () => {
     return `REQ-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -40,17 +60,21 @@ const CreateRequest = () => {
       return;
     }
 
+    setShowPreview(true);
+  };
+
+  const handleSendRequests = async () => {
     try {
       const requestGroupId = generateRequestGroupId();
       // Create a request for each selected babysitter
       const requests = await Promise.all(
         selectedBabysitters.map(babysitterId =>
           createRequest(
-            date,
+            date!,
             startTime,
             endTime,
             babysitterId,
-            user.mobile,
+            user!.mobile,
             requestGroupId
           )
         )
@@ -68,6 +92,22 @@ const CreateRequest = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const getPreviewMessages = () => {
+    if (!date) return [];
+    
+    const selectedBabysittersData = babysitters.filter(
+      sitter => selectedBabysitters.includes(sitter.id)
+    );
+
+    const dayStr = format(date, "EEEE, MMMM d");
+    const timeRange = `${startTime} to ${endTime}`;
+
+    return selectedBabysittersData.map(sitter => ({
+      babysitter: sitter,
+      message: `Hi ${sitter.firstName},\n${user?.firstName} ${user?.lastName} would like to know if you can babysit ${dayStr}, ${timeRange}.`
+    }));
   };
 
   return (
@@ -149,6 +189,29 @@ const CreateRequest = () => {
           </form>
         </CardContent>
       </Card>
+
+      <AlertDialog open={showPreview} onOpenChange={setShowPreview}>
+        <AlertDialogContent className="max-w-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Preview Request Messages</AlertDialogTitle>
+            <AlertDialogDescription>
+              <div className="space-y-4 mt-4">
+                {getPreviewMessages().map((preview, index) => (
+                  <div key={preview.babysitter.id} className="p-4 bg-muted rounded-lg whitespace-pre-line">
+                    {preview.message}
+                  </div>
+                ))}
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSendRequests}>
+              Send Requests
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
