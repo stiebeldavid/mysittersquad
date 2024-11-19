@@ -1,5 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
-import { Home, Baby, Users, Calendar, Menu } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Home, Baby, Users, Calendar, Menu, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -7,10 +7,25 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useAuthStore } from "@/store/authStore";
+import { useToast } from "@/hooks/use-toast";
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
+  const { toast } = useToast();
+
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logged out successfully",
+      description: "See you next time!",
+    });
+    navigate("/login");
+  };
 
   const navItems = [
     { path: "/", icon: Home, label: "Home" },
@@ -43,6 +58,15 @@ const Navbar = () => {
                 <span>{label}</span>
               </Link>
             ))}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="ml-2 text-gray-600 hover:text-primary hover:bg-primary/5"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
           </div>
 
           {/* Mobile Navigation */}
@@ -71,6 +95,13 @@ const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                 ))}
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 w-full px-3 py-2 text-gray-600 hover:bg-gray-100"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
