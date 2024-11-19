@@ -128,13 +128,15 @@ const RequestDashboard = () => {
       <div className="space-y-4">
         {sortedRequests.map((groupedRequest) => (
           <Card key={`${groupedRequest.date}-${groupedRequest.timeRange}`} className="card-hover">
-            <CardHeader>
-              <CardTitle className="flex justify-between items-center">
-                <span>{format(new Date(groupedRequest.date), "MMMM d, yyyy")}</span>
-                <span className="text-sm font-normal text-gray-600">
+            <CardHeader className="pb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <CardTitle className="text-lg font-semibold">
+                  {format(new Date(groupedRequest.date), "EEEE, MMMM d")}
+                </CardTitle>
+                <span className="text-sm font-medium text-muted-foreground tracking-wide">
                   {formatTimeRange(groupedRequest.timeRange)}
                 </span>
-              </CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
