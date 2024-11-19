@@ -8,47 +8,60 @@ import { BabysitterCard } from "@/components/babysitter/BabysitterCard";
 import { ContactPickerButton } from "@/components/babysitter/ContactPickerButton";
 import { Babysitter } from "@/types/babysitter";
 import { useFamilyStore } from "@/store/familyStore";
+import { useAuthStore } from "@/store/authStore";
+import { createBabysitter, fetchBabysitters } from "@/lib/airtable";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const BabysitterList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentBabysitter, setCurrentBabysitter] = useState<Babysitter | null>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
-  const { babysitters, setBabysitters } = useFamilyStore();
+  const { user } = useAuthStore();
+  const { setBabysitters } = useFamilyStore();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { data: babysitters = [], isLoading } = useQuery({
+    queryKey: ['babysitters', user?.mobile],
+    queryFn: () => fetchBabysitters(user?.mobile || ''),
+    enabled: !!user?.mobile,
+    onSuccess: (data) => {
+      setBabysitters(data);
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
-    const newBabysitter = {
-      id: currentBabysitter?.id || Date.now().toString(),
-      firstName: formData.get("firstName") as string,
-      lastName: formData.get("lastName") as string,
-      mobile: formData.get("mobile") as string,
-      home: formData.get("home") as string,
-      age: Number(formData.get("age")) || undefined,
-      rate: Number(formData.get("rate")) || undefined,
-      specialties: formData.get("specialties") as string,
-      notes: formData.get("notes") as string,
-    };
+    try {
+      if (!user?.mobile) {
+        throw new Error('User not logged in');
+      }
 
-    if (currentBabysitter) {
-      setBabysitters(babysitters.map(b => 
-        b.id === currentBabysitter.id ? newBabysitter : b
-      ));
-      toast({
-        title: "Babysitter Updated",
-        description: "The babysitter has been updated successfully."
-      });
-    } else {
-      setBabysitters([...babysitters, newBabysitter]);
+      await createBabysitter(
+        formData.get("firstName") as string,
+        formData.get("lastName") as string,
+        formData.get("mobile") as string,
+        user.mobile
+      );
+
+      queryClient.invalidateQueries({ queryKey: ['babysitters'] });
+      
       toast({
         title: "Babysitter Added",
         description: "New babysitter has been added successfully."
       });
+      
+      setIsDialogOpen(false);
+      setCurrentBabysitter(null);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add babysitter. Please try again.",
+        variant: "destructive"
+      });
     }
-    setIsDialogOpen(false);
-    setCurrentBabysitter(null);
   };
 
   const handleDelete = (id: string) => {
@@ -68,6 +81,10 @@ const BabysitterList = () => {
   const handleContactsSelected = (newBabysitters: Babysitter[]) => {
     setBabysitters([...babysitters, ...newBabysitters]);
   };
+
+  if (isLoading) {
+    return <div className="container mx-auto p-4">Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto p-4">
