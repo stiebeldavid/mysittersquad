@@ -17,7 +17,7 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
   const [isEditing, setIsEditing] = useState(false);
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
-  const [state, setState] = useState("California");
+  const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
   const { toast } = useToast();
   const user = useAuthStore((state) => state.user);
@@ -91,7 +91,6 @@ export const FamilyAddress = ({ address, onAddressChange }: FamilyAddressProps) 
                 value={state}
                 onChange={(e) => setState(e.target.value)}
                 placeholder="Enter state"
-                readOnly
               />
             </div>
             

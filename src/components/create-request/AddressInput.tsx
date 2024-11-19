@@ -10,7 +10,7 @@ interface AddressInputProps {
 export const AddressInput = ({ address, onAddressChange }: AddressInputProps) => {
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
-  const [state, setState] = useState("California");
+  const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
 
   const handleAddressChange = () => {
@@ -56,7 +56,6 @@ export const AddressInput = ({ address, onAddressChange }: AddressInputProps) =>
             handleAddressChange();
           }}
           placeholder="Enter state"
-          readOnly
         />
       </div>
       
