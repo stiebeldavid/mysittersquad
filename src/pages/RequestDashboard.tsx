@@ -108,15 +108,18 @@ const RequestDashboard = () => {
           <h1 className="text-3xl font-bold">My Requests</h1>
         </div>
         
-        <ToggleGroup 
-          type="single" 
-          value={sortBy} 
-          onValueChange={handleSortChange}
-          className="justify-start border rounded-lg p-1 bg-muted/10"
-        >
-          <ToggleGroupItem value="created" variant="outline" className="data-[state=on]:bg-white data-[state=on]:text-primary">Sort by Created Date</ToggleGroupItem>
-          <ToggleGroupItem value="date" variant="outline" className="data-[state=on]:bg-white data-[state=on]:text-primary">Sort by Babysitting Date</ToggleGroupItem>
-        </ToggleGroup>
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium">Sort by</span>
+          <ToggleGroup 
+            type="single" 
+            value={sortBy} 
+            onValueChange={handleSortChange}
+            className="border rounded-lg p-1 bg-muted/10"
+          >
+            <ToggleGroupItem value="created" variant="outline" className="data-[state=on]:bg-white data-[state=on]:text-primary">Created Date</ToggleGroupItem>
+            <ToggleGroupItem value="date" variant="outline" className="data-[state=on]:bg-white data-[state=on]:text-primary">Babysitting Date</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
       </div>
 
       <div className="space-y-4">
