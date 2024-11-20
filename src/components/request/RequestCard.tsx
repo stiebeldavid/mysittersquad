@@ -57,10 +57,10 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
               key={babysitter.id}
               className="flex justify-between items-center py-2 border-b last:border-0"
             >
-              <span className="font-medium">
+              <span>
                 {babysitter.name}
                 {babysitter.deleted && (
-                  <span className="text-muted-foreground ml-1 font-normal">(deleted)</span>
+                  <span className="text-muted-foreground ml-1">(deleted)</span>
                 )}
               </span>
               <Badge className={getStatusColor(babysitter.status)}>
