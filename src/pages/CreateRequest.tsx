@@ -173,6 +173,7 @@ const CreateRequest = () => {
         selectedBabysitters={babysitters.filter(sitter => selectedBabysitters.includes(sitter.id))}
         userName={`${user?.firstName} ${user?.lastName}`}
         onConfirm={handleSendRequests}
+        notes={notes}
       />
     </div>
   );
