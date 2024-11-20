@@ -28,6 +28,7 @@ interface PreviewDialogProps {
   selectedBabysitters: any[];
   userName: string;
   onConfirm: () => void;
+  notes?: string;
 }
 
 export const PreviewDialog = ({
@@ -39,6 +40,7 @@ export const PreviewDialog = ({
   selectedBabysitters,
   userName,
   onConfirm,
+  notes,
 }: PreviewDialogProps) => {
   const getPreviewMessages = (): PreviewMessage[] => {
     if (!date) return [];
@@ -48,7 +50,7 @@ export const PreviewDialog = ({
 
     return selectedBabysitters.map(sitter => ({
       babysitter: sitter,
-      message: `Hi ${sitter.firstName},\n${userName} would like to know if you can babysit ${dayStr}, ${timeRange}.`
+      message: `Hi ${sitter.firstName},\n${userName} would like to know if you can babysit ${dayStr}, ${timeRange}.${notes ? `\n\nAdditional Notes:\n${notes}` : ""}`
     }));
   };
 
