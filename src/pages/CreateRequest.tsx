@@ -64,7 +64,8 @@ const CreateRequest = () => {
             endTime,
             babysitterId,
             user!.mobile,
-            requestGroupId
+            requestGroupId,
+            notes
           )
         )
       );

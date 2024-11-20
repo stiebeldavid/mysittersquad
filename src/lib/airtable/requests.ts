@@ -8,7 +8,8 @@ export const createRequest = async (
   endTime: string,
   babysitterId: string,
   parentRequestorMobile: string,
-  requestGroupId: string
+  requestGroupId: string,
+  notes?: string
 ) => {
   if (!parentRequestorMobile) {
     console.error('No parent mobile number provided to createRequest');
@@ -29,6 +30,7 @@ export const createRequest = async (
           'Parent Requestor Mobile': formattedParentMobile,
           'Status': 'Created',
           'Request Group ID': requestGroupId,
+          'Additional Notes': notes || '',
         },
       },
     ]);
@@ -71,6 +73,7 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       status: record.get('Status') as string,
       createdAt: record.get('Created Time') as string,
       babysitterDeleted: record.get('Deleted (from Babysitter)') as boolean,
+      notes: record.get('Additional Notes') as string,
     }));
   } catch (error) {
     console.error('Error fetching requests:', error);

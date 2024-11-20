@@ -12,6 +12,7 @@ interface RequestCardProps {
     status: string;
     deleted?: boolean;
   }[];
+  notes?: string;
 }
 
 const getStatusColor = (status: string) => {
@@ -25,7 +26,7 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export const RequestCard = ({ date, timeRange, createdAt, babysitters }: RequestCardProps) => {
+export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: RequestCardProps) => {
   const requestDate = new Date(date);
   const createdDate = new Date(createdAt);
   const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
@@ -60,6 +61,12 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters }: Request
               </Badge>
             </div>
           ))}
+          {notes && (
+            <div className="pt-2 border-t">
+              <p className="text-sm text-muted-foreground font-medium mb-1">Additional Notes:</p>
+              <p className="text-sm whitespace-pre-line">{notes}</p>
+            </div>
+          )}
           <p className="text-sm text-muted-foreground pt-2">
             Request Created: {format(createdDate, "MMM d, yyyy")}
           </p>
