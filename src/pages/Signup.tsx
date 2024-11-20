@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { createUser, findUserByMobile } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
+import { PhoneNumberInput } from "@/components/ui/phone-input";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -90,13 +91,12 @@ const Signup = () => {
             />
           </div>
           <div>
-            <Input
-              type="tel"
-              placeholder="Mobile Number"
+            <PhoneNumberInput
               value={formData.mobile}
-              onChange={(e) =>
-                setFormData({ ...formData, mobile: e.target.value })
+              onChange={(value) =>
+                setFormData({ ...formData, mobile: value || "" })
               }
+              placeholder="Mobile Number"
               required
             />
           </div>

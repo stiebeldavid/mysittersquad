@@ -2,7 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Babysitter } from "@/types/babysitter";
+import { useState } from "react";
 
 interface BabysitterFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -10,6 +12,16 @@ interface BabysitterFormProps {
 }
 
 export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormProps) => {
+  const [mobile, setMobile] = useState(currentBabysitter?.mobile || "");
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
+    formData.set("mobile", mobile);
+    onSubmit(e);
+  };
+
   return (
     <DialogContent>
       <DialogHeader>
@@ -17,7 +29,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
           {currentBabysitter ? "Edit Babysitter" : "Add New Babysitter"}
         </DialogTitle>
       </DialogHeader>
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="firstName">First Name</Label>
@@ -40,11 +52,11 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
         </div>
         <div className="space-y-2">
           <Label htmlFor="mobile">Mobile Number</Label>
-          <Input
+          <PhoneNumberInput
             id="mobile"
             name="mobile"
-            type="tel"
-            defaultValue={currentBabysitter?.mobile}
+            value={mobile}
+            onChange={(value) => setMobile(value || "")}
             required
           />
         </div>

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { findUserByMobile } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
+import { PhoneNumberInput } from "@/components/ui/phone-input";
 
 const Login = () => {
   const [mobile, setMobile] = useState("");
@@ -56,11 +56,10 @@ const Login = () => {
         <h1 className="text-2xl font-bold text-center mb-6">Login to MySitterSquad</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Input
-              type="tel"
-              placeholder="Mobile Number"
+            <PhoneNumberInput
               value={mobile}
-              onChange={(e) => setMobile(e.target.value)}
+              onChange={(value) => setMobile(value || "")}
+              placeholder="Enter your mobile number"
               required
             />
           </div>
