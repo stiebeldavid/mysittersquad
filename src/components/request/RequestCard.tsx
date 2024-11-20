@@ -60,9 +60,7 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
               className="flex justify-between items-center py-2 border-b last:border-0"
             >
               <span>
-                {babysitter.firstName && babysitter.lastName 
-                  ? `${babysitter.firstName} ${babysitter.lastName}`
-                  : babysitter.name}
+                {`${babysitter.firstName || ''} ${babysitter.lastName || ''}`}
                 {babysitter.deleted && (
                   <span className="text-muted-foreground ml-1">(deleted)</span>
                 )}
