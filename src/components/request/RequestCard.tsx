@@ -27,7 +27,6 @@ const getStatusColor = (status: string) => {
 };
 
 export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: RequestCardProps) => {
-  // Parse the date string directly without timezone conversion
   const requestDate = parseISO(date);
   const createdDate = new Date(createdAt);
   const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
