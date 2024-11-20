@@ -34,6 +34,17 @@ interface GroupedRequest {
   }[];
 }
 
+const getStatusPriority = (status: string): number => {
+  switch (status.toLowerCase()) {
+    case "available":
+      return 1;
+    case "declined":
+      return 2;
+    default:
+      return 3;
+  }
+};
+
 const RequestDashboard = () => {
   const user = useAuthStore((state) => state.user);
   const [sortBy, setSortBy] = useState<"created" | "date">("created");
@@ -68,20 +79,22 @@ const RequestDashboard = () => {
         status: request.status,
         deleted: request.babysitterDeleted,
       });
+      // Sort babysitters by status priority
+      existingGroup.babysitters.sort((a, b) => 
+        getStatusPriority(a.status) - getStatusPriority(b.status)
+      );
     } else {
       acc.push({
         date: request.date,
         timeRange: request.timeRange,
         createdAt: request.createdAt,
         notes: request.notes,
-        babysitters: [
-          {
-            id: request.babysitterId,
-            name: request.babysitterName,
-            status: request.status,
-            deleted: request.babysitterDeleted,
-          },
-        ],
+        babysitters: [{
+          id: request.babysitterId,
+          name: request.babysitterName,
+          status: request.status,
+          deleted: request.babysitterDeleted,
+        }],
       });
     }
 
