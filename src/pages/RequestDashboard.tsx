@@ -116,8 +116,20 @@ const RequestDashboard = () => {
             onValueChange={handleSortChange}
             className="border rounded-lg p-1 bg-muted/10"
           >
-            <ToggleGroupItem value="created" variant="outline" className="data-[state=on]:bg-white data-[state=on]:text-primary">Created Date</ToggleGroupItem>
-            <ToggleGroupItem value="date" variant="outline" className="data-[state=on]:bg-white data-[state=on]:text-primary">Babysitting Date</ToggleGroupItem>
+            <ToggleGroupItem 
+              value="created" 
+              variant="outline" 
+              className="data-[state=on]:bg-secondary/50 data-[state=on]:border-b-2 data-[state=on]:border-primary/50 data-[state=on]:font-medium"
+            >
+              Created Date
+            </ToggleGroupItem>
+            <ToggleGroupItem 
+              value="date" 
+              variant="outline" 
+              className="data-[state=on]:bg-secondary/50 data-[state=on]:border-b-2 data-[state=on]:border-primary/50 data-[state=on]:font-medium"
+            >
+              Babysitting Date
+            </ToggleGroupItem>
           </ToggleGroup>
         </div>
       </div>
