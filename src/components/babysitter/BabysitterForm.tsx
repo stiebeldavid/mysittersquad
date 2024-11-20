@@ -5,6 +5,7 @@ import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog
 import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Babysitter } from "@/types/babysitter";
 import { useState } from "react";
+import { formatPhoneWithCountryCode } from "@/utils/phoneNumber";
 
 interface BabysitterFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -18,8 +19,22 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
     e.preventDefault();
     const formElement = e.currentTarget;
     const formData = new FormData(formElement);
-    formData.set("mobile", mobile);
+    
+    // Format the phone number before submitting
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
+    formData.set("mobile", formattedMobile);
+    
     onSubmit(e);
+  };
+
+  const handlePhoneChange = (value: string | undefined) => {
+    // Remove any non-digit characters
+    const cleaned = (value || "").replace(/\D/g, "");
+    
+    // Limit to 10 digits (excluding country code)
+    const limited = cleaned.slice(0, 10);
+    
+    setMobile(limited);
   };
 
   return (
@@ -56,8 +71,9 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             id="mobile"
             name="mobile"
             value={mobile}
-            onChange={(value) => setMobile(value || "")}
+            onChange={handlePhoneChange}
             required
+            maxLength={10}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
