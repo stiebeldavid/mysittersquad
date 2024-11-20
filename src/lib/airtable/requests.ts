@@ -85,10 +85,10 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string)
   try {
     const formattedMobile = formatPhoneWithCountryCode(mobile);
     
-    // First find the request using the ID field
+    // First find the request using the Request ID field
     const records = await base('Requests')
       .select({
-        filterByFormula: `AND({ID}='${requestId}', {Mobile (from Babysitter)}='${formattedMobile}')`,
+        filterByFormula: `AND({Request ID}='${requestId}', {Mobile (from Babysitter)}='${formattedMobile}')`,
         maxRecords: 1,
       })
       .firstPage();
