@@ -1,4 +1,4 @@
-import { format, isThisYear } from "date-fns";
+import { format, isThisYear, parseISO } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -27,7 +27,8 @@ const getStatusColor = (status: string) => {
 };
 
 export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: RequestCardProps) => {
-  const requestDate = new Date(date);
+  // Parse the date string directly without timezone conversion
+  const requestDate = parseISO(date);
   const createdDate = new Date(createdAt);
   const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
 
