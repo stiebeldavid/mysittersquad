@@ -112,10 +112,10 @@ const RequestDashboard = () => {
           type="single" 
           value={sortBy} 
           onValueChange={handleSortChange}
-          className="justify-start"
+          className="justify-start border rounded-lg p-1 bg-muted/10"
         >
-          <ToggleGroupItem value="created">Sort by Created Date</ToggleGroupItem>
-          <ToggleGroupItem value="date">Sort by Babysitting Date</ToggleGroupItem>
+          <ToggleGroupItem value="created" variant="outline" className="data-[state=on]:bg-white data-[state=on]:text-primary">Sort by Created Date</ToggleGroupItem>
+          <ToggleGroupItem value="date" variant="outline" className="data-[state=on]:bg-white data-[state=on]:text-primary">Sort by Babysitting Date</ToggleGroupItem>
         </ToggleGroup>
       </div>
 
