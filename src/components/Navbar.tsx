@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Baby, Users, Calendar, Menu, LogOut } from "lucide-react";
+import { Home, Baby, Users, Calendar, Menu, LogOut, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -29,9 +29,8 @@ const Navbar = () => {
 
   const navItems = [
     { path: "/", icon: Home, label: "Home" },
-    { path: "/family", icon: Baby, label: "My Family" },
-    { path: "/babysitters", icon: Users, label: "Babysitters" },
-    { path: "/requests", icon: Calendar, label: "Request Dashboard" },
+    { path: "/babysitters", icon: Users, label: "My Babysitters" },
+    { path: "/requests", icon: Calendar, label: "My Requests" },
   ];
 
   return (
@@ -58,6 +57,15 @@ const Navbar = () => {
                 <span>{label}</span>
               </Link>
             ))}
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => navigate('/create-request')}
+              className="ml-2"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create Request
+            </Button>
             <Button
               variant="ghost"
               size="sm"
@@ -95,6 +103,15 @@ const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                 ))}
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/create-request"
+                    className="flex items-center space-x-2 w-full px-3 py-2 text-gray-600 hover:bg-gray-100"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Create Request</span>
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleLogout}
                   className="flex items-center space-x-2 w-full px-3 py-2 text-gray-600 hover:bg-gray-100"
