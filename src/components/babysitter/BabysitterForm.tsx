@@ -6,6 +6,7 @@ import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Babysitter } from "@/types/babysitter";
 import { useState, useEffect } from "react";
 import { formatPhoneWithCountryCode } from "@/utils/phoneNumber";
+import { useToast } from "@/components/ui/use-toast";
 
 interface BabysitterFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -14,6 +15,7 @@ interface BabysitterFormProps {
 
 export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormProps) => {
   const [mobile, setMobile] = useState("");
+  const { toast } = useToast();
 
   useEffect(() => {
     if (currentBabysitter?.mobile) {
@@ -25,10 +27,30 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Check if the mobile number has exactly 10 digits
+    const digitsOnly = mobile.replace(/\D/g, '');
+    if (digitsOnly.length !== 10) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Please enter exactly 10 digits for the mobile number.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const formElement = e.currentTarget;
     const formData = new FormData(formElement);
     formData.set("mobile", mobile);
     onSubmit(e);
+  };
+
+  const handlePhoneChange = (value: string) => {
+    // Only allow up to 10 digits
+    const digitsOnly = value.replace(/\D/g, '');
+    if (digitsOnly.length <= 10) {
+      setMobile(value || "");
+    }
   };
 
   return (
@@ -65,7 +87,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             id="mobile"
             name="mobile"
             value={mobile}
-            onChange={(value) => setMobile(value || "")}
+            onChange={handlePhoneChange}
             required
           />
         </div>
