@@ -19,8 +19,6 @@ interface Request {
   createdAt: string;
   babysitterDeleted?: boolean;
   notes?: string;
-  firstName?: string;
-  lastName?: string;
 }
 
 interface GroupedRequest {
@@ -33,8 +31,6 @@ interface GroupedRequest {
     name: string;
     status: string;
     deleted?: boolean;
-    firstName?: string;
-    lastName?: string;
   }[];
 }
 
@@ -71,8 +67,6 @@ const RequestDashboard = () => {
         name: request.babysitterName,
         status: request.status,
         deleted: request.babysitterDeleted,
-        firstName: request.firstName,
-        lastName: request.lastName,
       });
     } else {
       acc.push({
@@ -86,8 +80,6 @@ const RequestDashboard = () => {
             name: request.babysitterName,
             status: request.status,
             deleted: request.babysitterDeleted,
-            firstName: request.firstName,
-            lastName: request.lastName,
           },
         ],
       });
