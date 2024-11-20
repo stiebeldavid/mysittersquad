@@ -15,11 +15,11 @@ export const formatPhoneWithCountryCode = (phone: string): string => {
     return '+1' + cleaned;
   }
   
-  // If it's less than 10 digits, it's incomplete
+  // If it's less than 10 digits, return empty string
   if (cleaned.length < 10) {
-    return phone;
+    return '';
   }
   
-  // Return formatted number
+  // For any other case, take the last 10 digits and add +1
   return '+1' + cleaned.slice(-10);
 };
