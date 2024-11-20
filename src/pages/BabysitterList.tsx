@@ -9,7 +9,7 @@ import { AddBabysitterCard } from "@/components/babysitter/AddBabysitterCard";
 import { ContactPickerButton } from "@/components/babysitter/ContactPickerButton";
 import { Babysitter } from "@/types/babysitter";
 import { useAuthStore } from "@/store/authStore";
-import { createBabysitter, fetchBabysitters, deleteBabysitter } from "@/lib/airtable";
+import { createBabysitter, updateBabysitter, fetchBabysitters, deleteBabysitter } from "@/lib/airtable";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
@@ -51,31 +51,51 @@ const BabysitterList = () => {
         throw new Error('User not logged in');
       }
 
-      await createBabysitter(
-        formData.get("firstName") as string,
-        formData.get("lastName") as string,
-        formData.get("mobile") as string,
-        user.mobile,
-        formData.get("age") as string,
-        formData.get("grade") as string,
-        formData.get("rate") as string,
-        formData.get("specialties") as string,
-        formData.get("notes") as string
-      );
+      if (currentBabysitter) {
+        // Update existing babysitter
+        await updateBabysitter(
+          currentBabysitter.id,
+          formData.get("firstName") as string,
+          formData.get("lastName") as string,
+          formData.get("mobile") as string,
+          formData.get("age") as string,
+          formData.get("grade") as string,
+          formData.get("rate") as string,
+          formData.get("specialties") as string,
+          formData.get("notes") as string
+        );
+        toast({
+          title: "Babysitter Updated",
+          description: "Babysitter has been updated successfully."
+        });
+      } else {
+        // Create new babysitter
+        await createBabysitter(
+          formData.get("firstName") as string,
+          formData.get("lastName") as string,
+          formData.get("mobile") as string,
+          user.mobile,
+          formData.get("age") as string,
+          formData.get("grade") as string,
+          formData.get("rate") as string,
+          formData.get("specialties") as string,
+          formData.get("notes") as string
+        );
+        toast({
+          title: "Babysitter Added",
+          description: "New babysitter has been added successfully."
+        });
+      }
 
       queryClient.invalidateQueries({ queryKey: ['babysitters'] });
-      
-      toast({
-        title: "Babysitter Added",
-        description: "New babysitter has been added successfully."
-      });
-      
       setIsDialogOpen(false);
       setCurrentBabysitter(null);
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to add babysitter. Please try again.",
+        description: currentBabysitter 
+          ? "Failed to update babysitter. Please try again."
+          : "Failed to add babysitter. Please try again.",
         variant: "destructive"
       });
     }

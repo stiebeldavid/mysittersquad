@@ -45,6 +45,37 @@ export const createBabysitter = async (
   }
 };
 
+export const updateBabysitter = async (
+  id: string,
+  firstName: string,
+  lastName: string | undefined,
+  mobile: string,
+  age?: string,
+  grade?: string,
+  rate?: string,
+  specialties?: string,
+  notes?: string
+) => {
+  try {
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
+
+    const record = await base('Babysitters').update(id, {
+      'First Name': firstName,
+      'Last Name': lastName || '',
+      'Mobile': formattedMobile,
+      'Age': age || '',
+      'Grade': grade || '',
+      'Hourly rate (USD)': rate || '',
+      'Specialties': specialties || '',
+      'Notes': notes || '',
+    });
+    return record;
+  } catch (error) {
+    console.error('Error updating babysitter:', error);
+    throw error;
+  }
+};
+
 export const deleteBabysitter = async (id: string) => {
   try {
     const record = await base('Babysitters').update(id, {
