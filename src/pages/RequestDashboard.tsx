@@ -1,14 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { format, isThisYear } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { fetchRequests } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
+import { RequestCard } from "@/components/request/RequestCard";
+import { EmptyState } from "@/components/request/EmptyState";
 
 interface Request {
   id: string;
@@ -33,63 +32,20 @@ interface GroupedRequest {
   }[];
 }
 
-const formatTimeRange = (timeRange: string) => {
-  const [startTime, endTime] = timeRange.split(" to ");
-  
-  const [startHour, startMinute] = startTime.split(":").map(Number);
-  const [endHour, endMinute] = endTime.split(":").map(Number);
-  
-  const startHour12 = startHour % 12 || 12;
-  const startPeriod = startHour >= 12 ? 'pm' : 'am';
-  const formattedStart = `${startHour12}:${startMinute.toString().padStart(2, '0')}`;
-  
-  const endHour12 = endHour % 12 || 12;
-  const endPeriod = endHour >= 12 ? 'pm' : 'am';
-  const formattedEnd = `${endHour12}:${endMinute.toString().padStart(2, '0')}`;
-  
-  if (startPeriod === endPeriod) {
-    return `${formattedStart}-${formattedEnd}${endPeriod}`;
-  }
-  
-  return `${formattedStart}${startPeriod}-${formattedEnd}${endPeriod}`;
-};
-
 const RequestDashboard = () => {
   const user = useAuthStore((state) => state.user);
   const [sortBy, setSortBy] = useState<"created" | "date">("created");
 
-  console.log('RequestDashboard - Current user:', user);
-
-  const { data: requests = [], isLoading, error } = useQuery({
+  const { data: requests = [], isLoading } = useQuery({
     queryKey: ['requests', user?.mobile],
     queryFn: () => {
-      console.log('RequestDashboard - Fetching requests for user mobile:', user?.mobile);
       if (!user?.mobile) {
-        console.error('RequestDashboard - No user mobile found in auth store');
         return [];
       }
       return fetchRequests(user.mobile);
     },
     enabled: !!user?.mobile,
   });
-
-  console.log('RequestDashboard - Query results:', { 
-    isLoading, 
-    error, 
-    requestsCount: requests.length,
-    requests 
-  });
-
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "confirmed":
-        return "bg-green-500";
-      case "declined":
-        return "bg-red-500";
-      default:
-        return "bg-yellow-500";
-    }
-  };
 
   const handleSortChange = (value: string | undefined) => {
     if (value) {
@@ -164,57 +120,18 @@ const RequestDashboard = () => {
       </div>
 
       <div className="space-y-4">
-        {sortedRequests.map((groupedRequest) => {
-          const requestDate = new Date(groupedRequest.date);
-          const createdDate = new Date(groupedRequest.createdAt);
-          const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
-          
-          return (
-            <Card key={`${groupedRequest.date}-${groupedRequest.timeRange}`} className="card-hover">
-              <CardHeader className="pb-2">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                  <CardTitle className="text-lg font-semibold">
-                    {format(requestDate, dateFormat)}
-                  </CardTitle>
-                  <span className="text-sm font-medium text-muted-foreground tracking-wide">
-                    {formatTimeRange(groupedRequest.timeRange)}
-                  </span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {groupedRequest.babysitters.map((babysitter) => (
-                    <div
-                      key={babysitter.id}
-                      className="flex justify-between items-center py-2 border-b last:border-0"
-                    >
-                      <span>
-                        {babysitter.name}
-                        {babysitter.deleted && (
-                          <span className="text-muted-foreground ml-1">(deleted)</span>
-                        )}
-                      </span>
-                      <Badge className={getStatusColor(babysitter.status)}>
-                        {babysitter.status}
-                      </Badge>
-                    </div>
-                  ))}
-                  <p className="text-sm text-muted-foreground pt-2">
-                    Request Created: {format(createdDate, "MMM d, yyyy")}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+        {sortedRequests.map((request) => (
+          <RequestCard
+            key={`${request.date}-${request.timeRange}`}
+            date={request.date}
+            timeRange={request.timeRange}
+            createdAt={request.createdAt}
+            babysitters={request.babysitters}
+          />
+        ))}
       </div>
 
-      {requests.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">No babysitting requests yet.</p>
-          <p className="text-gray-500">Create a new request to get started!</p>
-        </div>
-      )}
+      {requests.length === 0 && <EmptyState />}
     </div>
   );
 };
