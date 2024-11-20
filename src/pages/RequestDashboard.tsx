@@ -18,12 +18,14 @@ interface Request {
   status: string;
   createdAt: string;
   babysitterDeleted?: boolean;
+  notes?: string;
 }
 
 interface GroupedRequest {
   date: string;
   timeRange: string;
   createdAt: string;
+  notes?: string;
   babysitters: {
     id: string;
     name: string;
@@ -71,6 +73,7 @@ const RequestDashboard = () => {
         date: request.date,
         timeRange: request.timeRange,
         createdAt: request.createdAt,
+        notes: request.notes,
         babysitters: [
           {
             id: request.babysitterId,
@@ -142,6 +145,7 @@ const RequestDashboard = () => {
             timeRange={request.timeRange}
             createdAt={request.createdAt}
             babysitters={request.babysitters}
+            notes={request.notes}
           />
         ))}
       </div>
