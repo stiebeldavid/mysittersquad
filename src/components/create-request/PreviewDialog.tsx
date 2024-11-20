@@ -62,7 +62,7 @@ export const PreviewDialog = ({
           <AlertDialogDescription>
             <div className="space-y-4 mt-4">
               {getPreviewMessages().map((preview) => (
-                <div key={preview.babysitter.id} className="p-4 bg-muted rounded-lg whitespace-pre-line">
+                <div key={preview.babysitter.id} className="p-4 bg-muted rounded-lg whitespace-pre-line text-left">
                   {preview.message}
                 </div>
               ))}
