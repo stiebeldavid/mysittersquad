@@ -18,6 +18,7 @@ const BabysitterResponse = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [response, setResponse] = useState<"yes" | "no" | null>(null);
   const [comments, setComments] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const { data: request, isLoading, refetch } = useQuery({
     queryKey: ["request", requestId, mobile],
@@ -37,6 +38,7 @@ const BabysitterResponse = () => {
     },
     onSuccess: () => {
       toast.success("Response submitted successfully!");
+      setIsSubmitted(true);
     },
     onError: () => {
       toast.error("Failed to submit response. Please try again.");
@@ -82,6 +84,24 @@ const BabysitterResponse = () => {
         <Card>
           <CardContent className="p-6">
             <div className="text-center">Loading...</div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (isSubmitted && request?.parent) {
+    return (
+      <div className="container max-w-2xl mx-auto p-4">
+        <Card>
+          <CardContent className="p-6">
+            <div className="text-center space-y-4">
+              <h2 className="text-2xl font-bold text-green-600">Thanks for your response!</h2>
+              <p className="text-lg">
+                {request.parent.firstName} {request.parent.lastName} has been notified.
+              </p>
+              <p className="text-gray-600">You can close this page now.</p>
+            </div>
           </CardContent>
         </Card>
       </div>
