@@ -47,7 +47,7 @@ export const PreviewDialog = ({
 
     const dayStr = format(date, "EEEE, MMMM d");
     const timeRange = formatTimeRange(startTime, endTime);
-    const additionalNotes = notes ? `\n\nAdditional Notes:\n${notes}` : "";
+    const additionalNotes = notes && notes.trim() ? `\n\nAdditional Notes:\n${notes}` : "";
 
     return selectedBabysitters.map(sitter => ({
       babysitter: sitter,
@@ -60,7 +60,7 @@ export const PreviewDialog = ({
       <AlertDialogContent className="max-w-2xl">
         <AlertDialogHeader>
           <AlertDialogTitle>Preview Request Messages</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription asChild>
             <div className="space-y-4 mt-4">
               {getPreviewMessages().map((preview) => (
                 <div key={preview.babysitter.id} className="p-4 bg-muted rounded-lg whitespace-pre-line text-left">
