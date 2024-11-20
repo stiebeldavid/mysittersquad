@@ -19,11 +19,10 @@ const BabysitterResponse = () => {
   const [response, setResponse] = useState<"yes" | "no" | null>(null);
   const [comments, setComments] = useState("");
 
-  const { data: request, isLoading } = useQuery({
+  const { data: request, isLoading, refetch } = useQuery({
     queryKey: ["request", requestId, mobile],
     queryFn: () => verifyBabysitterRequest(requestId || "", mobile),
-    enabled: !!requestId && !!mobile,
-    retry: false,
+    enabled: false, // Disable automatic querying
   });
 
   const mutation = useMutation({
@@ -53,7 +52,12 @@ const BabysitterResponse = () => {
     try {
       const formattedMobile = formatPhoneWithCountryCode(mobile);
       setMobile(formattedMobile);
-      setIsVerified(true);
+      const result = await refetch(); // Only fetch when verify is clicked
+      if (result.data) {
+        setIsVerified(true);
+      } else {
+        toast.error("Mobile number doesn't match our records");
+      }
     } catch (error) {
       toast.error("Invalid mobile number format");
     }
