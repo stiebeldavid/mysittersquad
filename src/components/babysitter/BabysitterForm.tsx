@@ -73,8 +73,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
           <Input
             id="rate"
             name="rate"
-            type="number"
-            step="0.01"
+            type="text"
             defaultValue={currentBabysitter?.rate}
           />
         </div>

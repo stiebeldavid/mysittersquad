@@ -59,14 +59,14 @@ export const BabysitterCard = ({ babysitter, onEdit, onDelete }: BabysitterCardP
             <p className="text-sm">
               <span className="font-medium">Mobile:</span> {babysitter.mobile}
             </p>
-            {babysitter.home && (
-              <p className="text-sm">
-                <span className="font-medium">Home:</span> {babysitter.home}
-              </p>
-            )}
             {babysitter.age && (
               <p className="text-sm">
                 <span className="font-medium">Age:</span> {babysitter.age}
+              </p>
+            )}
+            {babysitter.grade && (
+              <p className="text-sm">
+                <span className="font-medium">Grade:</span> {babysitter.grade}
               </p>
             )}
             {babysitter.rate && (
