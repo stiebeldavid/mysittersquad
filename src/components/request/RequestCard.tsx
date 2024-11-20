@@ -39,9 +39,16 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
           <CardTitle className="text-lg font-semibold">
             {format(requestDate, dateFormat)}
           </CardTitle>
-          <span className="text-sm font-medium text-muted-foreground tracking-wide">
-            {timeRange}
-          </span>
+          <div className="flex flex-col items-end">
+            <span className="text-sm font-medium text-muted-foreground tracking-wide">
+              {timeRange}
+            </span>
+            {notes && (
+              <span className="text-sm text-muted-foreground">
+                Note: {notes}
+              </span>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -62,12 +69,6 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
               </Badge>
             </div>
           ))}
-          {notes && (
-            <div className="pt-2 border-t">
-              <p className="text-sm text-muted-foreground font-medium mb-1">Additional Notes:</p>
-              <p className="text-sm whitespace-pre-line">{notes}</p>
-            </div>
-          )}
           <p className="text-sm text-muted-foreground pt-2">
             Request Created: {format(createdDate, "MMM d, yyyy")}
           </p>
