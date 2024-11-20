@@ -119,14 +119,14 @@ const RequestDashboard = () => {
             <ToggleGroupItem 
               value="created" 
               variant="outline" 
-              className="data-[state=on]:bg-secondary/50 data-[state=on]:border-b-2 data-[state=on]:border-primary/50 data-[state=on]:font-medium text-foreground"
+              className="text-muted-foreground data-[state=on]:bg-secondary/50 data-[state=on]:border-b-2 data-[state=on]:border-primary/50 data-[state=on]:font-medium data-[state=on]:text-primary"
             >
               Created Date
             </ToggleGroupItem>
             <ToggleGroupItem 
               value="date" 
               variant="outline" 
-              className="data-[state=on]:bg-secondary/50 data-[state=on]:border-b-2 data-[state=on]:border-primary/50 data-[state=on]:font-medium text-foreground"
+              className="text-muted-foreground data-[state=on]:bg-secondary/50 data-[state=on]:border-b-2 data-[state=on]:border-primary/50 data-[state=on]:font-medium data-[state=on]:text-primary"
             >
               Babysitting Date
             </ToggleGroupItem>
