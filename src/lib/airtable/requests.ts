@@ -127,6 +127,7 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string)
     
     return {
       id: record.id,
+      requestId: requestId,
       date: record.get('Request Date') as string,
       timeRange: record.get('Time Range') as string,
       notes: record.get('Additional Notes') as string,
@@ -140,14 +141,14 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string)
 };
 
 export const updateBabysitterResponse = async (
-  requestId: string,
+  recordId: string,
   update: {
     status: string;
     response: string;
   }
 ) => {
   try {
-    const record = await base('Requests').update(requestId, {
+    const record = await base('Requests').update(recordId, {
       'Status': update.status,
       'Babysitter Response': update.response,
     });

@@ -27,8 +27,8 @@ const BabysitterResponse = () => {
 
   const mutation = useMutation({
     mutationFn: () => {
-      if (!requestId || !response) return Promise.reject("Invalid data");
-      return updateBabysitterResponse(requestId, {
+      if (!request?.id || !response) return Promise.reject("Invalid data");
+      return updateBabysitterResponse(request.id, {
         status: response === "yes" ? "Available" : "Declined",
         response: `${response === "yes" ? "Yes, I can babysit then" : "No, I am not available then"}${
           comments ? `. ${comments}` : ""
