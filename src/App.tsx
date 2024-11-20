@@ -13,6 +13,7 @@ import BabysitterList from "./pages/BabysitterList";
 import MyFamily from "./pages/MyFamily";
 import CreateRequest from "./pages/CreateRequest";
 import RequestDashboard from "./pages/RequestDashboard";
+import BabysitterResponse from "./pages/BabysitterResponse";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/r/:requestId" element={<BabysitterResponse />} />
               <Route
                 path="/"
                 element={

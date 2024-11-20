@@ -80,3 +80,44 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
     throw error;
   }
 };
+
+export const verifyBabysitterRequest = async (requestId: string, mobile: string) => {
+  try {
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
+    const record = await base('Requests').find(requestId);
+    
+    const babysitterId = (record.get('Babysitter') as string[])[0];
+    const babysitter = await base('Babysitters').find(babysitterId);
+    
+    if (babysitter.get('Mobile') === formattedMobile) {
+      return {
+        date: record.get('Request Date') as string,
+        timeRange: record.get('Time Range') as string,
+        notes: record.get('Additional Notes') as string,
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('Error verifying babysitter request:', error);
+    return null;
+  }
+};
+
+export const updateBabysitterResponse = async (
+  requestId: string,
+  update: {
+    status: string;
+    response: string;
+  }
+) => {
+  try {
+    const record = await base('Requests').update(requestId, {
+      'Status': update.status,
+      'Babysitter Response': update.response,
+    });
+    return record;
+  } catch (error) {
+    console.error('Error updating babysitter response:', error);
+    throw error;
+  }
+};
