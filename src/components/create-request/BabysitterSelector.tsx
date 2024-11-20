@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchBabysitters } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 import { useToast } from "@/components/ui/use-toast";
+import { useEffect } from "react";
 
 interface BabysitterSelectorProps {
   selectedBabysitters: string[];
@@ -33,6 +34,13 @@ export const BabysitterSelector = ({
     },
     enabled: !!user?.mobile,
   });
+
+  // Select all babysitters by default when the data is loaded
+  useEffect(() => {
+    if (babysitters.length > 0 && selectedBabysitters.length === 0) {
+      onBabysittersChange(babysitters.map(sitter => sitter.id));
+    }
+  }, [babysitters, selectedBabysitters.length, onBabysittersChange]);
 
   const handleBabysitterToggle = (babysitterId: string) => {
     if (selectedBabysitters.includes(babysitterId)) {
