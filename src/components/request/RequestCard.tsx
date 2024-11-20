@@ -32,13 +32,13 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
   const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
 
   return (
-    <Card className="card-hover">
+    <Card className="card-hover text-left">
       <CardHeader className="pb-2">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
           <CardTitle className="text-lg font-semibold">
             {format(requestDate, dateFormat)}
           </CardTitle>
-          <div className="flex flex-col items-end">
+          <div className="flex flex-col items-start">
             <span className="text-sm font-medium text-muted-foreground tracking-wide">
               {timeRange}
             </span>
