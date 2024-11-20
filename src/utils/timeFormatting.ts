@@ -4,13 +4,19 @@ export const formatTimeRange = (startTime: string, endTime: string) => {
     return '';
   }
 
+  // Handle the case where the input is already in the format "HH:MM to HH:MM"
+  if (startTime.includes(' to ')) {
+    const [start, end] = startTime.split(' to ');
+    return formatTimeRange(start, end);
+  }
+
   // Convert times to Date objects for easier manipulation
   const [startHour, startMinute] = startTime.split(":").map(Number);
   const [endHour, endMinute] = endTime.split(":").map(Number);
   
   // Validate parsed values
   if (isNaN(startHour) || isNaN(startMinute) || isNaN(endHour) || isNaN(endMinute)) {
-    return '';
+    return startTime; // Return original value if parsing fails
   }
   
   // Format start time
