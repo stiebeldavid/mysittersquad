@@ -27,7 +27,7 @@ const Index = () => {
   const allActions = [
     {
       icon: Users,
-      title: "Add Babysitters",
+      title: babysitters.length > 0 ? "My Babysitters" : "Add Babysitters",
       description: "Import or add your trusted babysitters",
       path: "/babysitters",
       color: "bg-purple-500",
@@ -70,23 +70,21 @@ const Index = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {allActions.map(({ icon: Icon, title, description, path, color, isComplete, count }) => (
           <Link key={path} to={path}>
-            <Card className={`card-hover cursor-pointer h-full ${isComplete ? 'border-green-500' : 'border-orange-500'}`}>
+            <Card className={`card-hover cursor-pointer h-full relative ${isComplete ? 'border-green-500' : 'border-orange-500'}`}>
+              {count !== undefined && (
+                <Badge 
+                  variant="secondary" 
+                  className="absolute top-4 right-4 text-base px-3 py-1"
+                >
+                  {count} {count === 1 ? 'babysitter' : 'babysitters'}
+                </Badge>
+              )}
               <CardHeader>
                 <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
                   <Icon className="w-6 h-6 text-white" />
                 </div>
                 <CardTitle className="flex items-center justify-between">
                   <span>{title}</span>
-                  <div className="flex items-center gap-2">
-                    {count !== undefined && (
-                      <Badge variant="secondary" className="text-xs">
-                        {count} {count === 1 ? 'babysitter' : 'babysitters'}
-                      </Badge>
-                    )}
-                    {isComplete && (
-                      <span className="text-green-500 text-sm">✓</span>
-                    )}
-                  </div>
                 </CardTitle>
                 <CardDescription>{description}</CardDescription>
               </CardHeader>
