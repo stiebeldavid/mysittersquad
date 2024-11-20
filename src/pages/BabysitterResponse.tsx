@@ -15,14 +15,14 @@ import { verifyBabysitterRequest, updateBabysitterResponse } from "@/lib/airtabl
 const BabysitterResponse = () => {
   const { requestId } = useParams();
   const [mobile, setMobile] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [response, setResponse] = useState<"yes" | "no" | null>(null);
   const [comments, setComments] = useState("");
 
   const { data: request, isLoading, refetch } = useQuery({
     queryKey: ["request", requestId, mobile],
     queryFn: () => verifyBabysitterRequest(requestId || "", mobile),
-    enabled: false, // Disable automatic querying
+    enabled: false,
   });
 
   const mutation = useMutation({
@@ -50,16 +50,20 @@ const BabysitterResponse = () => {
     }
     
     try {
+      setIsVerifying(true);
       const formattedMobile = formatPhoneWithCountryCode(mobile);
       setMobile(formattedMobile);
-      const result = await refetch(); // Only fetch when verify is clicked
+      const result = await refetch();
+      
       if (result.data) {
-        setIsVerified(true);
+        setIsVerifying(false);
       } else {
-        toast.error("Mobile number doesn't match our records");
+        toast.error("Could not find that babysitting request");
+        setIsVerifying(false);
       }
     } catch (error) {
       toast.error("Invalid mobile number format");
+      setIsVerifying(false);
     }
   };
 
@@ -72,7 +76,7 @@ const BabysitterResponse = () => {
     mutation.mutate();
   };
 
-  if (isLoading) {
+  if (isLoading || isVerifying) {
     return (
       <div className="container max-w-2xl mx-auto p-4">
         <Card>
@@ -84,7 +88,7 @@ const BabysitterResponse = () => {
     );
   }
 
-  if (!isVerified) {
+  if (!request) {
     return (
       <div className="container max-w-2xl mx-auto p-4">
         <Card>
@@ -103,20 +107,6 @@ const BabysitterResponse = () => {
               />
             </div>
             <Button onClick={handleVerify}>Verify</Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!request) {
-    return (
-      <div className="container max-w-2xl mx-auto p-4">
-        <Card>
-          <CardContent className="p-6">
-            <div className="text-center text-red-500">
-              Request not found or mobile number doesn't match our records.
-            </div>
           </CardContent>
         </Card>
       </div>
