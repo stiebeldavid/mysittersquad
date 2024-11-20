@@ -81,6 +81,29 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
   }
 };
 
+const findParentByMobile = async (mobile: string) => {
+  try {
+    const records = await base('Users')
+      .select({
+        filterByFormula: `{Mobile}='${mobile}'`,
+        maxRecords: 1,
+      })
+      .firstPage();
+    
+    if (records.length === 0) {
+      return null;
+    }
+    
+    return {
+      firstName: records[0].get('First Name') as string,
+      lastName: records[0].get('Last Name') as string,
+    };
+  } catch (error) {
+    console.error('Error finding parent:', error);
+    return null;
+  }
+};
+
 export const verifyBabysitterRequest = async (requestId: string, mobile: string) => {
   try {
     const formattedMobile = formatPhoneWithCountryCode(mobile);
@@ -99,10 +122,15 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string)
     }
     
     const record = records[0];
+    const parentMobile = record.get('Parent Requestor Mobile') as string;
+    const parent = await findParentByMobile(parentMobile);
+    
     return {
       date: record.get('Request Date') as string,
       timeRange: record.get('Time Range') as string,
       notes: record.get('Additional Notes') as string,
+      babysitterFirstName: record.get('First Name (from Babysitter)') as string,
+      parent: parent,
     };
   } catch (error) {
     console.error('Error verifying babysitter request:', error);

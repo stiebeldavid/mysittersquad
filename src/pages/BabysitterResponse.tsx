@@ -117,13 +117,29 @@ const BabysitterResponse = () => {
     <div className="container max-w-2xl mx-auto p-4">
       <Card>
         <CardHeader>
-          <CardTitle>Babysitting Request Details</CardTitle>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-center">
+              Welcome {request.babysitterFirstName}!
+            </h2>
+            {request.parent && (
+              <p className="text-lg text-center text-muted-foreground">
+                {request.parent.firstName} {request.parent.lastName} sent you a Babysitting Request
+              </p>
+            )}
+            <CardTitle>Babysitting Request Details</CardTitle>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <h3 className="font-medium">Date and Time</h3>
             <p>{format(parseISO(request.date), "EEEE, MMMM d, yyyy")}</p>
             <p>{request.timeRange}</p>
+            {request.notes && (
+              <div className="mt-4">
+                <h3 className="font-medium">Additional Notes</h3>
+                <p className="text-muted-foreground">{request.notes}</p>
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
