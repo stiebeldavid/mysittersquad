@@ -49,7 +49,11 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
     // Only allow up to 10 digits
     const digitsOnly = value.replace(/\D/g, '');
     if (digitsOnly.length <= 10) {
-      setMobile(value || "");
+      const currentDigits = mobile.replace(/\D/g, '');
+      // Only update if we're not exceeding 10 digits
+      if (digitsOnly.length <= 10 || digitsOnly.length < currentDigits.length) {
+        setMobile(value || "");
+      }
     }
   };
 
