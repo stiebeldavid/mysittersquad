@@ -47,7 +47,8 @@ export const PreviewDialog = ({
 
     const dayStr = format(date, "EEEE, MMMM d");
     const timeRange = formatTimeRange(startTime, endTime);
-    const additionalNotes = notes && notes.trim() ? `\n\nAdditional Notes:\n${notes}` : "";
+    const notesText = notes?.trim();
+    const additionalNotes = notesText ? `\n\nAdditional Notes:\n${notesText}` : "";
 
     return selectedBabysitters.map(sitter => ({
       babysitter: sitter,
