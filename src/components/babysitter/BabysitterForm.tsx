@@ -17,8 +17,9 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
 
   useEffect(() => {
     if (currentBabysitter?.mobile) {
-      // Format the phone number when editing an existing babysitter
       setMobile(formatPhoneWithCountryCode(currentBabysitter.mobile));
+    } else {
+      setMobile("");
     }
   }, [currentBabysitter]);
 
