@@ -55,7 +55,12 @@ const BabysitterList = () => {
         formData.get("firstName") as string,
         formData.get("lastName") as string,
         formData.get("mobile") as string,
-        user.mobile
+        user.mobile,
+        formData.get("age") as string,
+        formData.get("grade") as string,
+        formData.get("rate") as string,
+        formData.get("specialties") as string,
+        formData.get("notes") as string
       );
 
       queryClient.invalidateQueries({ queryKey: ['babysitters'] });
