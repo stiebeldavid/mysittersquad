@@ -8,7 +8,10 @@ export const findUserByMobile = async (mobile: string) => {
   }
 
   try {
+    // Clean and format the mobile number consistently
     const formattedMobile = formatPhoneWithCountryCode(mobile);
+    console.log('Searching for user with mobile:', formattedMobile); // Debug log
+    
     const records = await base('Users')
       .select({
         filterByFormula: `{Mobile}='${formattedMobile}'`,
@@ -17,7 +20,7 @@ export const findUserByMobile = async (mobile: string) => {
       .firstPage();
     
     if (records.length === 0) {
-      console.warn(`No user found for mobile: ${mobile}`);
+      console.warn(`No user found for mobile: ${formattedMobile}`);
       return null;
     }
     

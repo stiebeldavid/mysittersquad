@@ -2,7 +2,10 @@ export const formatPhoneWithCountryCode = (phone: string): string => {
   // Remove any non-digit characters
   const cleaned = phone.replace(/\D/g, '');
   
-  // If it already has country code (11 digits starting with 1), return as is
+  // If it's empty, return empty string
+  if (!cleaned) return '';
+  
+  // If it already has country code (11 digits starting with 1), format it
   if (cleaned.length === 11 && cleaned.startsWith('1')) {
     return '+' + cleaned;
   }
@@ -12,6 +15,11 @@ export const formatPhoneWithCountryCode = (phone: string): string => {
     return '+1' + cleaned;
   }
   
-  // Return original if we can't format it
-  return phone;
+  // If it's less than 10 digits, it's incomplete
+  if (cleaned.length < 10) {
+    return phone;
+  }
+  
+  // Return formatted number
+  return '+1' + cleaned.slice(-10);
 };
