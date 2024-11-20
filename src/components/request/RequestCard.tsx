@@ -11,6 +11,8 @@ interface RequestCardProps {
     name: string;
     status: string;
     deleted?: boolean;
+    firstName?: string;
+    lastName?: string;
   }[];
   notes?: string;
 }
@@ -58,7 +60,7 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
               className="flex justify-between items-center py-2 border-b last:border-0"
             >
               <span>
-                {babysitter.name}
+                {babysitter.firstName} {babysitter.lastName}
                 {babysitter.deleted && (
                   <span className="text-muted-foreground ml-1">(deleted)</span>
                 )}
