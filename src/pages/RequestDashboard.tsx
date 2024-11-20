@@ -64,7 +64,7 @@ const RequestDashboard = () => {
     if (existingGroup) {
       existingGroup.babysitters.push({
         id: request.babysitterId,
-        name: request.babysitterName,
+        name: `${request.get('First Name (from Babysitter)')} ${request.get('Last Name (from Babysitter)')}`.trim(),
         status: request.status,
         deleted: request.babysitterDeleted,
       });
@@ -77,7 +77,7 @@ const RequestDashboard = () => {
         babysitters: [
           {
             id: request.babysitterId,
-            name: request.babysitterName,
+            name: `${request.get('First Name (from Babysitter)')} ${request.get('Last Name (from Babysitter)')}`.trim(),
             status: request.status,
             deleted: request.babysitterDeleted,
           },
