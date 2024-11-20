@@ -21,6 +21,8 @@ const getStatusColor = (status: string) => {
       return "bg-green-500";
     case "declined":
       return "bg-red-500";
+    case "available":
+      return "bg-emerald-400";
     default:
       return "bg-yellow-500";
   }
