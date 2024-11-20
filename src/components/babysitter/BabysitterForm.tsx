@@ -54,7 +54,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             <Input
               id="age"
               name="age"
-              type="number"
+              type="text"
               defaultValue={currentBabysitter?.age}
             />
           </div>
