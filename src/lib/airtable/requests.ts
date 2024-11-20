@@ -126,6 +126,7 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string)
     const parent = await findParentByMobile(parentMobile);
     
     return {
+      id: record.id,
       date: record.get('Request Date') as string,
       timeRange: record.get('Time Range') as string,
       notes: record.get('Additional Notes') as string,
