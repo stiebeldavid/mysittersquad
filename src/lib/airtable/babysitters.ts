@@ -6,7 +6,12 @@ export const createBabysitter = async (
   firstName: string,
   lastName: string | undefined,
   mobile: string,
-  parentOwnerMobile: string
+  parentOwnerMobile: string,
+  age?: number,
+  grade?: string,
+  rate?: number,
+  specialties?: string,
+  notes?: string
 ) => {
   if (!parentOwnerMobile) {
     console.error('No parent mobile number provided to createBabysitter');
@@ -24,6 +29,11 @@ export const createBabysitter = async (
           'Last Name': lastName || '',
           'Mobile': formattedMobile,
           'Parent Owner Mobile': formattedParentMobile,
+          'Age': age,
+          'Grade': grade,
+          'Hourly rate (USD)': rate,
+          'Specialties': specialties,
+          'Notes': notes,
           'Deleted': false,
         },
       },

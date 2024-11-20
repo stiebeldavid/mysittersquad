@@ -48,15 +48,6 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             required
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="home">Home Number (Optional)</Label>
-          <Input
-            id="home"
-            name="home"
-            type="tel"
-            defaultValue={currentBabysitter?.home}
-          />
-        </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="age">Age</Label>
@@ -68,15 +59,24 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="rate">Hourly Rate ($)</Label>
+            <Label htmlFor="grade">Grade</Label>
             <Input
-              id="rate"
-              name="rate"
-              type="number"
-              step="0.01"
-              defaultValue={currentBabysitter?.rate}
+              id="grade"
+              name="grade"
+              type="text"
+              defaultValue={currentBabysitter?.grade}
             />
           </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="rate">Hourly rate (USD)</Label>
+          <Input
+            id="rate"
+            name="rate"
+            type="number"
+            step="0.01"
+            defaultValue={currentBabysitter?.rate}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="specialties">Specialties</Label>

@@ -3,8 +3,8 @@ export interface Babysitter {
   firstName: string;
   lastName: string;
   mobile: string;
-  home?: string;
   age?: number;
+  grade?: string;
   rate?: number;
   specialties?: string;
   notes?: string;
