@@ -47,11 +47,11 @@ export const PreviewDialog = ({
 
     const dayStr = format(date, "EEEE, MMMM d");
     const timeRange = formatTimeRange(startTime, endTime);
-    const notesSection = notes ? `\n\nAdditional Notes:\n${notes}` : "";
+    const additionalNotes = notes ? `\n\nAdditional Notes:\n${notes}` : "";
 
     return selectedBabysitters.map(sitter => ({
       babysitter: sitter,
-      message: `Hi ${sitter.firstName},\n\n${userName} would like to know if you can babysit ${dayStr}, ${timeRange}.${notesSection}`
+      message: `Hi ${sitter.firstName},\n\n${userName} would like to know if you can babysit ${dayStr}, ${timeRange}.${additionalNotes}`
     }));
   };
 
