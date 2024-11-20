@@ -50,7 +50,7 @@ export const PreviewDialog = ({
 
     return selectedBabysitters.map(sitter => ({
       babysitter: sitter,
-      message: `Hi ${sitter.firstName},\n${userName} would like to know if you can babysit ${dayStr}, ${timeRange}.${notes ? `\n\nAdditional Notes:\n${notes}` : ""}`
+      message: `Hi ${sitter.firstName},\n\n${userName} would like to know if you can babysit ${dayStr}, ${timeRange}.${notes ? `\n\nAdditional Notes:\n${notes}` : ""}`
     }));
   };
 
