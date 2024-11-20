@@ -4,7 +4,8 @@ import { Label } from "@/components/ui/label";
 import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Babysitter } from "@/types/babysitter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { formatPhoneWithCountryCode } from "@/utils/phoneNumber";
 
 interface BabysitterFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -12,7 +13,14 @@ interface BabysitterFormProps {
 }
 
 export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormProps) => {
-  const [mobile, setMobile] = useState(currentBabysitter?.mobile || "");
+  const [mobile, setMobile] = useState("");
+
+  useEffect(() => {
+    if (currentBabysitter?.mobile) {
+      // Format the phone number when editing an existing babysitter
+      setMobile(formatPhoneWithCountryCode(currentBabysitter.mobile));
+    }
+  }, [currentBabysitter]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
