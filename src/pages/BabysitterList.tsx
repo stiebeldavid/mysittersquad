@@ -123,6 +123,11 @@ const BabysitterList = () => {
     setIsDialogOpen(true);
   };
 
+  const handleAdd = () => {
+    setCurrentBabysitter(null);
+    setIsDialogOpen(true);
+  };
+
   const handleContactsSelected = (newBabysitters: Babysitter[]) => {
     queryClient.setQueryData(['babysitters', user?.mobile], (oldData: Babysitter[] | undefined) => 
       [...(oldData || []), ...newBabysitters]
@@ -148,7 +153,7 @@ const BabysitterList = () => {
         <h1 className="text-3xl font-bold">Babysitters</h1>
         <div className="flex gap-2 ml-auto max-w-[200px]">
           <ContactPickerButton onContactsSelected={handleContactsSelected} />
-          <Button onClick={() => setIsDialogOpen(true)} className="whitespace-nowrap">
+          <Button onClick={handleAdd} className="whitespace-nowrap">
             <Plus className="w-4 h-4 mr-2" />
             Add
           </Button>
@@ -164,10 +169,18 @@ const BabysitterList = () => {
             onDelete={handleDelete}
           />
         ))}
-        <AddBabysitterCard onClick={() => setIsDialogOpen(true)} />
+        <AddBabysitterCard onClick={handleAdd} />
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog 
+        open={isDialogOpen} 
+        onOpenChange={(open) => {
+          if (!open) {
+            setCurrentBabysitter(null);
+          }
+          setIsDialogOpen(open);
+        }}
+      >
         <BabysitterForm
           onSubmit={handleSubmit}
           currentBabysitter={currentBabysitter}
