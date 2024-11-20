@@ -10,6 +10,11 @@ export const findUserByMobile = async (mobile: string) => {
   try {
     // Clean and format the mobile number consistently
     const formattedMobile = formatPhoneWithCountryCode(mobile);
+    if (!formattedMobile) {
+      console.error('Invalid mobile number format');
+      return null;
+    }
+    
     console.log('Searching for user with mobile:', formattedMobile); // Debug log
     
     const records = await base('Users')
@@ -34,12 +39,17 @@ export const findUserByMobile = async (mobile: string) => {
 export const createUser = async (firstName: string, lastName: string, mobile: string) => {
   try {
     const formattedMobile = formatPhoneWithCountryCode(mobile);
+    if (!formattedMobile) {
+      console.error('Invalid mobile number format');
+      return null;
+    }
+
     const records = await base('Users').create([
       {
         fields: {
           'First Name': firstName,
           'Last Name': lastName,
-          Mobile: formattedMobile,
+          'Mobile': formattedMobile,
         },
       },
     ]);
@@ -64,6 +74,11 @@ export const updateUserAddress = async (
 
   try {
     const formattedMobile = formatPhoneWithCountryCode(mobile);
+    if (!formattedMobile) {
+      console.error('Invalid mobile number format');
+      return null;
+    }
+
     const records = await base('Users')
       .select({
         filterByFormula: `{Mobile}='${formattedMobile}'`,

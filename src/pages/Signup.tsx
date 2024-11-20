@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { createUser, findUserByMobile } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
+import { formatPhoneWithCountryCode } from "@/utils/phoneNumber";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -23,8 +24,18 @@ const Signup = () => {
     setIsLoading(true);
 
     try {
+      const formattedMobile = formatPhoneWithCountryCode(formData.mobile);
+      if (!formattedMobile) {
+        toast({
+          variant: "destructive",
+          title: "Invalid phone number",
+          description: "Please enter a valid 10-digit phone number.",
+        });
+        return;
+      }
+
       // Check if user already exists
-      const existingUser = await findUserByMobile(formData.mobile);
+      const existingUser = await findUserByMobile(formattedMobile);
       if (existingUser) {
         toast({
           variant: "destructive",
@@ -38,7 +49,7 @@ const Signup = () => {
       const record = await createUser(
         formData.firstName,
         formData.lastName,
-        formData.mobile
+        formattedMobile
       );
 
       if (record) {
