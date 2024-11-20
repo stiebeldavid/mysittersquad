@@ -85,32 +85,25 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string)
   try {
     const formattedMobile = formatPhoneWithCountryCode(mobile);
     
-    // First find the request using the Request ID field
+    // First find the request using the ID field
     const records = await base('Requests')
       .select({
-        filterByFormula: `{Request ID}='${requestId}'`,
+        filterByFormula: `AND({ID}='${requestId}', {Mobile (from Babysitter)}='${formattedMobile}')`,
         maxRecords: 1,
       })
       .firstPage();
     
     if (records.length === 0) {
-      console.error('Request not found');
+      console.log('No matching record found for:', { requestId, formattedMobile });
       return null;
     }
     
     const record = records[0];
-    
-    // Check if the provided mobile matches the Mobile (from Babysitter) field
-    const babysitterMobile = record.get('Mobile (from Babysitter)') as string;
-    
-    if (babysitterMobile === formattedMobile) {
-      return {
-        date: record.get('Request Date') as string,
-        timeRange: record.get('Time Range') as string,
-        notes: record.get('Additional Notes') as string,
-      };
-    }
-    return null;
+    return {
+      date: record.get('Request Date') as string,
+      timeRange: record.get('Time Range') as string,
+      notes: record.get('Additional Notes') as string,
+    };
   } catch (error) {
     console.error('Error verifying babysitter request:', error);
     return null;
