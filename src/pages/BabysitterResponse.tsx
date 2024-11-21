@@ -15,7 +15,7 @@ const BabysitterResponse = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [verifiedMobile, setVerifiedMobile] = useState("");
 
-  const { data: request, isLoading, refetch } = useQuery({
+  const { data: request, refetch } = useQuery({
     queryKey: ["request", requestId, verifiedMobile],
     queryFn: () => verifyBabysitterRequest(requestId || "", verifiedMobile),
     enabled: false,
@@ -43,6 +43,7 @@ const BabysitterResponse = () => {
   const handleVerify = async (mobile: string) => {
     try {
       setIsVerifying(true);
+      // Set the verified mobile before refetching
       setVerifiedMobile(mobile);
       const result = await refetch();
       
@@ -60,7 +61,7 @@ const BabysitterResponse = () => {
     mutation.mutate({ response, comments });
   };
 
-  if (isLoading || isVerifying) {
+  if (isVerifying) {
     return (
       <div className="container max-w-2xl mx-auto p-4">
         <Card>
