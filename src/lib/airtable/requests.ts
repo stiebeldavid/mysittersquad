@@ -61,7 +61,9 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
     return records.map((record) => {
       const firstName = record.get('First Name (from Babysitter)') as string || '';
       const lastName = record.get('Last Name (from Babysitter)') as string || '';
-      const babysitterName = `${firstName} ${lastName}`.trim() || 'Unknown Babysitter';
+      const babysitterName = firstName && lastName 
+        ? `${firstName} ${lastName}`
+        : firstName || 'Unknown Babysitter';
 
       return {
         id: record.id,
