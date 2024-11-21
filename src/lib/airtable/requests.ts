@@ -42,8 +42,6 @@ export const createRequest = async (
 };
 
 export const fetchRequests = async (parentRequestorMobile: string) => {
-  console.log('Fetching requests for parent mobile:', parentRequestorMobile);
-  
   if (!parentRequestorMobile) {
     console.error('No parent mobile number provided to fetchRequests');
     return [];
@@ -52,7 +50,6 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
   try {
     const formattedParentMobile = formatPhoneWithCountryCode(parentRequestorMobile);
     const filterFormula = `{Parent Requestor Mobile}='${formattedParentMobile}'`;
-    console.log('Using filter formula:', filterFormula);
     
     const records = await base('Requests')
       .select({
@@ -61,19 +58,20 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       })
       .all();
 
-    console.log('Found request records:', records.length);
-    console.log('Raw records:', records.map(record => record.fields));
-
     return records.map((record) => ({
       id: record.id,
       date: record.get('Request Date') as string,
       timeRange: record.get('Time Range') as string,
-      babysitterId: (record.get('Babysitter') as string[])[0],
-      babysitterName: `${record.get('First Name (from Babysitter)') || ''} ${record.get('Last Name (from Babysitter)') || ''}`.trim(),
-      status: record.get('Status') as string,
-      createdAt: record.get('Created Time') as string,
-      babysitterDeleted: record.get('Deleted (from Babysitter)') as boolean,
-      notes: record.get('Additional Notes') as string,
+      babysitterId: Array.isArray(record.get('Babysitter')) 
+        ? (record.get('Babysitter') as string[])[0] 
+        : '',
+      babysitterName: record.get('First Name (from Babysitter)') 
+        ? `${record.get('First Name (from Babysitter)')} ${record.get('Last Name (from Babysitter)')}`
+        : 'Unknown Babysitter',
+      status: record.get('Status') as string || 'Pending',
+      createdAt: record.get('Created Time') as string || new Date().toISOString(),
+      babysitterDeleted: record.get('Deleted (from Babysitter)') as boolean || false,
+      notes: record.get('Additional Notes') as string || '',
     }));
   } catch (error) {
     console.error('Error fetching requests:', error);
@@ -81,34 +79,10 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
   }
 };
 
-const findParentByMobile = async (mobile: string) => {
-  try {
-    const records = await base('Users')
-      .select({
-        filterByFormula: `{Mobile}='${mobile}'`,
-        maxRecords: 1,
-      })
-      .firstPage();
-    
-    if (records.length === 0) {
-      return null;
-    }
-    
-    return {
-      firstName: records[0].get('First Name') as string,
-      lastName: records[0].get('Last Name') as string,
-    };
-  } catch (error) {
-    console.error('Error finding parent:', error);
-    return null;
-  }
-};
-
 export const verifyBabysitterRequest = async (requestId: string, mobile: string) => {
   try {
     const formattedMobile = formatPhoneWithCountryCode(mobile);
     
-    // First find the request using the Request ID field
     const records = await base('Requests')
       .select({
         filterByFormula: `AND({Request ID}='${requestId}', {Mobile (from Babysitter)}='${formattedMobile}')`,
@@ -136,6 +110,29 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string)
     };
   } catch (error) {
     console.error('Error verifying babysitter request:', error);
+    return null;
+  }
+};
+
+const findParentByMobile = async (mobile: string) => {
+  try {
+    const records = await base('Users')
+      .select({
+        filterByFormula: `{Mobile}='${mobile}'`,
+        maxRecords: 1,
+      })
+      .firstPage();
+    
+    if (records.length === 0) {
+      return null;
+    }
+    
+    return {
+      firstName: records[0].get('First Name') as string,
+      lastName: records[0].get('Last Name') as string,
+    };
+  } catch (error) {
+    console.error('Error finding parent:', error);
     return null;
   }
 };
