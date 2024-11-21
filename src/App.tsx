@@ -28,9 +28,10 @@ const AppContent = () => {
   const isResponsePage = location.pathname.startsWith('/r/');
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
       {user && !isResponsePage && <Navbar />}
-      <Routes>
+      <div className="max-w-full">
+        <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/r/:requestId" element={<BabysitterResponse />} />
@@ -74,7 +75,8 @@ const AppContent = () => {
             </PrivateRoute>
           }
         />
-      </Routes>
+        </Routes>
+      </div>
       {user && !isResponsePage && <FloatingActionButton />}
     </div>
   );

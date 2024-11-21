@@ -32,7 +32,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden;
   }
 }
 
@@ -41,5 +41,5 @@
 }
 
 .page-container {
-  @apply container mx-auto px-4 py-8 max-w-2xl animate-slide-up;
+  @apply container mx-auto px-4 sm:px-6 py-8 max-w-2xl w-full animate-slide-up;
 }
