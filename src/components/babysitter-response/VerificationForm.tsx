@@ -32,36 +32,38 @@ export const VerificationForm = ({ onVerify, isVerifying }: VerificationFormProp
         <CardTitle>Verify Your Identity</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <form onSubmit={handleMobileSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="mobile">Mobile Number</Label>
-            <PhoneNumberInput
-              id="mobile"
-              value={mobile}
-              onChange={(value) => setMobile(value || "")}
-              placeholder="Enter your mobile number"
-            />
-          </div>
-          <Button type="submit" disabled={isVerifying}>
-            {isVerifying ? "Verifying..." : "Verify using Mobile Number"}
-          </Button>
-        </form>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleMobileSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="mobile">Mobile Number</Label>
+              <PhoneNumberInput
+                id="mobile"
+                value={mobile}
+                onChange={(value) => setMobile(value || "")}
+                placeholder="Enter your mobile number"
+              />
+            </div>
+            <Button type="submit" disabled={isVerifying}>
+              {isVerifying ? "Verifying..." : "Verify using Mobile Number"}
+            </Button>
+          </form>
 
-        <form onSubmit={handleEmailSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-            />
-          </div>
-          <Button type="submit" disabled={isVerifying}>
-            {isVerifying ? "Verifying..." : "Verify using Email"}
-          </Button>
-        </form>
+          <form onSubmit={handleEmailSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+              />
+            </div>
+            <Button type="submit" disabled={isVerifying}>
+              {isVerifying ? "Verifying..." : "Verify using Email"}
+            </Button>
+          </form>
+        </div>
       </CardContent>
     </Card>
   );
