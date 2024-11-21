@@ -2,114 +2,12 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
-import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { verifyBabysitterRequest, updateBabysitterResponse } from "@/lib/airtable";
-
-const VerificationForm = ({ onVerify, isVerifying }: { onVerify: (mobile: string) => void, isVerifying: boolean }) => {
-  const [mobile, setMobile] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onVerify(mobile);
-  };
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Verify Your Mobile Number</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="mobile">Mobile Number</Label>
-            <PhoneNumberInput
-              id="mobile"
-              value={mobile}
-              onChange={(value) => setMobile(value || "")}
-              placeholder="Enter your mobile number"
-            />
-          </div>
-          <Button type="submit" disabled={isVerifying}>
-            {isVerifying ? "Verifying..." : "Verify"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  );
-};
-
-const ResponseForm = ({ request, onSubmit, isPending }: { 
-  request: any, 
-  onSubmit: (response: string, comments: string) => void,
-  isPending: boolean 
-}) => {
-  const [response, setResponse] = useState<"yes" | "no" | null>(null);
-  const [comments, setComments] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!response) {
-      toast.error("Please select a response");
-      return;
-    }
-    onSubmit(response, comments);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-3">
-        <Label>Are you available?</Label>
-        <RadioGroup
-          value={response || ""}
-          onValueChange={(value) => setResponse(value as "yes" | "no")}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="yes" />
-            <Label htmlFor="yes">Yes, I can babysit then</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="no" />
-            <Label htmlFor="no">No, I am not available then</Label>
-          </div>
-        </RadioGroup>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="comments">Additional Comments (Optional)</Label>
-        <Textarea
-          id="comments"
-          placeholder="Add any additional comments here..."
-          value={comments}
-          onChange={(e) => setComments(e.target.value)}
-        />
-      </div>
-
-      <Button type="submit" disabled={isPending}>
-        Send Response
-      </Button>
-    </form>
-  );
-};
-
-const SuccessMessage = ({ parent }: { parent: any }) => (
-  <Card>
-    <CardContent className="p-6">
-      <div className="text-center space-y-4">
-        <h2 className="text-2xl font-bold text-green-600">Thanks for your response!</h2>
-        <p className="text-lg">
-          {parent.firstName} {parent.lastName} has been notified.
-        </p>
-        <p className="text-gray-600">You can close this page now.</p>
-      </div>
-    </CardContent>
-  </Card>
-);
+import { VerificationForm } from "@/components/babysitter-response/VerificationForm";
+import { ResponseForm } from "@/components/babysitter-response/ResponseForm";
+import { SuccessMessage } from "@/components/babysitter-response/SuccessMessage";
 
 const BabysitterResponse = () => {
   const { requestId } = useParams();
@@ -117,14 +15,14 @@ const BabysitterResponse = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [verifiedMobile, setVerifiedMobile] = useState("");
 
-  const { data: request, refetch } = useQuery({
+  const { data: request, isLoading, refetch } = useQuery({
     queryKey: ["request", requestId, verifiedMobile],
     queryFn: () => verifyBabysitterRequest(requestId || "", verifiedMobile),
-    enabled: false, // Disable the query by default
+    enabled: false,
   });
 
   const mutation = useMutation({
-    mutationFn: ({ response, comments }: { response: string, comments: string }) => {
+    mutationFn: ({ response, comments }: { response: string; comments: string }) => {
       if (!request?.id) return Promise.reject("Invalid data");
       return updateBabysitterResponse(request.id, {
         status: response === "yes" ? "Available" : "Declined",
