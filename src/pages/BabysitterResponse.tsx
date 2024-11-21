@@ -13,12 +13,7 @@ const BabysitterResponse = () => {
   const { requestId } = useParams();
   const [isVerifying, setIsVerifying] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const { data: request, refetch } = useQuery({
-    queryKey: ["request", requestId],
-    queryFn: () => verifyBabysitterRequest(requestId || "", ""),
-    enabled: false,
-  });
+  const [request, setRequest] = useState<any>(null);
 
   const mutation = useMutation({
     mutationFn: ({ response, comments }: { response: string; comments: string }) => {
@@ -42,11 +37,12 @@ const BabysitterResponse = () => {
   const handleVerify = async (mobile: string) => {
     try {
       setIsVerifying(true);
-      await refetch();
       const result = await verifyBabysitterRequest(requestId || "", mobile);
       
       if (!result) {
         toast.error("Could not find that babysitting request");
+      } else {
+        setRequest(result);
       }
     } catch (error) {
       toast.error("Invalid mobile number format");
