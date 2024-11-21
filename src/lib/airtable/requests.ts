@@ -49,7 +49,7 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
 
   try {
     const formattedParentMobile = formatPhoneWithCountryCode(parentRequestorMobile);
-    const filterFormula = `{Parent Requestor Mobile}="${formattedParentMobile}"`;
+    const filterFormula = `{Parent Requestor Mobile}='${formattedParentMobile}'`;
     
     const records = await base('Requests')
       .select({
@@ -85,29 +85,19 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
   }
 };
 
-export const verifyBabysitterRequest = async (requestId: string, mobile: string, email: string) => {
+export const verifyBabysitterRequest = async (requestId: string, mobile: string) => {
   try {
-    let filterFormula = `{Request ID}="${requestId}"`;
-    
-    if (mobile && email) {
-      filterFormula = `AND({Request ID}="${requestId}", OR({Mobile (from Babysitter)}="${mobile}", {Email (from Babysitter)}="${email.toLowerCase()}"))`;
-    } else if (mobile) {
-      filterFormula = `AND({Request ID}="${requestId}", {Mobile (from Babysitter)}="${mobile}")`;
-    } else if (email) {
-      filterFormula = `AND({Request ID}="${requestId}", {Email (from Babysitter)}="${email.toLowerCase()}")`;
-    }
-    
-    console.log('Filter Formula:', filterFormula);
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
     
     const requestRecords = await base('Requests')
       .select({
-        filterByFormula: filterFormula,
+        filterByFormula: `AND({Request ID}='${requestId}', {Mobile (from Babysitter)}='${formattedMobile}')`,
         maxRecords: 1,
       })
       .firstPage();
     
     if (requestRecords.length === 0) {
-      console.log('No matching request found for:', { requestId, mobile, email });
+      console.log('No matching request found for:', { requestId, formattedMobile });
       return null;
     }
     
@@ -121,7 +111,7 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string,
       date: record.get('Request Date') as string,
       timeRange: record.get('Time Range') as string,
       notes: record.get('Additional Notes') as string,
-      babysitterFirstName: record.get('First Name') as string,
+      babysitterFirstName: record.get('First Name (from Babysitter)') as string,
       parent: parent,
     };
   } catch (error) {
@@ -132,9 +122,9 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string,
 
 const findParentByMobile = async (mobile: string) => {
   try {
-    const records = await base('Requests')
+    const records = await base('Users')
       .select({
-        filterByFormula: `{Mobile}="${mobile}"`,
+        filterByFormula: `{Mobile}='${mobile}'`,
         maxRecords: 1,
       })
       .firstPage();
