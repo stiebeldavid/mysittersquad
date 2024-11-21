@@ -90,11 +90,11 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string,
     let filterFormula = `RECORD_ID()='${requestId}'`;
     
     if (mobile && email) {
-      filterFormula = `AND(RECORD_ID()='${requestId}', OR({Mobile (from Babysitter)}='${mobile}', LOWER({Email (from Babysitter)})='${email.toLowerCase()}'))`;
+      filterFormula = `AND(RECORD_ID()='${requestId}', OR({Mobile (from Babysitter)}='${mobile}', {Email (from Babysitter)}='${email.toLowerCase()}'))`;
     } else if (mobile) {
       filterFormula = `AND(RECORD_ID()='${requestId}', {Mobile (from Babysitter)}='${mobile}')`;
     } else if (email) {
-      filterFormula = `AND(RECORD_ID()='${requestId}', LOWER({Email (from Babysitter)})='${email.toLowerCase()}')`;
+      filterFormula = `AND(RECORD_ID()='${requestId}', {Email (from Babysitter)}='${email.toLowerCase()}')`;
     }
     
     const requestRecords = await base('Requests')
