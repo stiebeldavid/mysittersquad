@@ -90,14 +90,14 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string,
     let filterFormula = `{Request ID}='${requestId}'`;
     
     if (mobile && email) {
-      filterFormula = `AND({Request ID}='${requestId}', OR({'Mobile (from Babysitter)'}='${mobile}', {Email}='${email.toLowerCase()}'))`;
+      filterFormula = `AND({Request ID}='${requestId}', OR({'Mobile (from Babysitter)'}='${mobile}', {'Email (from Babysitter)'}='${email.toLowerCase()}'))`;
     } else if (mobile) {
       filterFormula = `AND({Request ID}='${requestId}', {'Mobile (from Babysitter)'}='${mobile}')`;
     } else if (email) {
-      filterFormula = `AND({Request ID}='${requestId}', {Email}='${email.toLowerCase()}')`;
+      filterFormula = `AND({Request ID}='${requestId}', {'Email (from Babysitter)'}='${email.toLowerCase()}')`;
     }
     
-    console.log('Filter Formula:', filterFormula); // Adding this to help debug
+    console.log('Filter Formula:', filterFormula);
     
     const requestRecords = await base('Requests')
       .select({
