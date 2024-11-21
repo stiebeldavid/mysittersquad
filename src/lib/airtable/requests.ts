@@ -90,12 +90,14 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string,
     let filterFormula = `RECORD_ID()='${requestId}'`;
     
     if (mobile && email) {
-      filterFormula = `AND(RECORD_ID()='${requestId}', OR({Mobile (from Babysitter)}='${mobile}', {Email (from Babysitter)}='${email.toLowerCase()}'))`;
+      filterFormula = `AND(RECORD_ID()='${requestId}', OR({Mobile}='${mobile}', {Email}='${email.toLowerCase()}'))`;
     } else if (mobile) {
-      filterFormula = `AND(RECORD_ID()='${requestId}', {Mobile (from Babysitter)}='${mobile}')`;
+      filterFormula = `AND(RECORD_ID()='${requestId}', {Mobile}='${mobile}')`;
     } else if (email) {
-      filterFormula = `AND(RECORD_ID()='${requestId}', {Email (from Babysitter)}='${email.toLowerCase()}')`;
+      filterFormula = `AND(RECORD_ID()='${requestId}', {Email}='${email.toLowerCase()}')`;
     }
+    
+    console.log('Filter Formula:', filterFormula); // Adding this to help debug
     
     const requestRecords = await base('Requests')
       .select({
@@ -119,7 +121,7 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string,
       date: record.get('Request Date') as string,
       timeRange: record.get('Time Range') as string,
       notes: record.get('Additional Notes') as string,
-      babysitterFirstName: record.get('First Name (from Babysitter)') as string,
+      babysitterFirstName: record.get('First Name') as string,
       parent: parent,
     };
   } catch (error) {
