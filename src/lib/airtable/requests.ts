@@ -132,7 +132,7 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string,
 
 const findParentByMobile = async (mobile: string) => {
   try {
-    const records = await base('Users')
+    const records = await base('Requests')
       .select({
         filterByFormula: `{Mobile}="${mobile}"`,
         maxRecords: 1,
