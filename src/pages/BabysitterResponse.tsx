@@ -11,7 +11,6 @@ import { format, parseISO } from "date-fns";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { verifyBabysitterRequest, updateBabysitterResponse } from "@/lib/airtable";
 
-// Split into smaller components
 const VerificationForm = ({ onVerify, isVerifying }: { onVerify: (mobile: string) => void, isVerifying: boolean }) => {
   const [mobile, setMobile] = useState("");
 
@@ -118,10 +117,10 @@ const BabysitterResponse = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [verifiedMobile, setVerifiedMobile] = useState("");
 
-  const { data: request, isLoading, refetch } = useQuery({
+  const { data: request, refetch } = useQuery({
     queryKey: ["request", requestId, verifiedMobile],
     queryFn: () => verifyBabysitterRequest(requestId || "", verifiedMobile),
-    enabled: false,
+    enabled: false, // Disable the query by default
   });
 
   const mutation = useMutation({
