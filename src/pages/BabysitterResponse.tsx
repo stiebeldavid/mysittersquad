@@ -34,10 +34,10 @@ const BabysitterResponse = () => {
     },
   });
 
-  const handleVerify = async (mobile: string) => {
+  const handleVerify = async (identifier: string, isEmail = false) => {
     try {
       setIsVerifying(true);
-      const result = await verifyBabysitterRequest(requestId || "", mobile);
+      const result = await verifyBabysitterRequest(requestId || "", identifier, isEmail);
       
       if (!result) {
         toast.error("Could not find that babysitting request");
@@ -45,7 +45,7 @@ const BabysitterResponse = () => {
         setRequest(result);
       }
     } catch (error) {
-      toast.error("Invalid mobile number format");
+      toast.error(isEmail ? "Invalid email format" : "Invalid mobile number format");
     } finally {
       setIsVerifying(false);
     }
