@@ -87,21 +87,35 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
 
 export const verifyBabysitterRequest = async (requestId: string, mobile: string) => {
   try {
+    // Format the mobile number consistently
     const formattedMobile = formatPhoneWithCountryCode(mobile);
     
-    const records = await base('Requests')
+    // First find the request record
+    const requestRecords = await base('Requests')
       .select({
-        filterByFormula: `AND({Request ID}='${requestId}', {Mobile (from Babysitter)}='${formattedMobile}')`,
+        filterByFormula: `{Request ID}='${requestId}'`,
         maxRecords: 1,
       })
       .firstPage();
     
-    if (records.length === 0) {
-      console.log('No matching record found for:', { requestId, formattedMobile });
+    if (requestRecords.length === 0) {
+      console.log('No request found with ID:', requestId);
+      return null;
+    }
+
+    // Then verify the babysitter's mobile matches
+    const record = requestRecords[0];
+    const babysitterMobile = record.get('Mobile (from Babysitter)') as string;
+    const formattedBabysitterMobile = formatPhoneWithCountryCode(babysitterMobile);
+
+    if (formattedMobile !== formattedBabysitterMobile) {
+      console.log('Mobile numbers do not match:', { 
+        provided: formattedMobile, 
+        stored: formattedBabysitterMobile 
+      });
       return null;
     }
     
-    const record = records[0];
     const parentMobile = record.get('Parent Requestor Mobile') as string;
     const parent = await findParentByMobile(parentMobile);
     
