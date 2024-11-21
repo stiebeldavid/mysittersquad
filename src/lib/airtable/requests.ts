@@ -49,7 +49,7 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
 
   try {
     const formattedParentMobile = formatPhoneWithCountryCode(parentRequestorMobile);
-    const filterFormula = `{Parent Requestor Mobile}='${formattedParentMobile}'`;
+    const filterFormula = `[Parent Requestor Mobile]='${formattedParentMobile}'`;
     
     const records = await base('Requests')
       .select({
@@ -87,14 +87,14 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
 
 export const verifyBabysitterRequest = async (requestId: string, mobile: string, email: string) => {
   try {
-    let filterFormula = `{Request ID}='${requestId}'`;
+    let filterFormula = `[Request ID]='${requestId}'`;
     
     if (mobile && email) {
-      filterFormula = `AND({Request ID}='${requestId}', OR([Mobile (from Babysitter)]='${mobile}', [Email (from Babysitter)]='${email.toLowerCase()}'))`;
+      filterFormula = `AND([Request ID]='${requestId}', OR([Mobile (from Babysitter)]='${mobile}', [Email (from Babysitter)]='${email.toLowerCase()}'))`;
     } else if (mobile) {
-      filterFormula = `AND({Request ID}='${requestId}', [Mobile (from Babysitter)]='${mobile}')`;
+      filterFormula = `AND([Request ID]='${requestId}', [Mobile (from Babysitter)]='${mobile}')`;
     } else if (email) {
-      filterFormula = `AND({Request ID}='${requestId}', [Email (from Babysitter)]='${email.toLowerCase()}')`;
+      filterFormula = `AND([Request ID]='${requestId}', [Email (from Babysitter)]='${email.toLowerCase()}')`;
     }
     
     console.log('Filter Formula:', filterFormula);
@@ -134,7 +134,7 @@ const findParentByMobile = async (mobile: string) => {
   try {
     const records = await base('Users')
       .select({
-        filterByFormula: `{Mobile}='${mobile}'`,
+        filterByFormula: `[Mobile]='${mobile}'`,
         maxRecords: 1,
       })
       .firstPage();
