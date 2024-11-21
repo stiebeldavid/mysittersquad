@@ -42,11 +42,10 @@ const BabysitterResponse = () => {
   const handleVerify = async (mobile: string) => {
     try {
       setIsVerifying(true);
-      const result = await refetch({
-        queryFn: () => verifyBabysitterRequest(requestId || "", mobile)
-      });
+      await refetch();
+      const result = await verifyBabysitterRequest(requestId || "", mobile);
       
-      if (!result.data) {
+      if (!result) {
         toast.error("Could not find that babysitting request");
       }
     } catch (error) {
