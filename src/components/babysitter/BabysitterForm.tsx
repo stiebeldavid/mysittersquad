@@ -59,27 +59,29 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             />
           </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            defaultValue={currentBabysitter?.email}
-            required
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="mobile">Mobile Number</Label>
-          <PhoneNumberInput
-            id="mobile"
-            name="mobile"
-            value={mobile}
-            onChange={(value) => setMobile(value || "")}
-            required
-          />
-        </div>
         <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="mobile">Mobile Number</Label>
+            <PhoneNumberInput
+              id="mobile"
+              name="mobile"
+              value={mobile}
+              onChange={(value) => setMobile(value || "")}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              defaultValue={currentBabysitter?.email}
+              required
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="age">Age</Label>
             <Input
@@ -98,15 +100,15 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
               defaultValue={currentBabysitter?.grade}
             />
           </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="rate">Hourly rate (USD)</Label>
-          <Input
-            id="rate"
-            name="rate"
-            type="text"
-            defaultValue={currentBabysitter?.rate}
-          />
+          <div className="space-y-2">
+            <Label htmlFor="rate">Hourly rate (USD)</Label>
+            <Input
+              id="rate"
+              name="rate"
+              type="text"
+              defaultValue={currentBabysitter?.rate}
+            />
+          </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="specialties">Specialties</Label>
