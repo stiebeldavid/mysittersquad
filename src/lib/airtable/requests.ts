@@ -87,14 +87,14 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
 
 export const verifyBabysitterRequest = async (requestId: string, mobile: string, email: string) => {
   try {
-    let filterFormula = `RECORD_ID()='${requestId}'`;
+    let filterFormula = `{Request ID}='${requestId}'`;
     
     if (mobile && email) {
-      filterFormula = `AND(RECORD_ID()='${requestId}', OR({Mobile}='${mobile}', {Email}='${email.toLowerCase()}'))`;
+      filterFormula = `AND({Request ID}='${requestId}', OR({Mobile}='${mobile}', {Email}='${email.toLowerCase()}'))`;
     } else if (mobile) {
-      filterFormula = `AND(RECORD_ID()='${requestId}', {Mobile}='${mobile}')`;
+      filterFormula = `AND({Request ID}='${requestId}', {Mobile}='${mobile}')`;
     } else if (email) {
-      filterFormula = `AND(RECORD_ID()='${requestId}', {Email}='${email.toLowerCase()}')`;
+      filterFormula = `AND({Request ID}='${requestId}', {Email}='${email.toLowerCase()}')`;
     }
     
     console.log('Filter Formula:', filterFormula); // Adding this to help debug
