@@ -49,7 +49,8 @@ const BabysitterList = () => {
           formData.get("grade") as string,
           formData.get("rate") as string,
           formData.get("specialties") as string,
-          formData.get("notes") as string
+          formData.get("notes") as string,
+          formData.get("email") as string
         );
         toast({
           title: "Babysitter Updated",
@@ -65,7 +66,8 @@ const BabysitterList = () => {
           formData.get("grade") as string,
           formData.get("rate") as string,
           formData.get("specialties") as string,
-          formData.get("notes") as string
+          formData.get("notes") as string,
+          formData.get("email") as string
         );
         toast({
           title: "Babysitter Added",
