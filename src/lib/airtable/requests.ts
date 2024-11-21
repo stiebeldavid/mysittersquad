@@ -58,21 +58,25 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
       })
       .all();
 
-    return records.map((record) => ({
-      id: record.id,
-      date: record.get('Request Date') as string,
-      timeRange: record.get('Time Range') as string,
-      babysitterId: Array.isArray(record.get('Babysitter')) 
-        ? (record.get('Babysitter') as string[])[0] 
-        : '',
-      babysitterName: record.get('First Name (from Babysitter)') 
-        ? `${record.get('First Name (from Babysitter)')} ${record.get('Last Name (from Babysitter)')}`
-        : 'Unknown Babysitter',
-      status: record.get('Status') as string || 'Pending',
-      createdAt: record.get('Created Time') as string || new Date().toISOString(),
-      babysitterDeleted: record.get('Deleted (from Babysitter)') as boolean || false,
-      notes: record.get('Additional Notes') as string || '',
-    }));
+    return records.map((record) => {
+      const firstName = record.get('First Name (from Babysitter)') as string || '';
+      const lastName = record.get('Last Name (from Babysitter)') as string || '';
+      const babysitterName = `${firstName} ${lastName}`.trim() || 'Unknown Babysitter';
+
+      return {
+        id: record.id,
+        date: record.get('Request Date') as string,
+        timeRange: record.get('Time Range') as string,
+        babysitterId: Array.isArray(record.get('Babysitter')) 
+          ? (record.get('Babysitter') as string[])[0] 
+          : '',
+        babysitterName,
+        status: record.get('Status') as string || 'Pending',
+        createdAt: record.get('Created Time') as string || new Date().toISOString(),
+        babysitterDeleted: record.get('Deleted (from Babysitter)') as boolean || false,
+        notes: record.get('Additional Notes') as string || '',
+      };
+    });
   } catch (error) {
     console.error('Error fetching requests:', error);
     throw error;
