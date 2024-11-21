@@ -11,7 +11,8 @@ export const createBabysitter = async (
   grade?: string,
   rate?: string,
   specialties?: string,
-  notes?: string
+  notes?: string,
+  email?: string
 ) => {
   if (!parentOwnerMobile) {
     console.error('No parent mobile number provided to createBabysitter');
@@ -34,6 +35,7 @@ export const createBabysitter = async (
           'Hourly rate (USD)': rate || '',
           'Specialties': specialties || '',
           'Notes': notes || '',
+          'Email': email || '',
           'Deleted': false,
         },
       },
@@ -54,7 +56,8 @@ export const updateBabysitter = async (
   grade?: string,
   rate?: string,
   specialties?: string,
-  notes?: string
+  notes?: string,
+  email?: string
 ) => {
   try {
     const formattedMobile = formatPhoneWithCountryCode(mobile);
@@ -68,6 +71,7 @@ export const updateBabysitter = async (
       'Hourly rate (USD)': rate || '',
       'Specialties': specialties || '',
       'Notes': notes || '',
+      'Email': email || '',
     });
     return record;
   } catch (error) {
@@ -120,6 +124,7 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
       rate: record.get('Hourly rate (USD)') as string,
       specialties: record.get('Specialties') as string,
       notes: record.get('Notes') as string,
+      email: record.get('Email') as string,
     }));
   } catch (error) {
     console.error('Error fetching babysitters:', error);

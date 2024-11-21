@@ -60,6 +60,16 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
           </div>
         </div>
         <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            defaultValue={currentBabysitter?.email}
+            required
+          />
+        </div>
+        <div className="space-y-2">
           <Label htmlFor="mobile">Mobile Number</Label>
           <PhoneNumberInput
             id="mobile"
