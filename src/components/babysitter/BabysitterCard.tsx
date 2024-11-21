@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Edit } from "lucide-react";
+import { Trash2, Edit, Mail, Phone, GraduationCap, DollarSign, Star, FileText } from "lucide-react";
 import { Babysitter } from "@/types/babysitter";
 import {
   AlertDialog,
@@ -33,7 +33,7 @@ export const BabysitterCard = ({ babysitter, onEdit, onDelete }: BabysitterCardP
       <Card className="card-hover">
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
-            <span>
+            <span className="text-xl font-bold text-primary">
               {babysitter.firstName} {babysitter.lastName}
             </span>
             <div className="flex gap-2">
@@ -41,6 +41,7 @@ export const BabysitterCard = ({ babysitter, onEdit, onDelete }: BabysitterCardP
                 variant="ghost"
                 size="icon"
                 onClick={() => onEdit(babysitter)}
+                className="hover:text-primary"
               >
                 <Edit className="w-4 h-4" />
               </Button>
@@ -48,42 +49,60 @@ export const BabysitterCard = ({ babysitter, onEdit, onDelete }: BabysitterCardP
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowDeleteDialog(true)}
+                className="hover:text-destructive"
               >
-                <Trash2 className="w-4 h-4 text-destructive" />
+                <Trash2 className="w-4 h-4" />
               </Button>
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            <p className="text-sm">
-              <span className="font-medium">Mobile:</span> {babysitter.mobile}
-            </p>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Phone className="w-4 h-4" />
+              <span>{babysitter.mobile}</span>
+            </div>
+            
+            {babysitter.email && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Mail className="w-4 h-4" />
+                <span>{babysitter.email}</span>
+              </div>
+            )}
+
             {babysitter.age && (
-              <p className="text-sm">
-                <span className="font-medium">Age:</span> {babysitter.age}
-              </p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Star className="w-4 h-4" />
+                <span>Age: {babysitter.age}</span>
+              </div>
             )}
+
             {babysitter.grade && (
-              <p className="text-sm">
-                <span className="font-medium">Grade:</span> {babysitter.grade}
-              </p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <GraduationCap className="w-4 h-4" />
+                <span>Grade: {babysitter.grade}</span>
+              </div>
             )}
+
             {babysitter.rate && (
-              <p className="text-sm">
-                <span className="font-medium">Rate:</span> ${babysitter.rate}/hour
-              </p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <DollarSign className="w-4 h-4" />
+                <span>${babysitter.rate}/hour</span>
+              </div>
             )}
+
             {babysitter.specialties && (
-              <p className="text-sm">
-                <span className="font-medium">Specialties:</span>{" "}
-                {babysitter.specialties}
-              </p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Star className="w-4 h-4" />
+                <span>{babysitter.specialties}</span>
+              </div>
             )}
+
             {babysitter.notes && (
-              <p className="text-sm">
-                <span className="font-medium">Notes:</span> {babysitter.notes}
-              </p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <FileText className="w-4 h-4" />
+                <span>{babysitter.notes}</span>
+              </div>
             )}
           </div>
         </CardContent>
