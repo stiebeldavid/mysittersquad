@@ -13,11 +13,10 @@ const BabysitterResponse = () => {
   const { requestId } = useParams();
   const [isVerifying, setIsVerifying] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [verifiedMobile, setVerifiedMobile] = useState("");
 
   const { data: request, refetch } = useQuery({
-    queryKey: ["request", requestId, verifiedMobile],
-    queryFn: () => verifyBabysitterRequest(requestId || "", verifiedMobile),
+    queryKey: ["request", requestId],
+    queryFn: () => verifyBabysitterRequest(requestId || "", ""),
     enabled: false,
   });
 
@@ -40,11 +39,12 @@ const BabysitterResponse = () => {
     },
   });
 
-  const handleVerify = async (formattedMobile: string) => {
+  const handleVerify = async (mobile: string) => {
     try {
       setIsVerifying(true);
-      setVerifiedMobile(formattedMobile);
-      const result = await refetch();
+      const result = await refetch({
+        queryFn: () => verifyBabysitterRequest(requestId || "", mobile)
+      });
       
       if (!result.data) {
         toast.error("Could not find that babysitting request");
