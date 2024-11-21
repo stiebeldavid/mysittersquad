@@ -6,7 +6,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { BabysitterForm } from "@/components/babysitter/BabysitterForm";
 import { BabysitterCard } from "@/components/babysitter/BabysitterCard";
 import { AddBabysitterCard } from "@/components/babysitter/AddBabysitterCard";
-import { ContactPickerButton } from "@/components/babysitter/ContactPickerButton";
 import { Babysitter } from "@/types/babysitter";
 import { useAuthStore } from "@/store/authStore";
 import { createBabysitter, updateBabysitter, fetchBabysitters, deleteBabysitter } from "@/lib/airtable";
@@ -20,26 +19,15 @@ const BabysitterList = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
 
-  console.log('BabysitterList - Current user:', user);
-
   const { data: babysitters = [], isLoading, error } = useQuery({
     queryKey: ['babysitters', user?.mobile],
     queryFn: () => {
-      console.log('BabysitterList - Fetching babysitters for user mobile:', user?.mobile);
       if (!user?.mobile) {
-        console.error('BabysitterList - No user mobile found in auth store');
         return [];
       }
       return fetchBabysitters(user.mobile);
     },
     enabled: !!user?.mobile,
-  });
-
-  console.log('BabysitterList - Query results:', { 
-    isLoading, 
-    error, 
-    babysittersCount: babysitters.length,
-    babysitters 
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -52,7 +40,6 @@ const BabysitterList = () => {
       }
 
       if (currentBabysitter) {
-        // Update existing babysitter
         await updateBabysitter(
           currentBabysitter.id,
           formData.get("firstName") as string,
@@ -69,7 +56,6 @@ const BabysitterList = () => {
           description: "Babysitter has been updated successfully."
         });
       } else {
-        // Create new babysitter
         await createBabysitter(
           formData.get("firstName") as string,
           formData.get("lastName") as string,
@@ -128,12 +114,6 @@ const BabysitterList = () => {
     setIsDialogOpen(true);
   };
 
-  const handleContactsSelected = (newBabysitters: Babysitter[]) => {
-    queryClient.setQueryData(['babysitters', user?.mobile], (oldData: Babysitter[] | undefined) => 
-      [...(oldData || []), ...newBabysitters]
-    );
-  };
-
   if (isLoading) {
     return <div className="container mx-auto p-4">Loading...</div>;
   }
@@ -151,8 +131,7 @@ const BabysitterList = () => {
           </Link>
         </Button>
         <h1 className="text-3xl font-bold">Babysitters</h1>
-        <div className="flex gap-2 ml-auto max-w-[200px]">
-          <ContactPickerButton onContactsSelected={handleContactsSelected} />
+        <div className="flex gap-2 ml-auto">
           <Button onClick={handleAdd} className="whitespace-nowrap">
             <Plus className="w-4 h-4 mr-2" />
             Add
