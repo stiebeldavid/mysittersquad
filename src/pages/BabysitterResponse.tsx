@@ -40,11 +40,10 @@ const BabysitterResponse = () => {
     },
   });
 
-  const handleVerify = async (mobile: string) => {
+  const handleVerify = async (formattedMobile: string) => {
     try {
       setIsVerifying(true);
-      // Set the verified mobile before refetching
-      setVerifiedMobile(mobile);
+      setVerifiedMobile(formattedMobile);
       const result = await refetch();
       
       if (!result.data) {

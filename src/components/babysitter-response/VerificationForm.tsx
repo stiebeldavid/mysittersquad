@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
+import { formatPhoneWithCountryCode } from "@/utils/phoneNumber";
 
 interface VerificationFormProps {
   onVerify: (mobile: string) => void;
@@ -14,7 +15,8 @@ export const VerificationForm = ({ onVerify, isVerifying }: VerificationFormProp
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onVerify(mobile);
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
+    onVerify(formattedMobile);
   };
 
   return (
