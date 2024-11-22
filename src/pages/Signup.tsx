@@ -66,7 +66,19 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+      {/* Simple Nav Bar */}
+      <nav className="bg-white shadow-sm">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <span className="text-xl font-bold text-primary">MySitterSquad</span>
+            <Button variant="ghost" asChild>
+              <Link to="/login">Sign In</Link>
+            </Button>
+          </div>
+        </div>
+      </nav>
+
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
@@ -148,9 +160,9 @@ const Signup = () => {
               </div>
 
               <img
-                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7"
-                alt="Family using MySitterSquad"
-                className="rounded-lg shadow-lg w-full"
+                src="https://images.unsplash.com/photo-1602030638412-bb8dcc0bc8b0"
+                alt="Children playing and having fun"
+                className="rounded-lg shadow-lg w-full object-cover h-64"
               />
             </div>
           </div>

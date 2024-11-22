@@ -19,7 +19,7 @@ const queryClient = new QueryClient();
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const user = useAuthStore((state) => state.user);
-  return user ? <>{children}</> : <Navigate to="/login" />;
+  return user ? <>{children}</> : <Navigate to="/signup" />;
 };
 
 const AppContent = () => {
@@ -32,25 +32,29 @@ const AppContent = () => {
       {user && !isResponsePage && <Navbar />}
       <div className="max-w-full">
         <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/r/:requestId" element={<BabysitterResponse />} />
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Index />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/babysitters"
-          element={
-            <PrivateRoute>
-              <BabysitterList />
-            </PrivateRoute>
-          }
-        />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/r/:requestId" element={<BabysitterResponse />} />
+          <Route
+            path="/"
+            element={
+              user ? (
+                <PrivateRoute>
+                  <Index />
+                </PrivateRoute>
+              ) : (
+                <Navigate to="/signup" />
+              )
+            }
+          />
+          <Route
+            path="/babysitters"
+            element={
+              <PrivateRoute>
+                <BabysitterList />
+              </PrivateRoute>
+            }
+          />
         <Route
           path="/family"
           element={
