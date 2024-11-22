@@ -5,6 +5,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { findUserByMobile } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [mobile, setMobile] = useState("");
@@ -51,28 +53,39 @@ const Login = () => {
   };
 
   return (
-    <div className="page-container">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-2xl font-bold text-center mb-6">Login to MySitterSquad</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <PhoneNumberInput
-              value={mobile}
-              onChange={(value) => setMobile(value || "")}
-              placeholder="Enter your mobile number"
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Logging in..." : "Login"}
-          </Button>
-        </form>
-        <p className="text-center mt-4">
-          Don't have an account?{" "}
-          <Button variant="link" onClick={() => navigate("/signup")}>
-            Sign up
-          </Button>
-        </p>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold">Welcome Back</h1>
+          <p className="text-gray-600 mt-2">Sign in to manage your babysitting requests</p>
+        </div>
+
+        <Card>
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <PhoneNumberInput
+                  value={mobile}
+                  onChange={(value) => setMobile(value || "")}
+                  placeholder="Enter your mobile number"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <div className="text-center space-y-4">
+          <p className="text-gray-600">
+            New to MySitterSquad?{" "}
+            <Link to="/signup" className="text-primary hover:underline font-medium">
+              Create an account
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
