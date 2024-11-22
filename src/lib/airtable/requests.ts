@@ -49,7 +49,7 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
 
   try {
     const formattedParentMobile = formatPhoneWithCountryCode(parentRequestorMobile);
-    const filterFormula = `{Parent Requestor Mobile}="${formattedParentMobile}"`;
+    const filterFormula = `{Parent Requestor Mobile}='${formattedParentMobile}'`;
     
     const records = await base('Requests')
       .select({
@@ -85,21 +85,19 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
   }
 };
 
-export const verifyBabysitterRequest = async (requestId: string, identifier: string, isEmail = false) => {
+export const verifyBabysitterRequest = async (requestId: string, mobile: string) => {
   try {
-    const filterFormula = isEmail
-      ? `AND({Request ID}="${requestId}", {Email (from Babysitter)}="${identifier.toLowerCase()}")`
-      : `AND({Request ID}="${requestId}", {Mobile (from Babysitter)}="${identifier}")`;
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
     
     const requestRecords = await base('Requests')
       .select({
-        filterByFormula: filterFormula,
+        filterByFormula: `AND({Request ID}='${requestId}', {Mobile (from Babysitter)}='${formattedMobile}')`,
         maxRecords: 1,
       })
       .firstPage();
     
     if (requestRecords.length === 0) {
-      console.log('No matching request found for:', { requestId, identifier });
+      console.log('No matching request found for:', { requestId, formattedMobile });
       return null;
     }
     
@@ -124,9 +122,9 @@ export const verifyBabysitterRequest = async (requestId: string, identifier: str
 
 const findParentByMobile = async (mobile: string) => {
   try {
-    const records = await base('Requests')
+    const records = await base('Users')
       .select({
-        filterByFormula: `{Parent Requestor Mobile}="${mobile}"`,
+        filterByFormula: `{Mobile}='${mobile}'`,
         maxRecords: 1,
       })
       .firstPage();
