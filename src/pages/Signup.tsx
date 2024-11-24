@@ -80,7 +80,7 @@ const Signup = () => {
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <div className="container mx-auto px-4 pt-12 pb-32">
+        <div className="container mx-auto px-4 pt-12 pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left Column - Headlines */}
             <div className="space-y-6 p-6 rounded-lg bg-black/10 backdrop-blur-sm">
@@ -97,7 +97,7 @@ const Signup = () => {
 
             {/* Right Column - Sign Up Form */}
             <Card className="p-6 bg-white/90 shadow-xl animate-slide-up">
-              <CardContent>
+              <CardContent className="pt-0">
                 <h3 className="text-2xl font-bold text-gray-800 mb-6">Sign Up For Free</h3>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <Input
@@ -138,12 +138,12 @@ const Signup = () => {
                   >
                     {isLoading ? "Creating account..." : "Sign Up"}
                   </Button>
-                  <p className="text-center text-gray-600 mt-4">
+                  <p className="text-center text-gray-600">
                     Already have an account?{" "}
                     <Button 
                       variant="link" 
                       onClick={() => navigate("/login")}
-                      className="text-primary hover:text-primary/90"
+                      className="text-primary hover:text-primary/90 p-0"
                     >
                       Login
                     </Button>
