@@ -14,6 +14,8 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe("pk_live_51QOYlLEPoH8pgr0ZPC9fzwlS3KCiLto7lH8lFRhu31I4H2ayTmQ6G5VKMAhrYkvwxCnYiiNrMaCF7HEkFFP6V34k00VYu2IAGJ");
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
 const Upgrade = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -31,7 +33,7 @@ const Upgrade = () => {
       }
 
       // Create a Checkout Session
-      const response = await fetch("/api/create-checkout-session", {
+      const response = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
