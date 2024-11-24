@@ -22,7 +22,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  mobile: z.string().min(1, "Mobile number is required"),
+  mobile: z.string()
+    .min(1, "Mobile number is required")
+    .refine((val) => {
+      // Remove any non-digit characters and check if it's exactly 10 digits after +1
+      const digitsOnly = val.replace(/\D/g, '');
+      return digitsOnly.length === 10 || (digitsOnly.length === 11 && digitsOnly.startsWith('1'));
+    }, "Please enter a valid 10-digit mobile number"),
 });
 
 export function SignupForm() {
