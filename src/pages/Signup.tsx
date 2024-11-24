@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { createUser, findUserByMobile } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,6 @@ const Signup = () => {
     setIsLoading(true);
 
     try {
-      // Check if user already exists
       const existingUser = await findUserByMobile(formData.mobile);
       if (existingUser) {
         toast({
@@ -34,7 +34,6 @@ const Signup = () => {
         return;
       }
 
-      // Create new user
       const record = await createUser(
         formData.firstName,
         formData.lastName,
@@ -66,50 +65,116 @@ const Signup = () => {
   };
 
   return (
-    <div className="page-container">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-2xl font-bold text-center mb-6">Create an Account</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Input
-              placeholder="First Name"
-              value={formData.firstName}
-              onChange={(e) =>
-                setFormData({ ...formData, firstName: e.target.value })
-              }
-              required
-            />
+    <div className="min-h-screen relative">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center z-0"
+        style={{
+          backgroundImage: "url('/lovable-uploads/ba8bdb57-a6ba-4ff3-a3b3-a8892f151b01.png')",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/70" />
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <div className="container mx-auto px-4 pt-20 pb-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Headlines */}
+            <div className="space-y-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight animate-slide-up">
+                Schedule Your Babysitters Easier
+              </h1>
+              <p className="text-xl md:text-2xl text-gray-200 animate-slide-up">
+                Book child care in a snap, from your trusted circle of babysitters!
+              </p>
+            </div>
+
+            {/* Right Column - Sign Up Form */}
+            <Card className="p-6 backdrop-blur-sm bg-white/10 border-none shadow-xl animate-slide-up">
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <Input
+                    placeholder="First Name"
+                    className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                    value={formData.firstName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, firstName: e.target.value })
+                    }
+                    required
+                  />
+                  <Input
+                    placeholder="Last Name"
+                    className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                    value={formData.lastName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, lastName: e.target.value })
+                    }
+                    required
+                  />
+                  <PhoneNumberInput
+                    value={formData.mobile}
+                    onChange={(value) =>
+                      setFormData({ ...formData, mobile: value || "" })
+                    }
+                    placeholder="Mobile Number"
+                    className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                    required
+                  />
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-primary hover:bg-primary/90" 
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Creating account..." : "Sign Up"}
+                  </Button>
+                  <p className="text-center text-gray-200 mt-4">
+                    Already have an account?{" "}
+                    <Button 
+                      variant="link" 
+                      onClick={() => navigate("/login")}
+                      className="text-white hover:text-primary"
+                    >
+                      Login
+                    </Button>
+                  </p>
+                </form>
+              </CardContent>
+            </Card>
           </div>
-          <div>
-            <Input
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={(e) =>
-                setFormData({ ...formData, lastName: e.target.value })
-              }
-              required
-            />
+        </div>
+
+        {/* Features Section */}
+        <div className="bg-black/40 py-20">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Feature 1 */}
+              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-2xl font-semibold text-white">Your Trusted Network</h3>
+                <p className="text-gray-300">
+                  Interact and request babysitting from people you already know and trust. No strangers.
+                </p>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-2xl font-semibold text-white">One-Click Requests</h3>
+                <p className="text-gray-300">
+                  Send your request to multiple babysitters with one click. Avoid the messaging chaos.
+                </p>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/5 transition-colors">
+                <h3 className="text-2xl font-semibold text-white">Easy Scheduling</h3>
+                <p className="text-gray-300">
+                  Create and manage babysitting requests effortlessly.
+                </p>
+              </div>
+            </div>
           </div>
-          <div>
-            <PhoneNumberInput
-              value={formData.mobile}
-              onChange={(value) =>
-                setFormData({ ...formData, mobile: value || "" })
-              }
-              placeholder="Mobile Number"
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating account..." : "Sign Up"}
-          </Button>
-        </form>
-        <p className="text-center mt-4">
-          Already have an account?{" "}
-          <Button variant="link" onClick={() => navigate("/login")}>
-            Login
-          </Button>
-        </p>
+        </div>
       </div>
     </div>
   );
