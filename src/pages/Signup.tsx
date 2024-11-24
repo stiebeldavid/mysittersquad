@@ -83,7 +83,7 @@ const Signup = () => {
         <div className="container mx-auto px-4 pt-12 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left Column - Headlines */}
-            <div className="space-y-6 p-6 rounded-lg bg-black/10 backdrop-blur-sm">
+            <div className="space-y-6 p-6 pt-3 sm:pt-6 rounded-lg bg-black/10 backdrop-blur-sm">
               <h1 className="hidden sm:block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4 text-shadow-lg">
                 MySitterSquad
               </h1>
