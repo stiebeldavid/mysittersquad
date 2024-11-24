@@ -10,64 +10,16 @@ import {
 } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe("pk_live_51QOYlLEPoH8pgr0ZPC9fzwlS3KCiLto7lH8lFRhu31I4H2ayTmQ6G5VKMAhrYkvwxCnYiiNrMaCF7HEkFFP6V34k00VYu2IAGJ");
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+const STRIPE_PREMIUM_LINK = "https://buy.stripe.com/test_28o29G1Oj38L1ri288"; // Replace with your actual Stripe payment link
 
 const Upgrade = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleUpgradeClick = async () => {
-    try {
-      const stripe = await stripePromise;
-      if (!stripe) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Stripe failed to load. Please try again.",
-        });
-        return;
-      }
-
-      // Create a Checkout Session
-      const response = await fetch(`${BACKEND_URL}/api/create-checkout-session`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          priceId: "price_1QOYz0EPoH8pgr0ZCIbLZXvd",
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const session = await response.json();
-
-      // Redirect to Checkout
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
-
-      if (result.error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: result.error.message,
-        });
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong. Please try again later.",
-      });
-    }
+  const handleUpgradeClick = () => {
+    // Redirect to Stripe's hosted checkout page
+    window.location.href = STRIPE_PREMIUM_LINK;
   };
 
   return (
