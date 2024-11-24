@@ -7,7 +7,7 @@ import { createUser, findUserByMobile } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, Calendar } from "lucide-react";
+import { MessageSquare, Calendar, Users } from "lucide-react";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -72,14 +72,14 @@ const Signup = () => {
         backgroundImage: "url('/lovable-uploads/df45466e-43ed-4173-8426-0112c7ee8a9b.png')",
       }}
     >
-      <div className="absolute inset-0 bg-black/60" /> {/* Darker overlay for better readability */}
+      <div className="absolute inset-0 bg-black/70" />
       
-      {/* Nav Bar with larger brand name */}
+      {/* Nav Bar */}
       <nav className="relative z-10 bg-transparent">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-24">
             <Link to="/" className="flex items-center space-x-3">
-              <span className="text-3xl font-bold text-white tracking-tight">MySitterSquad</span>
+              <span className="text-4xl font-bold text-white tracking-tight drop-shadow-lg">MySitterSquad</span>
             </Link>
             <Button variant="ghost" asChild className="text-white hover:bg-white/10">
               <Link to="/login">Sign In</Link>
@@ -88,89 +88,98 @@ const Signup = () => {
         </div>
       </nav>
 
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold mb-4 text-white animate-fade-in drop-shadow-lg">
-              Create Your Account
+      {/* Hero Section with Form */}
+      <div className="container mx-auto px-4 pt-12 pb-24 relative z-10">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          {/* Left Column - Headlines */}
+          <div className="space-y-6">
+            <h1 className="text-6xl font-bold text-white leading-tight drop-shadow-lg animate-fade-in">
+              Schedule Your Babysitters Easier
             </h1>
-            <p className="text-xl text-white/95 animate-fade-in drop-shadow-md font-medium">
-              Join MySitterSquad to start managing your childcare needs
+            <p className="text-2xl text-white/90 drop-shadow-md animate-fade-in delay-100">
+              Book child care in a snap, from your trusted circle of babysitters!
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <Card className="backdrop-blur-sm bg-white/95"> {/* Increased opacity for better readability */}
-                <CardContent className="pt-6">
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        placeholder="First Name"
-                        value={formData.firstName}
-                        onChange={(e) =>
-                          setFormData({ ...formData, firstName: e.target.value })
-                        }
-                        required
-                      />
-                      <Input
-                        placeholder="Last Name"
-                        value={formData.lastName}
-                        onChange={(e) =>
-                          setFormData({ ...formData, lastName: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                    <div>
-                      <PhoneNumberInput
-                        value={formData.mobile}
-                        onChange={(value) =>
-                          setFormData({ ...formData, mobile: value || "" })
-                        }
-                        placeholder="Mobile Number"
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? "Creating account..." : "Create Account"}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
+          {/* Right Column - Sign Up Form */}
+          <div className="space-y-6">
+            <Card className="backdrop-blur-sm bg-white/95 shadow-xl">
+              <CardContent className="pt-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input
+                      placeholder="First Name"
+                      value={formData.firstName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, firstName: e.target.value })
+                      }
+                      required
+                    />
+                    <Input
+                      placeholder="Last Name"
+                      value={formData.lastName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, lastName: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div>
+                    <PhoneNumberInput
+                      value={formData.mobile}
+                      onChange={(value) =>
+                        setFormData({ ...formData, mobile: value || "" })
+                      }
+                      placeholder="Mobile Number"
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "Creating account..." : "Create Account"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
 
-              <p className="text-center text-white drop-shadow-md font-medium">
-                Already have an account?{" "}
-                <Link to="/login" className="text-primary-foreground hover:underline font-semibold">
-                  Sign in
-                </Link>
+            <p className="text-center text-white drop-shadow-md font-medium">
+              Already have an account?{" "}
+              <Link to="/login" className="text-primary-foreground hover:underline font-semibold">
+                Sign in
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div className="relative z-10 bg-black/40 backdrop-blur-sm py-24">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center space-y-4 hover:bg-white/15 transition-colors">
+              <Users className="w-12 h-12 text-white mx-auto" />
+              <h3 className="text-2xl font-bold text-white drop-shadow-md">Your Trusted Network</h3>
+              <p className="text-white/90 text-lg leading-relaxed">
+                Interact and request babysitting from people you already know and trust. No strangers.
               </p>
             </div>
 
-            <div className="space-y-6">
-              <div className="space-y-6 bg-black/40 backdrop-blur-sm p-8 rounded-lg">
-                <div className="flex items-start space-x-4">
-                  <Shield className="w-8 h-8 text-white flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-white text-xl mb-2 drop-shadow-md">Trusted Network</h3>
-                    <p className="text-white/95 text-lg drop-shadow-sm">Manage your personal network of trusted babysitters</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <Calendar className="w-8 h-8 text-white flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-white text-xl mb-2 drop-shadow-md">Easy Scheduling</h3>
-                    <p className="text-white/95 text-lg drop-shadow-sm">Create and manage babysitting requests effortlessly</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <Users className="w-8 h-8 text-white flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-white text-xl mb-2 drop-shadow-md">Family Management</h3>
-                    <p className="text-white/95 text-lg drop-shadow-sm">Keep your family's information organized in one place</p>
-                  </div>
-                </div>
-              </div>
+            {/* Feature 2 */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center space-y-4 hover:bg-white/15 transition-colors">
+              <MessageSquare className="w-12 h-12 text-white mx-auto" />
+              <h3 className="text-2xl font-bold text-white drop-shadow-md">One-Click Requests</h3>
+              <p className="text-white/90 text-lg leading-relaxed">
+                Send your request to multiple babysitters with one click. Avoid the messaging chaos.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center space-y-4 hover:bg-white/15 transition-colors">
+              <Calendar className="w-12 h-12 text-white mx-auto" />
+              <h3 className="text-2xl font-bold text-white drop-shadow-md">Easy Scheduling</h3>
+              <p className="text-white/90 text-lg leading-relaxed">
+                Create and manage babysitting requests effortlessly.
+              </p>
             </div>
           </div>
         </div>
