@@ -11,15 +11,15 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
-const STRIPE_PREMIUM_LINK = "https://buy.stripe.com/test_28o29G1Oj38L1ri288"; // Replace with your actual Stripe payment link
-
 const Upgrade = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleUpgradeClick = () => {
-    // Redirect to Stripe's hosted checkout page
-    window.location.href = STRIPE_PREMIUM_LINK;
+    toast({
+      title: "Coming Soon",
+      description: "Payment integration will be available soon!",
+    });
   };
 
   return (
@@ -48,8 +48,7 @@ const Upgrade = () => {
               {[
                 "Save unlimited babysitters",
                 "Send unlimited requests",
-                "Edit messages before sending",
-                "Priority support",
+                "Edit messages before sending (Coming Soon)",
               ].map((feature) => (
                 <div
                   key={feature}
