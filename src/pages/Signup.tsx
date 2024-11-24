@@ -66,29 +66,38 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+    <div 
+      className="min-h-screen bg-cover bg-center relative"
+      style={{
+        backgroundImage: "url('/lovable-uploads/df45466e-43ed-4173-8426-0112c7ee8a9b.png')",
+      }}
+    >
+      <div className="absolute inset-0 bg-black/40" />
+      
       {/* Simple Nav Bar */}
-      <nav className="bg-white shadow-sm">
+      <nav className="relative z-10 bg-transparent">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <span className="text-xl font-bold text-primary">MySitterSquad</span>
-            <Button variant="ghost" asChild>
+            <Link to="/" className="flex items-center space-x-2">
+              <span className="text-xl font-bold text-white">MySitterSquad</span>
+            </Link>
+            <Button variant="ghost" asChild className="text-white hover:bg-white/10">
               <Link to="/login">Sign In</Link>
             </Button>
           </div>
         </div>
       </nav>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">Create Your Account</h1>
-            <p className="text-gray-600">Join MySitterSquad to start managing your childcare needs</p>
+            <h1 className="text-4xl font-bold mb-2 text-white animate-fade-in">Create Your Account</h1>
+            <p className="text-lg text-white/90 animate-fade-in">Join MySitterSquad to start managing your childcare needs</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <Card>
+              <Card className="backdrop-blur-sm bg-white/90">
                 <CardContent className="pt-6">
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
@@ -126,44 +135,38 @@ const Signup = () => {
                 </CardContent>
               </Card>
 
-              <p className="text-center text-gray-600">
+              <p className="text-center text-white">
                 Already have an account?{" "}
-                <Link to="/login" className="text-primary hover:underline font-medium">
+                <Link to="/login" className="text-primary-foreground hover:underline font-medium">
                   Sign in
                 </Link>
               </p>
             </div>
 
             <div className="space-y-6">
-              <div className="space-y-4">
+              <div className="space-y-4 bg-white/10 backdrop-blur-sm p-6 rounded-lg">
                 <div className="flex items-start space-x-3">
-                  <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <Shield className="w-6 h-6 text-white flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-semibold">Trusted Network</h3>
-                    <p className="text-gray-600">Manage your personal network of trusted babysitters</p>
+                    <h3 className="font-semibold text-white">Trusted Network</h3>
+                    <p className="text-white/90">Manage your personal network of trusted babysitters</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <Calendar className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <Calendar className="w-6 h-6 text-white flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-semibold">Easy Scheduling</h3>
-                    <p className="text-gray-600">Create and manage babysitting requests effortlessly</p>
+                    <h3 className="font-semibold text-white">Easy Scheduling</h3>
+                    <p className="text-white/90">Create and manage babysitting requests effortlessly</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <Users className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <Users className="w-6 h-6 text-white flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-semibold">Family Management</h3>
-                    <p className="text-gray-600">Keep your family's information organized in one place</p>
+                    <h3 className="font-semibold text-white">Family Management</h3>
+                    <p className="text-white/90">Keep your family's information organized in one place</p>
                   </div>
                 </div>
               </div>
-
-              <img
-                src="https://images.unsplash.com/photo-1602030638412-bb8dcc0bc8b0"
-                alt="Children playing and having fun"
-                className="rounded-lg shadow-lg w-full object-cover h-64"
-              />
             </div>
           </div>
         </div>
