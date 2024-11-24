@@ -16,11 +16,48 @@ import RequestDashboard from "./pages/RequestDashboard";
 import BabysitterResponse from "./pages/BabysitterResponse";
 import Upgrade from "./pages/Upgrade";
 import ConfirmUpgrade from "./pages/ConfirmUpgrade";
+import { useEffect } from "react";
+import { useToast } from "./hooks/use-toast";
 
 const queryClient = new QueryClient();
 
+const SESSION_TIMEOUT = 1000 * 60 * 60; // 1 hour
+
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    // Check if session is expired
+    const lastActivity = localStorage.getItem('lastActivity');
+    if (lastActivity && Date.now() - parseInt(lastActivity) > SESSION_TIMEOUT) {
+      toast({
+        title: "Session Expired",
+        description: "Please log in again for security reasons.",
+        variant: "destructive",
+      });
+      logout();
+      return;
+    }
+    
+    // Update last activity
+    localStorage.setItem('lastActivity', Date.now().toString());
+    
+    // Set up activity listener
+    const updateActivity = () => {
+      localStorage.setItem('lastActivity', Date.now().toString());
+    };
+    
+    window.addEventListener('mousemove', updateActivity);
+    window.addEventListener('keydown', updateActivity);
+    
+    return () => {
+      window.removeEventListener('mousemove', updateActivity);
+      window.removeEventListener('keydown', updateActivity);
+    };
+  }, [logout, toast]);
+  
   return user ? <>{children}</> : <Navigate to="/signup" />;
 };
 
