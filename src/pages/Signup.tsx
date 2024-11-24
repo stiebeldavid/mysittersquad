@@ -72,14 +72,14 @@ const Signup = () => {
         backgroundImage: "url('/lovable-uploads/df45466e-43ed-4173-8426-0112c7ee8a9b.png')",
       }}
     >
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-black/60" /> {/* Darker overlay for better readability */}
       
-      {/* Simple Nav Bar */}
+      {/* Nav Bar with larger brand name */}
       <nav className="relative z-10 bg-transparent">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-white">MySitterSquad</span>
+          <div className="flex items-center justify-between h-20">
+            <Link to="/" className="flex items-center space-x-3">
+              <span className="text-3xl font-bold text-white tracking-tight">MySitterSquad</span>
             </Link>
             <Button variant="ghost" asChild className="text-white hover:bg-white/10">
               <Link to="/login">Sign In</Link>
@@ -90,14 +90,18 @@ const Signup = () => {
 
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-2 text-white animate-fade-in">Create Your Account</h1>
-            <p className="text-lg text-white/90 animate-fade-in">Join MySitterSquad to start managing your childcare needs</p>
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-bold mb-4 text-white animate-fade-in drop-shadow-lg">
+              Create Your Account
+            </h1>
+            <p className="text-xl text-white/95 animate-fade-in drop-shadow-md font-medium">
+              Join MySitterSquad to start managing your childcare needs
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <Card className="backdrop-blur-sm bg-white/90">
+              <Card className="backdrop-blur-sm bg-white/95"> {/* Increased opacity for better readability */}
                 <CardContent className="pt-6">
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
@@ -135,35 +139,35 @@ const Signup = () => {
                 </CardContent>
               </Card>
 
-              <p className="text-center text-white">
+              <p className="text-center text-white drop-shadow-md font-medium">
                 Already have an account?{" "}
-                <Link to="/login" className="text-primary-foreground hover:underline font-medium">
+                <Link to="/login" className="text-primary-foreground hover:underline font-semibold">
                   Sign in
                 </Link>
               </p>
             </div>
 
             <div className="space-y-6">
-              <div className="space-y-4 bg-white/10 backdrop-blur-sm p-6 rounded-lg">
-                <div className="flex items-start space-x-3">
-                  <Shield className="w-6 h-6 text-white flex-shrink-0 mt-1" />
+              <div className="space-y-6 bg-black/40 backdrop-blur-sm p-8 rounded-lg">
+                <div className="flex items-start space-x-4">
+                  <Shield className="w-8 h-8 text-white flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-semibold text-white">Trusted Network</h3>
-                    <p className="text-white/90">Manage your personal network of trusted babysitters</p>
+                    <h3 className="font-semibold text-white text-xl mb-2 drop-shadow-md">Trusted Network</h3>
+                    <p className="text-white/95 text-lg drop-shadow-sm">Manage your personal network of trusted babysitters</p>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3">
-                  <Calendar className="w-6 h-6 text-white flex-shrink-0 mt-1" />
+                <div className="flex items-start space-x-4">
+                  <Calendar className="w-8 h-8 text-white flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-semibold text-white">Easy Scheduling</h3>
-                    <p className="text-white/90">Create and manage babysitting requests effortlessly</p>
+                    <h3 className="font-semibold text-white text-xl mb-2 drop-shadow-md">Easy Scheduling</h3>
+                    <p className="text-white/95 text-lg drop-shadow-sm">Create and manage babysitting requests effortlessly</p>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3">
-                  <Users className="w-6 h-6 text-white flex-shrink-0 mt-1" />
+                <div className="flex items-start space-x-4">
+                  <Users className="w-8 h-8 text-white flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-semibold text-white">Family Management</h3>
-                    <p className="text-white/90">Keep your family's information organized in one place</p>
+                    <h3 className="font-semibold text-white text-xl mb-2 drop-shadow-md">Family Management</h3>
+                    <p className="text-white/95 text-lg drop-shadow-sm">Keep your family's information organized in one place</p>
                   </div>
                 </div>
               </div>
