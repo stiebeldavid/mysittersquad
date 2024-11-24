@@ -18,6 +18,11 @@ export default {
       },
     },
     extend: {
+      textShadow: {
+        sm: '0 1px 2px rgba(0, 0, 0, 0.25)',
+        DEFAULT: '0 2px 4px rgba(0, 0, 0, 0.25)',
+        lg: '0 4px 8px rgba(0, 0, 0, 0.25)',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -75,5 +80,8 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require('tailwindcss-textshadow'),
+  ],
 } satisfies Config;

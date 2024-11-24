@@ -83,11 +83,11 @@ const Signup = () => {
         <div className="container mx-auto px-4 pt-12 pb-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left Column - Headlines */}
-            <div className="space-y-6">
-              <h1 className="text-6xl font-bold text-primary mb-4">
+            <div className="space-y-6 p-6 rounded-lg bg-black/20 backdrop-blur-sm">
+              <h1 className="text-6xl font-bold text-primary mb-4 text-shadow-lg">
                 MySitterSquad
               </h1>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight animate-slide-up">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight animate-slide-up text-shadow-lg">
                 Schedule Your Babysitters Easier
               </h2>
             </div>
