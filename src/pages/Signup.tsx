@@ -73,7 +73,7 @@ const Signup = () => {
           backgroundImage: "url('/lovable-uploads/ba8bdb57-a6ba-4ff3-a3b3-a8892f151b01.png')",
         }}
       >
-        <div className="absolute inset-0 bg-white/40" />
+        <div className="absolute inset-0 bg-white/20" />
       </div>
 
       {/* Main Content */}
