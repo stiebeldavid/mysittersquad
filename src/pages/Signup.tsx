@@ -73,7 +73,7 @@ const Signup = () => {
           backgroundImage: "url('/lovable-uploads/ba8bdb57-a6ba-4ff3-a3b3-a8892f151b01.png')",
         }}
       >
-        <div className="absolute inset-0 bg-black/70" />
+        <div className="absolute inset-0 bg-white/80" />
       </div>
 
       {/* Main Content */}
@@ -83,21 +83,24 @@ const Signup = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Headlines */}
             <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight animate-slide-up">
-                Schedule Your Babysitters Easier
+              <h1 className="text-6xl font-bold text-primary mb-4">
+                MySitterSquad
               </h1>
-              <p className="text-xl md:text-2xl text-gray-200 animate-slide-up">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight animate-slide-up">
+                Schedule Your Babysitters Easier
+              </h2>
+              <p className="text-xl md:text-2xl text-gray-600 animate-slide-up">
                 Book child care in a snap, from your trusted circle of babysitters!
               </p>
             </div>
 
             {/* Right Column - Sign Up Form */}
-            <Card className="p-6 backdrop-blur-sm bg-white/10 border-none shadow-xl animate-slide-up">
+            <Card className="p-6 bg-white/90 shadow-xl animate-slide-up">
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <Input
                     placeholder="First Name"
-                    className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                    className="bg-white/80 border-gray-200"
                     value={formData.firstName}
                     onChange={(e) =>
                       setFormData({ ...formData, firstName: e.target.value })
@@ -106,7 +109,7 @@ const Signup = () => {
                   />
                   <Input
                     placeholder="Last Name"
-                    className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                    className="bg-white/80 border-gray-200"
                     value={formData.lastName}
                     onChange={(e) =>
                       setFormData({ ...formData, lastName: e.target.value })
@@ -119,7 +122,7 @@ const Signup = () => {
                       setFormData({ ...formData, mobile: value || "" })
                     }
                     placeholder="Mobile Number"
-                    className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                    className="bg-white/80 border-gray-200"
                     required
                   />
                   <Button 
@@ -129,12 +132,12 @@ const Signup = () => {
                   >
                     {isLoading ? "Creating account..." : "Sign Up"}
                   </Button>
-                  <p className="text-center text-gray-200 mt-4">
+                  <p className="text-center text-gray-600 mt-4">
                     Already have an account?{" "}
                     <Button 
                       variant="link" 
                       onClick={() => navigate("/login")}
-                      className="text-white hover:text-primary"
+                      className="text-primary hover:text-primary/90"
                     >
                       Login
                     </Button>
@@ -146,29 +149,29 @@ const Signup = () => {
         </div>
 
         {/* Features Section */}
-        <div className="bg-black/40 py-20">
+        <div className="bg-white/90 py-20">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Feature 1 */}
-              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-2xl font-semibold text-white">Your Trusted Network</h3>
-                <p className="text-gray-300">
+              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/80 transition-colors">
+                <h3 className="text-2xl font-semibold text-gray-800">Your Trusted Network</h3>
+                <p className="text-gray-600">
                   Interact and request babysitting from people you already know and trust. No strangers.
                 </p>
               </div>
 
               {/* Feature 2 */}
-              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-2xl font-semibold text-white">One-Click Requests</h3>
-                <p className="text-gray-300">
+              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/80 transition-colors">
+                <h3 className="text-2xl font-semibold text-gray-800">One-Click Requests</h3>
+                <p className="text-gray-600">
                   Send your request to multiple babysitters with one click. Avoid the messaging chaos.
                 </p>
               </div>
 
               {/* Feature 3 */}
-              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/5 transition-colors">
-                <h3 className="text-2xl font-semibold text-white">Easy Scheduling</h3>
-                <p className="text-gray-300">
+              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/80 transition-colors">
+                <h3 className="text-2xl font-semibold text-gray-800">Easy Scheduling</h3>
+                <p className="text-gray-600">
                   Create and manage babysitting requests effortlessly.
                 </p>
               </div>
