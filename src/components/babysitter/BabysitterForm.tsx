@@ -77,7 +77,6 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
               name="email"
               type="email"
               defaultValue={currentBabysitter?.email}
-              required
             />
           </div>
         </div>
