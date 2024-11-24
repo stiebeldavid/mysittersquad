@@ -74,14 +74,14 @@ const Signup = () => {
           backgroundImage: "url('/lovable-uploads/ba8bdb57-a6ba-4ff3-a3b3-a8892f151b01.png')",
         }}
       >
-        <div className="absolute inset-0 bg-white/20" />
+        <div className="absolute inset-0 bg-white/10" />
       </div>
 
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <div className="container mx-auto px-4 pt-20 pb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4 pt-12 pb-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left Column - Headlines */}
             <div className="space-y-6">
               <h1 className="text-6xl font-bold text-primary mb-4">
