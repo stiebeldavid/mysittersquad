@@ -19,7 +19,7 @@ const queryClient = new QueryClient();
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const user = useAuthStore((state) => state.user);
-  return user ? <>{children}</> : <Navigate to="/login" />;
+  return user ? <>{children}</> : <Navigate to="/signup" />;
 };
 
 const AppContent = () => {
@@ -32,49 +32,51 @@ const AppContent = () => {
       {user && !isResponsePage && <Navbar />}
       <div className="max-w-full">
         <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/r/:requestId" element={<BabysitterResponse />} />
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Index />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/babysitters"
-          element={
-            <PrivateRoute>
-              <BabysitterList />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/family"
-          element={
-            <PrivateRoute>
-              <MyFamily />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/create-request"
-          element={
-            <PrivateRoute>
-              <CreateRequest />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/requests"
-          element={
-            <PrivateRoute>
-              <RequestDashboard />
-            </PrivateRoute>
-          }
-        />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/r/:requestId" element={<BabysitterResponse />} />
+          <Route
+            path="/"
+            element={
+              user ? (
+                <Index />
+              ) : (
+                <Navigate to="/signup" replace />
+              )
+            }
+          />
+          <Route
+            path="/babysitters"
+            element={
+              <PrivateRoute>
+                <BabysitterList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/family"
+            element={
+              <PrivateRoute>
+                <MyFamily />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/create-request"
+            element={
+              <PrivateRoute>
+                <CreateRequest />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/requests"
+            element={
+              <PrivateRoute>
+                <RequestDashboard />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </div>
       {user && !isResponsePage && <FloatingActionButton />}
