@@ -8,6 +8,7 @@ import { useAuthStore } from "@/store/authStore";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { LogIn, User } from "lucide-react";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -67,6 +68,27 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen relative">
+      {/* Navigation Bar */}
+      <nav className="absolute top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-14">
+            <div className="flex items-center space-x-2">
+              <User className="h-5 w-5 text-primary" />
+              <span className="text-lg font-semibold text-primary">MySitterSquad</span>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/login")}
+              className="text-gray-600 hover:text-primary hover:bg-primary/5"
+            >
+              <LogIn className="h-4 w-4 mr-2" />
+              Login
+            </Button>
+          </div>
+        </div>
+      </nav>
+
       {/* Background Image with Overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center z-0"
