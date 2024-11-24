@@ -73,7 +73,7 @@ const Signup = () => {
           backgroundImage: "url('/lovable-uploads/ba8bdb57-a6ba-4ff3-a3b3-a8892f151b01.png')",
         }}
       >
-        <div className="absolute inset-0 bg-white/80" />
+        <div className="absolute inset-0 bg-white/60" />
       </div>
 
       {/* Main Content */}
@@ -149,7 +149,7 @@ const Signup = () => {
         </div>
 
         {/* Features Section */}
-        <div className="bg-white/90 py-20">
+        <div className="bg-white/80 py-20">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Feature 1 */}
