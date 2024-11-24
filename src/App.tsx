@@ -15,6 +15,7 @@ import CreateRequest from "./pages/CreateRequest";
 import RequestDashboard from "./pages/RequestDashboard";
 import BabysitterResponse from "./pages/BabysitterResponse";
 import Upgrade from "./pages/Upgrade";
+import ConfirmUpgrade from "./pages/ConfirmUpgrade";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const AppContent = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/r/:requestId" element={<BabysitterResponse />} />
+          <Route path="/confirm_upgrade" element={<ConfirmUpgrade />} />
           <Route
             path="/"
             element={
