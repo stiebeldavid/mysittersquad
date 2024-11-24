@@ -14,6 +14,7 @@ import MyFamily from "./pages/MyFamily";
 import CreateRequest from "./pages/CreateRequest";
 import RequestDashboard from "./pages/RequestDashboard";
 import BabysitterResponse from "./pages/BabysitterResponse";
+import Upgrade from "./pages/Upgrade";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,14 @@ const AppContent = () => {
               ) : (
                 <Navigate to="/signup" replace />
               )
+            }
+          />
+          <Route
+            path="/upgrade"
+            element={
+              <PrivateRoute>
+                <Upgrade />
+              </PrivateRoute>
             }
           />
           <Route
