@@ -71,7 +71,7 @@ const Signup = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center z-0"
         style={{
-          backgroundImage: "url('/lovable-uploads/b320ec63-1253-477e-bc34-7f8e60529aff.png')",
+          backgroundImage: "url('/lovable-uploads/174009da-8c34-4772-9bae-d734e0d5f625.png')",
         }}
       >
         <div className="absolute inset-0 bg-white/10" />
