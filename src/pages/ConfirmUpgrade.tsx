@@ -6,7 +6,7 @@ const ConfirmUpgrade = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex items-start justify-center p-4 pt-16">
       <Card className="w-full max-w-lg animate-slide-up">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-primary">
