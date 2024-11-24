@@ -28,7 +28,7 @@ export const createRequest = async (
           'Time Range': formattedTimeRange,
           'Babysitter': [babysitterId],
           'Parent Requestor Mobile': formattedParentMobile,
-          'Status': 'Created',
+          'Status': 'Pending',
           'Request Group ID': requestGroupId,
           'Additional Notes': notes || '',
         },
