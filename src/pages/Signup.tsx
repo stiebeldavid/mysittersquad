@@ -1,70 +1,10 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { createUser, findUserByMobile } from "@/lib/airtable";
-import { useAuthStore } from "@/store/authStore";
-import { PhoneNumberInput } from "@/components/ui/phone-input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { LogIn, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { SignupForm } from "@/components/signup/SignupForm";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    mobile: "",
-  });
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const setUser = useAuthStore((state) => state.setUser);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const existingUser = await findUserByMobile(formData.mobile);
-      if (existingUser) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "A user with this mobile number already exists.",
-        });
-        return;
-      }
-
-      const record = await createUser(
-        formData.firstName,
-        formData.lastName,
-        formData.mobile
-      );
-
-      if (record) {
-        setUser({
-          id: record.id,
-          firstName: record.fields['First Name'] as string,
-          lastName: record.fields['Last Name'] as string,
-          mobile: record.fields.Mobile as string,
-        });
-        navigate('/');
-        toast({
-          title: "Welcome to MySitterSquad!",
-          description: "Your account has been created successfully.",
-        });
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to create account. Please try again.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen relative">
@@ -100,7 +40,7 @@ const Signup = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 pt-6"> {/* Reduced padding from pt-16 to pt-6 */}
+      <div className="relative z-10 pt-6">
         {/* Hero Section */}
         <div className="container mx-auto px-4 pt-12 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -118,61 +58,7 @@ const Signup = () => {
             </div>
 
             {/* Right Column - Sign Up Form */}
-            <Card className="p-4 bg-white/90 shadow-xl animate-slide-up">
-              <CardContent className="pt-0 pb-2">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">Sign Up For Free</h3>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <Input
-                    placeholder="First Name"
-                    className="bg-white/80 border-gray-200"
-                    value={formData.firstName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, firstName: e.target.value })
-                    }
-                    required
-                  />
-                  <Input
-                    placeholder="Last Name"
-                    className="bg-white/80 border-gray-200"
-                    value={formData.lastName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, lastName: e.target.value })
-                    }
-                    required
-                  />
-                  <div className="space-y-2">
-                    <Label htmlFor="mobile">Mobile Number</Label>
-                    <PhoneNumberInput
-                      id="mobile"
-                      value={formData.mobile}
-                      onChange={(value) =>
-                        setFormData({ ...formData, mobile: value || "" })
-                      }
-                      placeholder="Enter your mobile number"
-                      className="bg-white/80 border-gray-200"
-                      required
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-primary hover:bg-primary/90" 
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Creating account..." : "Sign Up"}
-                  </Button>
-                  <p className="text-center text-gray-600 mb-0">
-                    Already have an account?{" "}
-                    <Button 
-                      variant="link" 
-                      onClick={() => navigate("/login")}
-                      className="text-primary hover:text-primary/90 p-0"
-                    >
-                      Login
-                    </Button>
-                  </p>
-                </form>
-              </CardContent>
-            </Card>
+            <SignupForm />
           </div>
         </div>
 
