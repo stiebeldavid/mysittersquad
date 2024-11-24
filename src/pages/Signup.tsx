@@ -7,6 +7,7 @@ import { createUser, findUserByMobile } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -89,14 +90,14 @@ const Signup = () => {
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight animate-slide-up">
                 Schedule Your Babysitters Easier
               </h2>
-              <p className="text-xl md:text-2xl text-gray-600 animate-slide-up">
-                Book child care in a snap, from your trusted circle of babysitters!
-              </p>
             </div>
 
             {/* Right Column - Sign Up Form */}
             <Card className="p-6 bg-white/90 shadow-xl animate-slide-up">
               <CardContent>
+                <p className="text-xl text-gray-600 mb-6">
+                  Book child care in a snap, from your trusted circle of babysitters!
+                </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <Input
                     placeholder="First Name"
@@ -116,15 +117,19 @@ const Signup = () => {
                     }
                     required
                   />
-                  <PhoneNumberInput
-                    value={formData.mobile}
-                    onChange={(value) =>
-                      setFormData({ ...formData, mobile: value || "" })
-                    }
-                    placeholder="Mobile Number"
-                    className="bg-white/80 border-gray-200"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="mobile">Mobile Number</Label>
+                    <PhoneNumberInput
+                      id="mobile"
+                      value={formData.mobile}
+                      onChange={(value) =>
+                        setFormData({ ...formData, mobile: value || "" })
+                      }
+                      placeholder="Enter your mobile number"
+                      className="bg-white/80 border-gray-200"
+                      required
+                    />
+                  </div>
                   <Button 
                     type="submit" 
                     className="w-full bg-primary hover:bg-primary/90" 
