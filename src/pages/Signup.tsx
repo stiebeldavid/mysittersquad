@@ -50,7 +50,7 @@ const Signup = () => {
                 MySitterSquad
               </h1>
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-white leading-tight animate-slide-up text-shadow-lg">
-                Book Trusted Babysitters in Seconds
+                Book YOUR Trusted Babysitters in Seconds
               </h2>
               <p className="text-xl text-white text-shadow">
                 Say goodbye to scheduling stress—arrange reliable child care in just a few clicks!
