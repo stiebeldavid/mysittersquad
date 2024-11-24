@@ -72,7 +72,7 @@ const Signup = () => {
         backgroundImage: "url('/lovable-uploads/df45466e-43ed-4173-8426-0112c7ee8a9b.png')",
       }}
     >
-      <div className="absolute inset-0 bg-black/70" />
+      <div className="absolute inset-0 bg-black/50" /> {/* Reduced opacity from 70% to 50% */}
       
       {/* Nav Bar */}
       <nav className="relative z-10 bg-transparent">
@@ -81,7 +81,7 @@ const Signup = () => {
             <Link to="/" className="flex items-center space-x-3">
               <span className="text-4xl font-bold text-white tracking-tight drop-shadow-lg">MySitterSquad</span>
             </Link>
-            <Button variant="ghost" asChild className="text-white hover:bg-white/10">
+            <Button variant="ghost" asChild className="text-white hover:bg-white/20">
               <Link to="/login">Sign In</Link>
             </Button>
           </div>
@@ -96,7 +96,7 @@ const Signup = () => {
             <h1 className="text-6xl font-bold text-white leading-tight drop-shadow-lg animate-fade-in">
               Schedule Your Babysitters Easier
             </h1>
-            <p className="text-2xl text-white/90 drop-shadow-md animate-fade-in delay-100">
+            <p className="text-2xl text-white drop-shadow-md animate-fade-in delay-100">
               Book child care in a snap, from your trusted circle of babysitters!
             </p>
           </div>
@@ -152,35 +152,35 @@ const Signup = () => {
       </div>
 
       {/* Features Section */}
-      <div className="relative z-10 bg-black/40 backdrop-blur-sm py-24">
+      <div className="relative z-10 bg-black/30 backdrop-blur-sm py-24"> {/* Reduced opacity from 40% to 30% */}
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center space-y-4 hover:bg-white/15 transition-colors">
-              <Users className="w-12 h-12 text-white mx-auto" />
-              <h3 className="text-2xl font-bold text-white drop-shadow-md">Your Trusted Network</h3>
-              <p className="text-white/90 text-lg leading-relaxed">
-                Interact and request babysitting from people you already know and trust. No strangers.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center space-y-4 hover:bg-white/15 transition-colors">
-              <MessageSquare className="w-12 h-12 text-white mx-auto" />
-              <h3 className="text-2xl font-bold text-white drop-shadow-md">One-Click Requests</h3>
-              <p className="text-white/90 text-lg leading-relaxed">
-                Send your request to multiple babysitters with one click. Avoid the messaging chaos.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center space-y-4 hover:bg-white/15 transition-colors">
-              <Calendar className="w-12 h-12 text-white mx-auto" />
-              <h3 className="text-2xl font-bold text-white drop-shadow-md">Easy Scheduling</h3>
-              <p className="text-white/90 text-lg leading-relaxed">
-                Create and manage babysitting requests effortlessly.
-              </p>
-            </div>
+            {/* Feature Cards */}
+            {[
+              {
+                icon: <Users className="w-12 h-12 text-white mx-auto" />,
+                title: "Your Trusted Network",
+                description: "Interact and request babysitting from people you already know and trust. No strangers."
+              },
+              {
+                icon: <MessageSquare className="w-12 h-12 text-white mx-auto" />,
+                title: "One-Click Requests",
+                description: "Send your request to multiple babysitters with one click. Avoid the messaging chaos."
+              },
+              {
+                icon: <Calendar className="w-12 h-12 text-white mx-auto" />,
+                title: "Easy Scheduling",
+                description: "Create and manage babysitting requests effortlessly."
+              }
+            ].map((feature, index) => (
+              <div key={index} className="bg-white/5 backdrop-blur-sm rounded-lg p-8 text-center space-y-4 hover:bg-white/10 transition-colors">
+                {feature.icon}
+                <h3 className="text-2xl font-bold text-white drop-shadow-md">{feature.title}</h3>
+                <p className="text-white/90 text-lg leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
