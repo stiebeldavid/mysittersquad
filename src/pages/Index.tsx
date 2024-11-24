@@ -24,27 +24,31 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 pt-24 pb-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 animate-fade-in leading-tight">
+      <div 
+        className="container mx-auto px-4 pt-24 pb-20"
+        style={{
+          backgroundImage: "url('/lovable-uploads/df45466e-43ed-4173-8426-0112c7ee8a9b.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          position: "relative",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/40" /> {/* Dark overlay */}
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 animate-fade-in leading-tight">
             Schedule Your Babysitters <span className="text-primary">Easier</span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-10 animate-fade-in max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-white mb-10 animate-fade-in max-w-2xl mx-auto leading-relaxed">
             Book child care in a snap, from your trusted circle of babysitters!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in">
             <Button asChild size="lg" className="text-lg px-8">
               <Link to="/signup">Get Started Free</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="text-lg">
+            <Button asChild size="lg" variant="outline" className="text-lg bg-white/10 backdrop-blur-sm hover:bg-white/20">
               <Link to="/login">Sign In</Link>
             </Button>
           </div>
-          <img
-            src="https://images.unsplash.com/photo-1602030638412-bb8dcc0bc8b0"
-            alt="Children playing and having fun"
-            className="rounded-2xl shadow-2xl mx-auto w-full object-cover h-[400px] animate-fade-in"
-          />
         </div>
       </div>
 
