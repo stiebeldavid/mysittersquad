@@ -1,4 +1,4 @@
-import { LogIn, User } from "lucide-react";
+import { LogIn, User, MessageSquare, Calendar, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { SignupForm } from "@/components/signup/SignupForm";
@@ -46,14 +46,11 @@ const Signup = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left Column - Headlines */}
             <div className="space-y-6 p-6 pt-3 sm:pt-6 rounded-lg bg-black/10 backdrop-blur-sm">
-              <h1 className="hidden sm:block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4 text-shadow-lg">
-                MySitterSquad
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight animate-slide-up text-shadow-lg">
+                Coordinate Your Trusted Babysitters, All in One Place
               </h1>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-white leading-tight animate-slide-up text-shadow-lg">
-                Book YOUR Trusted Babysitters in Seconds
-              </h2>
-              <p className="text-xl text-white text-shadow">
-                Say goodbye to scheduling stress—arrange reliable child care in just a few clicks!
+              <p className="text-xl text-white text-shadow leading-relaxed">
+                Stop juggling multiple text threads. MySitterSquad helps you quickly find available time slots from your existing, trusted babysitters.
               </p>
             </div>
 
@@ -63,31 +60,67 @@ const Signup = () => {
         </div>
 
         {/* Features Section */}
-        <div className="bg-white/80 py-20">
+        <div className="bg-white/95 py-16">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
               {/* Feature 1 */}
-              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/80 transition-colors">
+              <div className="space-y-4 p-6 rounded-lg hover:bg-white/80 transition-colors">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <Shield className="h-6 w-6 text-primary" />
+                </div>
                 <h3 className="text-2xl font-semibold text-gray-800">Your Trusted Network</h3>
                 <p className="text-gray-600">
-                  Interact and request babysitting from people you already know and trust. No strangers.
+                  Add your existing, trusted babysitters to your squad. No strangers, just the sitters your family already knows and loves.
                 </p>
               </div>
 
               {/* Feature 2 */}
-              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/80 transition-colors">
-                <h3 className="text-2xl font-semibold text-gray-800">One-Click Requests</h3>
+              <div className="space-y-4 p-6 rounded-lg hover:bg-white/80 transition-colors">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <Calendar className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-2xl font-semibold text-gray-800">One Request, Multiple Sitters</h3>
                 <p className="text-gray-600">
-                  Send your request to multiple babysitters with one click. Avoid the messaging chaos.
+                  Simply enter when you need care. MySitterSquad automatically reaches out to all your sitters at once, saving you time and hassle.
                 </p>
               </div>
 
               {/* Feature 3 */}
-              <div className="space-y-4 text-center p-6 rounded-lg hover:bg-white/80 transition-colors">
-                <h3 className="text-2xl font-semibold text-gray-800">Easy Scheduling</h3>
+              <div className="space-y-4 p-6 rounded-lg hover:bg-white/80 transition-colors">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <MessageSquare className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-2xl font-semibold text-gray-800">Seamless Communication</h3>
                 <p className="text-gray-600">
-                  Create and manage babysitting requests effortlessly.
+                  Each sitter gets notified their preferred way - text, WhatsApp, or email. Their responses appear in one organized place for you to review.
                 </p>
+              </div>
+            </div>
+
+            {/* What MySitterSquad Is Not Section */}
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">What MySitterSquad Is Not</h2>
+              <div className="space-y-4 bg-secondary/50 p-6 rounded-lg">
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <span className="text-primary font-bold mr-2">•</span>
+                    <p className="text-gray-700">
+                      We're not a babysitter marketplace or matching service - we help you coordinate with your existing, trusted sitters
+                    </p>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-primary font-bold mr-2">•</span>
+                    <p className="text-gray-700">
+                      We don't share your requests with anyone outside your trusted network of added sitters
+                    </p>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-primary font-bold mr-2">•</span>
+                    <p className="text-gray-700">
+                      We don't replace your judgment in choosing and trusting sitters - we simply make it easier to coordinate with the ones you already trust
+                    </p>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
