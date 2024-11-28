@@ -1,12 +1,22 @@
 import { Plus } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { fetchBabysitters } from "@/lib/airtable";
+import { useAuthStore } from "@/store/authStore";
 
 const FloatingActionButton = () => {
   const location = useLocation();
+  const user = useAuthStore((state) => state.user);
   
-  // Hide the button if we're on the create-request page
-  if (location.pathname === '/create-request') {
+  const { data: babysitters = [] } = useQuery({
+    queryKey: ['babysitters', user?.mobile],
+    queryFn: () => fetchBabysitters(user?.mobile || ''),
+    enabled: !!user?.mobile,
+  });
+
+  // Hide the button if we're on the create-request page or if there are no babysitters
+  if (location.pathname === '/create-request' || babysitters.length === 0) {
     return null;
   }
 

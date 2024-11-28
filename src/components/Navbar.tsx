@@ -9,12 +9,23 @@ import {
 } from "./ui/dropdown-menu";
 import { useAuthStore } from "@/store/authStore";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
+import { fetchBabysitters } from "@/lib/airtable";
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
   const { toast } = useToast();
+
+  const { data: babysitters = [] } = useQuery({
+    queryKey: ['babysitters', user?.mobile],
+    queryFn: () => fetchBabysitters(user?.mobile || ''),
+    enabled: !!user?.mobile,
+  });
+
+  const hasBabysitters = babysitters.length > 0;
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -27,11 +38,15 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  const navItems = [
-    { path: "/", icon: Home, label: "Home" },
-    { path: "/babysitters", icon: Users, label: "My Babysitters" },
-    { path: "/requests", icon: Calendar, label: "My Requests" },
+  const allNavItems = [
+    { path: "/", icon: Home, label: "Home", alwaysShow: true },
+    { path: "/babysitters", icon: Users, label: hasBabysitters ? "My Babysitters" : "Add Babysitters", alwaysShow: true },
+    { path: "/requests", icon: Calendar, label: "My Requests", requiresBabysitters: true },
   ];
+
+  const visibleNavItems = allNavItems.filter(item => 
+    item.alwaysShow || (hasBabysitters && item.requiresBabysitters)
+  );
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b shadow-sm">
@@ -43,7 +58,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            {navItems.map(({ path, icon: Icon, label }) => (
+            {visibleNavItems.map(({ path, icon: Icon, label }) => (
               <Link
                 key={path}
                 to={path}
@@ -57,15 +72,17 @@ const Navbar = () => {
                 <span>{label}</span>
               </Link>
             ))}
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => navigate('/create-request')}
-              className="ml-2"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Request
-            </Button>
+            {hasBabysitters && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => navigate('/create-request')}
+                className="ml-2"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Request
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="sm"
@@ -90,7 +107,7 @@ const Navbar = () => {
                 className="w-56 bg-white shadow-lg rounded-md border mt-2 z-[100]"
                 sideOffset={5}
               >
-                {navItems.map(({ path, icon: Icon, label }) => (
+                {visibleNavItems.map(({ path, icon: Icon, label }) => (
                   <DropdownMenuItem key={path} asChild>
                     <Link
                       to={path}
@@ -103,15 +120,17 @@ const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuItem asChild>
-                  <Link
-                    to="/create-request"
-                    className="flex items-center space-x-2 w-full px-3 py-2 text-gray-600 hover:bg-gray-100"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Create Request</span>
-                  </Link>
-                </DropdownMenuItem>
+                {hasBabysitters && (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/create-request"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-gray-600 hover:bg-gray-100"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Create Request</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem
                   onClick={handleLogout}
                   className="flex items-center space-x-2 w-full px-3 py-2 text-gray-600 hover:bg-gray-100"

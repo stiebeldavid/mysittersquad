@@ -24,15 +24,18 @@ const Index = () => {
     enabled: !!user?.mobile,
   });
 
+  const hasBabysitters = babysitters.length > 0;
+
   const allActions = [
     {
       icon: Users,
-      title: babysitters.length > 0 ? "My Babysitters" : "Add Babysitters",
+      title: hasBabysitters ? "My Babysitters" : "Add Babysitters",
       description: "Import or add your trusted babysitters",
       path: "/babysitters",
       color: "bg-purple-500",
-      isComplete: babysitters.length > 0,
+      isComplete: hasBabysitters,
       count: babysitters.length,
+      alwaysShow: true, // This action is always visible
     },
     {
       icon: Plus,
@@ -40,6 +43,7 @@ const Index = () => {
       description: "Create a new babysitting request",
       path: "/create-request",
       color: "bg-primary",
+      requiresBabysitters: true,
     },
     {
       icon: Calendar,
@@ -47,6 +51,7 @@ const Index = () => {
       description: "View and manage your requests",
       path: "/requests",
       color: "bg-blue-500",
+      requiresBabysitters: true,
     },
     {
       icon: Baby,
@@ -55,20 +60,27 @@ const Index = () => {
       path: "/family",
       color: "bg-pink-500",
       isComplete: kids.length > 0,
+      requiresBabysitters: true,
     },
   ];
+
+  const visibleActions = allActions.filter(action => 
+    action.alwaysShow || (hasBabysitters && action.requiresBabysitters)
+  );
 
   return (
     <div className="page-container">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome to MySitterSquad</h1>
         <p className="text-gray-600">
-          Your personal babysitting coordinator
+          {hasBabysitters 
+            ? "Your personal babysitting coordinator" 
+            : "Let's start by adding your trusted babysitters"}
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {allActions.map(({ icon: Icon, title, description, path, color, isComplete, count }) => (
+        {visibleActions.map(({ icon: Icon, title, description, path, color, isComplete, count }) => (
           <Link key={path} to={path}>
             <Card className={`card-hover cursor-pointer h-full relative ${isComplete ? 'border-green-500' : 'border-orange-500'}`}>
               {count !== undefined && (
@@ -93,7 +105,7 @@ const Index = () => {
         ))}
       </div>
 
-      {kids.length > 0 && babysitters.length > 0 && (
+      {hasBabysitters && kids.length > 0 && (
         <div className="mt-12 text-center">
           <Button asChild size="lg" className="animate-slide-up">
             <Link to="/create-request">
