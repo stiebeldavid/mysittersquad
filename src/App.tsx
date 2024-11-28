@@ -58,7 +58,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     };
   }, [logout, toast]);
   
-  return user ? <>{children}</> : <Navigate to="/signup" />;
+  return user ? <>{children}</> : <Navigate to="/login" />;
 };
 
 const AppContent = () => {
@@ -81,7 +81,7 @@ const AppContent = () => {
               user ? (
                 <Index />
               ) : (
-                <Navigate to="/signup" replace />
+                <Navigate to="/login" replace />
               )
             }
           />
