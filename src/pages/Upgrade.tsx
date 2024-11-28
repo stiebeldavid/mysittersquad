@@ -12,59 +12,89 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/authStore";
 import { findUserByMobile } from "@/lib/airtable";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
 
 const Upgrade = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuthStore();
 
+  const { data: userRecord, isLoading } = useQuery({
+    queryKey: ['user', user?.mobile],
+    queryFn: async () => {
+      if (!user?.mobile) return null;
+      return findUserByMobile(user.mobile);
+    },
+    enabled: !!user?.mobile,
+  });
+
   const handleUpgradeClick = async () => {
     if (!user?.mobile) {
       toast({
-        title: "Error",
+        title: "Authentication Required",
         description: "Please log in to upgrade your subscription",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
+    if (!userRecord) {
+      toast({
+        title: "Account Error",
+        description: "Unable to find your account. Please try again later.",
         variant: "destructive",
       });
       return;
     }
 
-    try {
-      const userRecord = await findUserByMobile(user.mobile);
-      
-      if (!userRecord) {
-        toast({
-          title: "Error",
-          description: "User not found",
-          variant: "destructive",
-        });
-        return;
-      }
+    const subscription = userRecord.fields['Subscription'] as string;
 
-      const subscription = userRecord.fields['Subscription'] as string;
-
-      if (subscription === "Premium") {
-        toast({
-          title: "Already Premium",
-          description: "You already have a Premium subscription!",
-        });
-        navigate("/");
-        return;
-      }
-
-      // Remove the '+' from the mobile number for Stripe
-      const clientReferenceId = user.mobile.replace('+', '');
-      
-      // Open Stripe checkout in new tab
-      window.open(`https://buy.stripe.com/7sI8zr30U7eS8OQ9AA?client_reference_id=${clientReferenceId}`, '_blank');
-    } catch (error) {
-      console.error('Error checking subscription:', error);
+    if (subscription === "Premium") {
       toast({
-        title: "Error",
-        description: "Failed to process upgrade request",
-        variant: "destructive",
+        title: "Already Premium",
+        description: "You already have a Premium subscription!",
       });
+      navigate("/");
+      return;
     }
+
+    // Remove the '+' from the mobile number for Stripe
+    const clientReferenceId = user.mobile.replace('+', '');
+    
+    // Open Stripe checkout in new tab
+    window.open(`https://buy.stripe.com/7sI8zr30U7eS8OQ9AA?client_reference_id=${clientReferenceId}`, '_blank');
   };
+
+  if (isLoading) {
+    return (
+      <div className="page-container">
+        <div className="max-w-3xl mx-auto text-center mb-8">
+          <Skeleton className="h-10 w-64 mx-auto mb-4" />
+          <Skeleton className="h-6 w-96 mx-auto" />
+        </div>
+        <div className="grid gap-8 items-start">
+          <Card className="relative overflow-hidden border-primary animate-pulse">
+            <CardHeader>
+              <Skeleton className="h-8 w-32 mb-2" />
+              <Skeleton className="h-6 w-24" />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-6 w-full" />
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Skeleton className="h-10 w-full" />
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="page-container">
