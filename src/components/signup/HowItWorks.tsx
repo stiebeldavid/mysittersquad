@@ -1,4 +1,4 @@
-import { UserPlus, Calendar, Clock, Check, ArrowUp } from "lucide-react";
+import { UserPlus, Calendar, Clock, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HowItWorksProps {
@@ -15,22 +15,13 @@ export const HowItWorks = ({ onGetStarted }: HowItWorksProps) => {
         </div>
 
         <div className="relative">
-          {/* Connection Line */}
-          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-primary/20 -translate-y-1/2 z-0" />
-          
-          {/* Simple Arrows */}
-          <div className="hidden lg:flex justify-center absolute top-1/2 left-[20%] right-[20%] -translate-y-1/2 z-10">
-            {[1, 2, 3].map((_, i) => (
-              <div key={i} className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <ArrowUp className="w-4 h-4 text-white transform rotate-90" />
-              </div>
-            ))}
-          </div>
-
           {/* Steps Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16 relative z-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {/* Step 1 */}
-            <div className="space-y-4 p-6 rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div className="relative space-y-4 p-6 rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="absolute top-4 right-4 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                1
+              </div>
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <UserPlus className="h-6 w-6 text-primary" />
               </div>
@@ -41,10 +32,16 @@ export const HowItWorks = ({ onGetStarted }: HowItWorksProps) => {
               <p className="text-sm text-gray-500 italic">
                 Each sitter's information is private and only visible to you.
               </p>
+              <div className="absolute bottom-4 right-4 lg:block hidden">
+                <ArrowRight className="h-6 w-6 text-primary" />
+              </div>
             </div>
 
             {/* Step 2 */}
-            <div className="space-y-4 p-6 rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div className="relative space-y-4 p-6 rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="absolute top-4 right-4 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                2
+              </div>
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <Calendar className="h-6 w-6 text-primary" />
               </div>
@@ -55,10 +52,16 @@ export const HowItWorks = ({ onGetStarted }: HowItWorksProps) => {
               <p className="text-sm text-gray-500 italic">
                 No need to message each sitter individually anymore.
               </p>
+              <div className="absolute bottom-4 right-4 lg:block hidden">
+                <ArrowRight className="h-6 w-6 text-primary" />
+              </div>
             </div>
 
             {/* Step 3 */}
-            <div className="space-y-4 p-6 rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div className="relative space-y-4 p-6 rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="absolute top-4 right-4 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                3
+              </div>
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <Clock className="h-6 w-6 text-primary" />
               </div>
@@ -69,10 +72,16 @@ export const HowItWorks = ({ onGetStarted }: HowItWorksProps) => {
               <p className="text-sm text-gray-500 italic">
                 All responses are organized in one place in your dashboard.
               </p>
+              <div className="absolute bottom-4 right-4 lg:block hidden">
+                <ArrowRight className="h-6 w-6 text-primary" />
+              </div>
             </div>
 
             {/* Step 4 */}
-            <div className="space-y-4 p-6 rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div className="relative space-y-4 p-6 rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="absolute top-4 right-4 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                4
+              </div>
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <Check className="h-6 w-6 text-primary" />
               </div>
@@ -93,7 +102,6 @@ export const HowItWorks = ({ onGetStarted }: HowItWorksProps) => {
               size="lg"
               className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-6 h-auto"
             >
-              <ArrowUp className="h-5 w-5 mr-2" />
               Get Started Now
             </Button>
           </div>
