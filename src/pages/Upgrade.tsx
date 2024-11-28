@@ -18,15 +18,17 @@ import { useQuery } from "@tanstack/react-query";
 const Upgrade = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
 
   const { data: userRecord, isLoading } = useQuery({
     queryKey: ['user', user?.mobile],
     queryFn: async () => {
-      if (!user?.mobile) return null;
+      if (!user?.mobile) throw new Error('No mobile number found');
       return findUserByMobile(user.mobile);
     },
     enabled: !!user?.mobile,
+    retry: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const handleUpgradeClick = async () => {
