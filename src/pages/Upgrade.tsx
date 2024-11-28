@@ -14,11 +14,19 @@ import { useAuthStore } from "@/store/authStore";
 import { findUserByMobile } from "@/lib/airtable";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const Upgrade = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuthStore();
+
+  // Redirect to signup if not logged in
+  useEffect(() => {
+    if (!user) {
+      navigate("/signup");
+    }
+  }, [user, navigate]);
 
   const { data: userRecord, isLoading } = useQuery({
     queryKey: ['user', user?.mobile],
@@ -30,16 +38,6 @@ const Upgrade = () => {
   });
 
   const handleUpgradeClick = async () => {
-    if (!user?.mobile) {
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to upgrade your subscription",
-        variant: "destructive",
-      });
-      navigate("/login");
-      return;
-    }
-
     if (!userRecord) {
       toast({
         title: "Account Error",
@@ -94,6 +92,11 @@ const Upgrade = () => {
         </div>
       </div>
     );
+  }
+
+  // Don't render anything while checking authentication
+  if (!user) {
+    return null;
   }
 
   return (
