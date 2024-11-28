@@ -1,4 +1,4 @@
-import { LogIn, User, MessageSquare, Calendar, Shield, ArrowUp } from "lucide-react";
+import { LogIn, User, MessageSquare, Calendar, Shield, ArrowUp, Users, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { SignupForm } from "@/components/signup/SignupForm";
@@ -104,24 +104,32 @@ const Signup = () => {
 
             {/* What MySitterSquad Is Not Section */}
             <div className="max-w-3xl mx-auto">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">What MySitterSquad Is Not</h2>
-              <div className="space-y-4 bg-secondary/50 p-6 rounded-lg">
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <span className="text-primary font-bold mr-2">•</span>
-                    <p className="text-gray-700">
+              <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+                What MySitterSquad Is Not
+              </h2>
+              <div className="space-y-6 bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-lg border border-gray-100">
+                <ul className="space-y-6">
+                  <li className="flex items-start group transition-all">
+                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 group-hover:bg-primary/20 transition-colors">
+                      <Shield className="h-6 w-6 text-primary" />
+                    </div>
+                    <p className="text-gray-700 text-lg leading-relaxed pt-3">
                       We're not a babysitter marketplace or matching service - we help you coordinate with your existing, trusted sitters
                     </p>
                   </li>
-                  <li className="flex items-start">
-                    <span className="text-primary font-bold mr-2">•</span>
-                    <p className="text-gray-700">
+                  <li className="flex items-start group transition-all">
+                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 group-hover:bg-primary/20 transition-colors">
+                      <Users className="h-6 w-6 text-primary" />
+                    </div>
+                    <p className="text-gray-700 text-lg leading-relaxed pt-3">
                       We don't share your requests with anyone outside your trusted network of added sitters
                     </p>
                   </li>
-                  <li className="flex items-start">
-                    <span className="text-primary font-bold mr-2">•</span>
-                    <p className="text-gray-700">
+                  <li className="flex items-start group transition-all">
+                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 group-hover:bg-primary/20 transition-colors">
+                      <Heart className="h-6 w-6 text-primary" />
+                    </div>
+                    <p className="text-gray-700 text-lg leading-relaxed pt-3">
                       We don't replace your judgment in choosing and trusting sitters - we simply make it easier to coordinate with the ones you already trust
                     </p>
                   </li>
