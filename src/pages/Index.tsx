@@ -28,6 +28,14 @@ const Index = () => {
 
   const allActions = [
     {
+      icon: Plus,
+      title: "New Request",
+      description: "Create a new babysitting request",
+      path: "/create-request",
+      color: "bg-primary",
+      requiresBabysitters: true,
+    },
+    {
       icon: Users,
       title: hasBabysitters ? "My Babysitters" : "Add Babysitters",
       description: "Import or add your trusted babysitters",
@@ -36,14 +44,6 @@ const Index = () => {
       isComplete: hasBabysitters,
       count: babysitters.length,
       alwaysShow: true, // This action is always visible
-    },
-    {
-      icon: Plus,
-      title: "New Request",
-      description: "Create a new babysitting request",
-      path: "/create-request",
-      color: "bg-primary",
-      requiresBabysitters: true,
     },
     {
       icon: Calendar,
