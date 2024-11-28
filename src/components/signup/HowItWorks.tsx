@@ -15,14 +15,14 @@ export const HowItWorks = ({ onGetStarted }: HowItWorksProps) => {
         </div>
 
         <div className="relative">
-          {/* Connection Lines */}
+          {/* Connection Line */}
           <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-primary/20 -translate-y-1/2 z-0" />
           
-          {/* Arrow Markers */}
-          <div className="hidden lg:flex justify-between absolute top-1/2 left-[25%] right-[25%] -translate-y-1/2 z-10">
+          {/* Simple Arrows */}
+          <div className="hidden lg:flex justify-center absolute top-1/2 left-[20%] right-[20%] -translate-y-1/2 z-10">
             {[1, 2, 3].map((_, i) => (
-              <div key={i} className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center transform rotate-[-30deg]">
-                <div className="w-4 h-4 border-t-2 border-r-2 border-primary transform rotate-45" />
+              <div key={i} className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <ArrowUp className="w-4 h-4 text-white transform rotate-90" />
               </div>
             ))}
           </div>
