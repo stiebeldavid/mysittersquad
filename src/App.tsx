@@ -19,7 +19,14 @@ import ConfirmUpgrade from "./pages/ConfirmUpgrade";
 import { useEffect } from "react";
 import { useToast } from "./hooks/use-toast";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
 
 const SESSION_TIMEOUT = 1000 * 60 * 60; // 1 hour
 
@@ -29,6 +36,8 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { toast } = useToast();
   
   useEffect(() => {
+    if (!user) return;
+    
     // Check if session is expired
     const lastActivity = localStorage.getItem('lastActivity');
     if (lastActivity && Date.now() - parseInt(lastActivity) > SESSION_TIMEOUT) {
@@ -56,9 +65,13 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
       window.removeEventListener('mousemove', updateActivity);
       window.removeEventListener('keydown', updateActivity);
     };
-  }, [logout, toast]);
+  }, [user, logout, toast]);
   
-  return user ? <>{children}</> : <Navigate to="/login" />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return <>{children}</>;
 };
 
 const AppContent = () => {

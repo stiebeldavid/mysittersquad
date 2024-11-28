@@ -20,30 +20,32 @@ const Upgrade = () => {
   const { toast } = useToast();
   const user = useAuthStore((state) => state.user);
 
-  const { data: userRecord, isLoading } = useQuery({
-    queryKey: ['user', user?.mobile],
+  const { data: userRecord, isLoading, error } = useQuery({
+    queryKey: ['userSubscription', user?.mobile],
     queryFn: async () => {
-      if (!user?.mobile) throw new Error('No mobile number found');
-      return findUserByMobile(user.mobile);
+      if (!user?.mobile) {
+        throw new Error('No mobile number found');
+      }
+      const record = await findUserByMobile(user.mobile);
+      if (!record) {
+        throw new Error('User record not found');
+      }
+      return record;
     },
     enabled: !!user?.mobile,
-    retry: false,
-    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const handleUpgradeClick = async () => {
-    if (!userRecord) {
+  const handleUpgradeClick = () => {
+    if (!user?.mobile) {
       toast({
-        title: "Account Error",
-        description: "Unable to find your account. Please try again later.",
+        title: "Error",
+        description: "Unable to process upgrade. Please try logging in again.",
         variant: "destructive",
       });
       return;
     }
 
-    const subscription = userRecord.fields['Subscription'] as string;
-
-    if (subscription === "Premium") {
+    if (userRecord?.fields['Subscription'] === "Premium") {
       toast({
         title: "Already Premium",
         description: "You already have a Premium subscription!",
@@ -59,15 +61,24 @@ const Upgrade = () => {
     window.open(`https://buy.stripe.com/7sI8zr30U7eS8OQ9AA?client_reference_id=${clientReferenceId}`, '_blank');
   };
 
+  if (error) {
+    toast({
+      title: "Error",
+      description: "Unable to load subscription information. Please try again later.",
+      variant: "destructive",
+    });
+    return null;
+  }
+
   if (isLoading) {
     return (
-      <div className="page-container">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto text-center mb-8">
           <Skeleton className="h-10 w-64 mx-auto mb-4" />
           <Skeleton className="h-6 w-96 mx-auto" />
         </div>
-        <div className="grid gap-8 items-start">
-          <Card className="relative overflow-hidden border-primary animate-pulse">
+        <div className="max-w-md mx-auto">
+          <Card className="relative">
             <CardHeader>
               <Skeleton className="h-8 w-32 mb-2" />
               <Skeleton className="h-6 w-24" />
@@ -89,7 +100,7 @@ const Upgrade = () => {
   }
 
   return (
-    <div className="page-container">
+    <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto text-center mb-8">
         <h1 className="text-4xl font-bold mb-4">Upgrade to Premium</h1>
         <p className="text-muted-foreground">
@@ -97,20 +108,20 @@ const Upgrade = () => {
         </p>
       </div>
 
-      <div className="grid gap-8 items-start">
-        <Card className="relative overflow-hidden border-primary">
+      <div className="max-w-md mx-auto">
+        <Card className="relative">
           <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-sm">
             Best Value
           </div>
           <CardHeader>
-            <CardTitle className="text-2xl">Premium Plan</CardTitle>
+            <CardTitle>Premium Plan</CardTitle>
             <CardDescription>
               <span className="text-3xl font-bold">$8</span>
               <span className="text-muted-foreground">/month</span>
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="grid gap-2">
+          <CardContent>
+            <div className="space-y-4">
               {[
                 "Save unlimited babysitters",
                 "Send unlimited requests",
@@ -118,9 +129,9 @@ const Upgrade = () => {
               ].map((feature) => (
                 <div
                   key={feature}
-                  className="flex items-center gap-2 text-left"
+                  className="flex items-center gap-2"
                 >
-                  <Check className="w-4 h-4 text-primary" />
+                  <Check className="h-4 w-4 text-primary" />
                   <span>{feature}</span>
                 </div>
               ))}
@@ -128,9 +139,9 @@ const Upgrade = () => {
           </CardContent>
           <CardFooter>
             <Button
-              size="lg"
-              className="w-full"
               onClick={handleUpgradeClick}
+              className="w-full"
+              size="lg"
             >
               Upgrade Now
             </Button>
