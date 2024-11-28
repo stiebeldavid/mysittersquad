@@ -81,7 +81,7 @@ const AppContent = () => {
               user ? (
                 <Index />
               ) : (
-                <Navigate to="/login" replace />
+                <Navigate to="/signup" replace />
               )
             }
           />
