@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { usePageTracking } from "@/hooks/usePageTracking";
 import Navbar from "./components/Navbar";
 import FloatingActionButton from "./components/FloatingActionButton";
 import Index from "./pages/Index";
@@ -78,6 +79,7 @@ const AppContent = () => {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
   const isResponsePage = location.pathname.startsWith('/r/');
+  usePageTracking();
 
   return (
     <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
