@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
+import { Toggle } from "@/components/ui/toggle";
 import { useToast } from "@/components/ui/use-toast";
 import { BabysitterSelector } from "@/components/create-request/BabysitterSelector";
 import { AddressInput } from "@/components/create-request/AddressInput";
@@ -18,8 +19,12 @@ import { fetchBabysitters } from "@/lib/airtable";
 
 const CreateRequest = () => {
   const [date, setDate] = useState<Date>();
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startHours, setStartHours] = useState("09");
+  const [startMinutes, setStartMinutes] = useState("00");
+  const [startAmPm, setStartAmPm] = useState<"AM" | "PM">("AM");
+  const [endHours, setEndHours] = useState("11");
+  const [endMinutes, setEndMinutes] = useState("30");
+  const [endAmPm, setEndAmPm] = useState<"AM" | "PM">("AM");
   const [selectedBabysitters, setSelectedBabysitters] = useState<string[]>([]);
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
@@ -38,8 +43,18 @@ const CreateRequest = () => {
     return `REQ-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   };
 
+  const formatTimeForSubmission = (hours: string, minutes: string, ampm: "AM" | "PM") => {
+    let hour = parseInt(hours);
+    if (ampm === "PM" && hour !== 12) hour += 12;
+    if (ampm === "AM" && hour === 12) hour = 0;
+    return `${hour.toString().padStart(2, '0')}:${minutes}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    const startTime = formatTimeForSubmission(startHours, startMinutes, startAmPm);
+    const endTime = formatTimeForSubmission(endHours, endMinutes, endAmPm);
     
     if (!date || !startTime || !endTime || selectedBabysitters.length === 0 || !user) {
       toast({
@@ -56,6 +71,9 @@ const CreateRequest = () => {
   const handleSendRequests = async () => {
     try {
       const requestGroupId = generateRequestGroupId();
+      const startTime = formatTimeForSubmission(startHours, startMinutes, startAmPm);
+      const endTime = formatTimeForSubmission(endHours, endMinutes, endAmPm);
+      
       const requests = await Promise.all(
         selectedBabysitters.map(babysitterId =>
           createRequest(
@@ -83,6 +101,121 @@ const CreateRequest = () => {
       });
     }
   };
+
+  const TimeInput = ({ 
+    hours, 
+    minutes, 
+    ampm, 
+    onHoursChange, 
+    onMinutesChange, 
+    onAmPmChange 
+  }: { 
+    hours: string;
+    minutes: string;
+    ampm: "AM" | "PM";
+    onHoursChange: (value: string) => void;
+    onMinutesChange: (value: string) => void;
+    onAmPmChange: (value: "AM" | "PM") => void;
+  }) => (
+    <div className="flex items-center gap-1">
+      <div className="flex flex-col items-center bg-white rounded-lg shadow-sm border">
+        <button
+          type="button"
+          className="px-3 py-1 hover:bg-gray-50"
+          onClick={() => {
+            const newHours = parseInt(hours);
+            if (newHours < 12) {
+              onHoursChange(String(newHours + 1).padStart(2, '0'));
+            } else {
+              onHoursChange('01');
+            }
+          }}
+        >
+          ▲
+        </button>
+        <input
+          type="text"
+          value={hours}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d{0,2}$/.test(value)) {
+              const numValue = parseInt(value || "0");
+              if (numValue >= 0 && numValue <= 12) {
+                onHoursChange(value.padStart(2, '0'));
+              }
+            }
+          }}
+          className="w-12 text-center border-y py-1"
+        />
+        <button
+          type="button"
+          className="px-3 py-1 hover:bg-gray-50"
+          onClick={() => {
+            const newHours = parseInt(hours);
+            if (newHours > 1) {
+              onHoursChange(String(newHours - 1).padStart(2, '0'));
+            } else {
+              onHoursChange('12');
+            }
+          }}
+        >
+          ▼
+        </button>
+      </div>
+      <span className="text-xl">:</span>
+      <div className="flex flex-col items-center bg-white rounded-lg shadow-sm border">
+        <button
+          type="button"
+          className="px-3 py-1 hover:bg-gray-50"
+          onClick={() => {
+            const newMinutes = parseInt(minutes);
+            if (newMinutes < 59) {
+              onMinutesChange(String(newMinutes + 1).padStart(2, '0'));
+            } else {
+              onMinutesChange('00');
+            }
+          }}
+        >
+          ▲
+        </button>
+        <input
+          type="text"
+          value={minutes}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d{0,2}$/.test(value)) {
+              const numValue = parseInt(value || "0");
+              if (numValue >= 0 && numValue <= 59) {
+                onMinutesChange(value.padStart(2, '0'));
+              }
+            }
+          }}
+          className="w-12 text-center border-y py-1"
+        />
+        <button
+          type="button"
+          className="px-3 py-1 hover:bg-gray-50"
+          onClick={() => {
+            const newMinutes = parseInt(minutes);
+            if (newMinutes > 0) {
+              onMinutesChange(String(newMinutes - 1).padStart(2, '0'));
+            } else {
+              onMinutesChange('59');
+            }
+          }}
+        >
+          ▼
+        </button>
+      </div>
+      <Toggle
+        pressed={ampm === "PM"}
+        onPressedChange={(pressed) => onAmPmChange(pressed ? "PM" : "AM")}
+        className="ml-2"
+      >
+        {ampm}
+      </Toggle>
+    </div>
+  );
 
   return (
     <div className="page-container">
@@ -115,23 +248,25 @@ const CreateRequest = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="startTime">Start Time</Label>
-                  <Input
-                    id="startTime"
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    required
+                  <TimeInput
+                    hours={startHours}
+                    minutes={startMinutes}
+                    ampm={startAmPm}
+                    onHoursChange={setStartHours}
+                    onMinutesChange={setStartMinutes}
+                    onAmPmChange={setStartAmPm}
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="endTime">End Time</Label>
-                  <Input
-                    id="endTime"
-                    type="time"
-                    value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                    required
+                  <TimeInput
+                    hours={endHours}
+                    minutes={endMinutes}
+                    ampm={endAmPm}
+                    onHoursChange={setEndHours}
+                    onMinutesChange={setEndMinutes}
+                    onAmPmChange={setEndAmPm}
                   />
                 </div>
               </div>
@@ -168,8 +303,8 @@ const CreateRequest = () => {
         open={showPreview}
         onOpenChange={setShowPreview}
         date={date}
-        startTime={startTime}
-        endTime={endTime}
+        startTime={formatTimeForSubmission(startHours, startMinutes, startAmPm)}
+        endTime={formatTimeForSubmission(endHours, endMinutes, endAmPm)}
         selectedBabysitters={babysitters.filter(sitter => selectedBabysitters.includes(sitter.id))}
         userName={`${user?.firstName} ${user?.lastName}`}
         onConfirm={handleSendRequests}
