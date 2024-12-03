@@ -19,7 +19,7 @@ export const createBabysitter = async (
   try {
     const { formattedParentMobile, formattedMobile } = validateBabysitterInput(
       firstName,
-      mobile,
+      mobile || undefined,
       email,
       parentOwnerMobile
     );
@@ -60,7 +60,7 @@ export const updateBabysitter = async (
   try {
     const { formattedMobile } = validateBabysitterInput(
       firstName,
-      mobile,
+      mobile || undefined,
       email,
       "dummy" // Parent mobile not needed for update
     );
@@ -78,8 +78,19 @@ export const updateBabysitter = async (
       email
     );
 
-    delete fields['Parent Owner Mobile']; // Remove parent mobile from update
-    delete fields['Deleted']; // Remove deleted flag from update
+    // Remove fields that shouldn't be updated
+    delete fields['Parent Owner Mobile'];
+    delete fields['Deleted'];
+
+    // Only include mobile if it's provided
+    if (!mobile) {
+      delete fields['Mobile'];
+    }
+
+    // Only include email if it's provided
+    if (!email) {
+      delete fields['Email'];
+    }
 
     const record = await base('Babysitters').update(id, fields);
     return record;

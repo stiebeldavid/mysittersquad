@@ -51,7 +51,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
       return;
     }
 
-    if (!emailValid) {
+    if (email && !emailValid) {
       toast({
         title: "Validation Error",
         description: "Please enter a valid email address",
@@ -60,7 +60,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
       return;
     }
 
-    if (!mobileValid) {
+    if (mobile && !mobileValid) {
       toast({
         title: "Validation Error",
         description: "Please enter a valid mobile number",
@@ -71,7 +71,9 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
 
     const formElement = e.currentTarget;
     const formData = new FormData(formElement);
-    formData.set("mobile", mobile);
+    if (mobile) {
+      formData.set("mobile", mobile);
+    }
     onSubmit(e);
   };
 

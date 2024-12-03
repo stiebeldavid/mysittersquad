@@ -10,16 +10,20 @@ export const validateBabysitterInput = (
     throw new Error("First name is required");
   }
 
-  if (!parentOwnerMobile) {
+  if (!parentOwnerMobile && parentOwnerMobile !== "dummy") {
     throw new Error("Parent mobile number is required");
   }
 
+  // Allow either mobile or email to be empty, but not both
   if (!mobile && !email) {
     throw new Error("Either mobile number or email is required");
   }
 
-  // Only validate mobile if it's provided
-  const formattedParentMobile = formatPhoneWithCountryCode(parentOwnerMobile);
+  // Only format mobile if it's provided and not empty
+  const formattedParentMobile = parentOwnerMobile !== "dummy" 
+    ? formatPhoneWithCountryCode(parentOwnerMobile)
+    : "";
+    
   const formattedMobile = mobile ? formatPhoneWithCountryCode(mobile) : "";
 
   return {
