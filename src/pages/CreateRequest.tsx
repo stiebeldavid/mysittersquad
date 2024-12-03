@@ -3,14 +3,14 @@ import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/components/ui/use-toast";
-import { Textarea } from "@/components/ui/textarea";
 import { BabysitterSelector } from "@/components/create-request/BabysitterSelector";
 import { AddressInput } from "@/components/create-request/AddressInput";
 import { PreviewDialog } from "@/components/create-request/PreviewDialog";
-import { TimeInput } from "@/components/create-request/TimeInput";
 import { createRequest } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 import { useQuery } from "@tanstack/react-query";
@@ -18,12 +18,8 @@ import { fetchBabysitters } from "@/lib/airtable";
 
 const CreateRequest = () => {
   const [date, setDate] = useState<Date>();
-  const [startHours, setStartHours] = useState("09");
-  const [startMinutes, setStartMinutes] = useState("00");
-  const [startAmPm, setStartAmPm] = useState<"AM" | "PM">("AM");
-  const [endHours, setEndHours] = useState("11");
-  const [endMinutes, setEndMinutes] = useState("30");
-  const [endAmPm, setEndAmPm] = useState<"AM" | "PM">("AM");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [selectedBabysitters, setSelectedBabysitters] = useState<string[]>([]);
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
@@ -42,18 +38,8 @@ const CreateRequest = () => {
     return `REQ-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   };
 
-  const formatTimeForSubmission = (hours: string, minutes: string, ampm: "AM" | "PM") => {
-    let hour = parseInt(hours);
-    if (ampm === "PM" && hour !== 12) hour += 12;
-    if (ampm === "AM" && hour === 12) hour = 0;
-    return `${hour.toString().padStart(2, '0')}:${minutes}`;
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    const startTime = formatTimeForSubmission(startHours, startMinutes, startAmPm);
-    const endTime = formatTimeForSubmission(endHours, endMinutes, endAmPm);
     
     if (!date || !startTime || !endTime || selectedBabysitters.length === 0 || !user) {
       toast({
@@ -70,9 +56,6 @@ const CreateRequest = () => {
   const handleSendRequests = async () => {
     try {
       const requestGroupId = generateRequestGroupId();
-      const startTime = formatTimeForSubmission(startHours, startMinutes, startAmPm);
-      const endTime = formatTimeForSubmission(endHours, endMinutes, endAmPm);
-      
       const requests = await Promise.all(
         selectedBabysitters.map(babysitterId =>
           createRequest(
@@ -132,25 +115,23 @@ const CreateRequest = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="startTime">Start Time</Label>
-                  <TimeInput
-                    hours={startHours}
-                    minutes={startMinutes}
-                    ampm={startAmPm}
-                    onHoursChange={setStartHours}
-                    onMinutesChange={setStartMinutes}
-                    onAmPmChange={setStartAmPm}
+                  <Input
+                    id="startTime"
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    required
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="endTime">End Time</Label>
-                  <TimeInput
-                    hours={endHours}
-                    minutes={endMinutes}
-                    ampm={endAmPm}
-                    onHoursChange={setEndHours}
-                    onMinutesChange={setEndMinutes}
-                    onAmPmChange={setEndAmPm}
+                  <Input
+                    id="endTime"
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -187,8 +168,8 @@ const CreateRequest = () => {
         open={showPreview}
         onOpenChange={setShowPreview}
         date={date}
-        startTime={formatTimeForSubmission(startHours, startMinutes, startAmPm)}
-        endTime={formatTimeForSubmission(endHours, endMinutes, endAmPm)}
+        startTime={startTime}
+        endTime={endTime}
         selectedBabysitters={babysitters.filter(sitter => selectedBabysitters.includes(sitter.id))}
         userName={`${user?.firstName} ${user?.lastName}`}
         onConfirm={handleSendRequests}

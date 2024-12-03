@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
-import { usePageTracking } from "@/hooks/usePageTracking";
 import Navbar from "./components/Navbar";
 import FloatingActionButton from "./components/FloatingActionButton";
 import Index from "./pages/Index";
@@ -20,14 +19,7 @@ import ConfirmUpgrade from "./pages/ConfirmUpgrade";
 import { useEffect } from "react";
 import { useToast } from "./hooks/use-toast";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 1000 * 60 * 5, // 5 minutes
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 const SESSION_TIMEOUT = 1000 * 60 * 60; // 1 hour
 
@@ -37,8 +29,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { toast } = useToast();
   
   useEffect(() => {
-    if (!user) return;
-    
     // Check if session is expired
     const lastActivity = localStorage.getItem('lastActivity');
     if (lastActivity && Date.now() - parseInt(lastActivity) > SESSION_TIMEOUT) {
@@ -66,20 +56,15 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
       window.removeEventListener('mousemove', updateActivity);
       window.removeEventListener('keydown', updateActivity);
     };
-  }, [user, logout, toast]);
+  }, [logout, toast]);
   
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return <>{children}</>;
+  return user ? <>{children}</> : <Navigate to="/login" />;
 };
 
 const AppContent = () => {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
   const isResponsePage = location.pathname.startsWith('/r/');
-  usePageTracking();
 
   return (
     <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
