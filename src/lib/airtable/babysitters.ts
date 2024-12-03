@@ -20,8 +20,8 @@ export const createBabysitter = async (
   }
 
   try {
-    const formattedMobile = formatPhoneWithCountryCode(mobile);
     const formattedParentMobile = formatPhoneWithCountryCode(parentOwnerMobile);
+    const formattedMobile = mobile ? formatPhoneWithCountryCode(mobile) : '';
 
     const records = await base('Babysitters').create([
       {
@@ -60,7 +60,7 @@ export const updateBabysitter = async (
   email?: string
 ) => {
   try {
-    const formattedMobile = formatPhoneWithCountryCode(mobile);
+    const formattedMobile = mobile ? formatPhoneWithCountryCode(mobile) : '';
 
     const record = await base('Babysitters').update(id, {
       'First Name': firstName,
