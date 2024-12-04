@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface TimeInputProps {
   value: string;
@@ -9,7 +10,6 @@ interface TimeInputProps {
 }
 
 export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
-  // Convert 24h to 12h format for display
   const get12HourTime = (hour: number) => {
     if (hour === 0) return 12;
     if (hour > 12) return hour - 12;
@@ -35,17 +35,14 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
     let newMinutes;
     
     if (currentMinutes % 5 === 0) {
-      // If we're already at a 5-minute mark, go to the next one
       newMinutes = (currentMinutes + 5) % 60;
     } else {
-      // Round up to the next 5-minute mark
       newMinutes = Math.ceil(currentMinutes / 5) * 5;
       if (newMinutes === currentMinutes) {
         newMinutes = (Math.floor(currentMinutes / 5) * 5 + 5) % 60;
       }
     }
     
-    // Handle hour rollover
     const newHours = newMinutes < minutes ? (hours + 1) % 24 : hours;
     onChange(`${newHours.toString().padStart(2, "0")}:${newMinutes.toString().padStart(2, "0")}`);
   };
@@ -55,23 +52,32 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
     let newMinutes;
     
     if (currentMinutes % 5 === 0) {
-      // If we're already at a 5-minute mark, go to the previous one
       newMinutes = (currentMinutes - 5 + 60) % 60;
     } else {
-      // Round down to the previous 5-minute mark
       newMinutes = Math.floor(currentMinutes / 5) * 5;
     }
     
-    // Handle hour rollback
     const newHours = newMinutes > minutes ? (hours - 1 + 24) % 24 : hours;
     onChange(`${newHours.toString().padStart(2, "0")}:${newMinutes.toString().padStart(2, "0")}`);
   };
 
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    if (/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(newValue)) {
-      onChange(newValue);
+  const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newHour = parseInt(e.target.value);
+    if (isNaN(newHour)) return;
+    
+    let adjustedHour = newHour;
+    if (isPM && newHour !== 12) adjustedHour = newHour + 12;
+    if (!isPM && newHour === 12) adjustedHour = 0;
+    
+    if (newHour >= 1 && newHour <= 12) {
+      onChange(`${adjustedHour.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`);
     }
+  };
+
+  const handleMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newMinute = parseInt(e.target.value);
+    if (isNaN(newMinute) || newMinute < 0 || newMinute > 59) return;
+    onChange(`${hours.toString().padStart(2, "0")}:${newMinute.toString().padStart(2, "0")}`);
   };
 
   return (
@@ -86,9 +92,12 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
         >
           <ChevronUp className="h-3 w-3" />
         </Button>
-        <span className="text-center text-sm font-medium w-6">
-          {display12Hour.toString().padStart(2, "0")}
-        </span>
+        <Input
+          type="text"
+          value={display12Hour.toString().padStart(2, "0")}
+          onChange={handleHourChange}
+          className="h-7 w-10 text-center p-0 text-sm font-medium"
+        />
         <Button
           variant="ghost"
           size="sm"
@@ -112,9 +121,12 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
         >
           <ChevronUp className="h-3 w-3" />
         </Button>
-        <span className="text-center text-sm font-medium w-6">
-          {minutes.toString().padStart(2, "0")}
-        </span>
+        <Input
+          type="text"
+          value={minutes.toString().padStart(2, "0")}
+          onChange={handleMinuteChange}
+          className="h-7 w-10 text-center p-0 text-sm font-medium"
+        />
         <Button
           variant="ghost"
           size="sm"
@@ -134,7 +146,7 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
         id={id}
         type="time"
         value={value}
-        onChange={handleTimeChange}
+        onChange={(e) => onChange(e.target.value)}
         className="sr-only"
       />
     </div>
