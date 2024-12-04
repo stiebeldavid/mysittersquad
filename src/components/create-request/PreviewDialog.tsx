@@ -57,11 +57,11 @@ export const PreviewDialog = ({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-2xl">
+      <AlertDialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
         <AlertDialogHeader>
           <AlertDialogTitle>Preview Request Messages</AlertDialogTitle>
           <AlertDialogDescription asChild>
-            <div className="space-y-4 mt-4">
+            <div className="space-y-4 mt-4 overflow-y-auto max-h-[60vh] pr-2">
               {getPreviewMessages().map((preview) => (
                 <div key={preview.babysitter.id} className="p-4 bg-muted rounded-lg whitespace-pre-line text-left">
                   {preview.message}
@@ -70,7 +70,7 @@ export const PreviewDialog = ({
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="mt-6 sticky bottom-0 bg-background py-4 border-t">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm}>
             Send Requests
