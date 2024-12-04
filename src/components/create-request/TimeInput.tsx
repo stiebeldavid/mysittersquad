@@ -7,9 +7,10 @@ interface TimeInputProps {
   value: string;
   onChange: (value: string) => void;
   id: string;
+  onTabFromMinutes?: () => void;  // New prop to handle tabbing from minutes
 }
 
-export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
+export const TimeInput = ({ value, onChange, id, onTabFromMinutes }: TimeInputProps) => {
   const get12HourTime = (hour: number) => {
     if (hour === 0) return 12;
     if (hour > 12) return hour - 12;
@@ -80,6 +81,13 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
     onChange(`${hours.toString().padStart(2, "0")}:${newMinute.toString().padStart(2, "0")}`);
   };
 
+  const handleMinutesKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Tab' && !e.shiftKey && onTabFromMinutes) {
+      e.preventDefault();
+      onTabFromMinutes();
+    }
+  };
+
   return (
     <div className="inline-flex items-center gap-2">
       <div className="flex flex-col items-center">
@@ -125,6 +133,7 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
           type="text"
           value={minutes.toString().padStart(2, "0")}
           onChange={handleMinuteChange}
+          onKeyDown={handleMinutesKeyDown}
           className="h-7 w-10 text-center p-0 text-sm font-medium"
         />
         <Button

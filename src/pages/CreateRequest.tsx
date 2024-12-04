@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -85,6 +85,9 @@ const CreateRequest = () => {
     }
   };
 
+  const endTimeHourRef = useRef<HTMLInputElement>(null);
+  const endTimeMinutesRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="page-container">
       <div className="flex items-center gap-4 mb-6">
@@ -120,6 +123,7 @@ const CreateRequest = () => {
                     id="startTime"
                     value={startTime}
                     onChange={setStartTime}
+                    onTabFromMinutes={() => endTimeHourRef.current?.focus()}
                   />
                 </div>
 
@@ -129,6 +133,7 @@ const CreateRequest = () => {
                     id="endTime"
                     value={endTime}
                     onChange={setEndTime}
+                    onTabFromMinutes={() => endTimeMinutesRef.current?.focus()}
                   />
                 </div>
               </div>
