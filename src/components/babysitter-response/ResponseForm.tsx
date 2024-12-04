@@ -24,7 +24,12 @@ export const ResponseForm = ({ request, onSubmit, isPending }: ResponseFormProps
       return;
     }
 
-    onSubmit(response || "", comments);
+    // Only pass the response value if one was selected
+    const responseText = response 
+      ? (response === "yes" ? "Yes, I can babysit then" : "No, I am not available then")
+      : "";
+
+    onSubmit(responseText, comments);
   };
 
   return (
