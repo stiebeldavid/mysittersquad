@@ -20,8 +20,8 @@ const BabysitterResponse = () => {
 
   const mutation = useMutation({
     mutationFn: ({ response, comments }: { response: string; comments: string }) => {
-      if (!request?.id) return Promise.reject("Invalid data");
-      return updateBabysitterResponse(request.id, {
+      if (!request?.verificationId) return Promise.reject("Invalid data");
+      return updateBabysitterResponse(request.verificationId, {
         status: response === "yes" ? "Available" : "Declined",
         response: `${response === "yes" ? "Yes, I can babysit then" : "No, I am not available then"}${
           comments ? `. ${comments}` : ""
@@ -92,9 +92,9 @@ const BabysitterResponse = () => {
           <CardHeader>
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-center">
-                Welcome {request.babysitterFirstName}!
+                Welcome {request?.babysitterFirstName}!
               </h2>
-              {request.parent && (
+              {request?.parent && (
                 <p className="text-lg text-center text-muted-foreground">
                   {request.parent.firstName} {request.parent.lastName} sent you a Babysitting Request
                 </p>
@@ -105,9 +105,9 @@ const BabysitterResponse = () => {
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <h3 className="font-medium">Date and Time</h3>
-              <p>{format(parseISO(request.date), "EEEE, MMMM d, yyyy")}</p>
-              <p>{request.timeRange}</p>
-              {request.notes && (
+              <p>{format(parseISO(request?.date || ''), "EEEE, MMMM d, yyyy")}</p>
+              <p>{request?.timeRange}</p>
+              {request?.notes && (
                 <div className="mt-4">
                   <h3 className="font-medium">Additional Notes</h3>
                   <p className="text-muted-foreground">{request.notes}</p>
