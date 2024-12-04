@@ -39,54 +39,64 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex flex-col items-center">
+    <div className="inline-flex items-center gap-1">
+      <div className="flex flex-col">
         <Button
           variant="ghost"
           size="sm"
-          className="h-6 px-2"
+          className="h-5 w-5 p-0"
           onClick={incrementHour}
           type="button"
         >
-          <ChevronUp className="h-4 w-4" />
+          <ChevronUp className="h-3 w-3" />
         </Button>
+        <span className="text-center text-sm py-1">
+          {hours.toString().padStart(2, "0")}
+        </span>
         <Button
           variant="ghost"
           size="sm"
-          className="h-6 px-2"
+          className="h-5 w-5 p-0"
           onClick={decrementHour}
           type="button"
         >
-          <ChevronDown className="h-4 w-4" />
+          <ChevronDown className="h-3 w-3" />
         </Button>
       </div>
+
+      <span className="text-sm px-0.5">:</span>
+
+      <div className="flex flex-col">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-5 w-5 p-0"
+          onClick={incrementMinutes}
+          type="button"
+        >
+          <ChevronUp className="h-3 w-3" />
+        </Button>
+        <span className="text-center text-sm py-1">
+          {minutes.toString().padStart(2, "0")}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-5 w-5 p-0"
+          onClick={decrementMinutes}
+          type="button"
+        >
+          <ChevronDown className="h-3 w-3" />
+        </Button>
+      </div>
+
       <input
         id={id}
         type="time"
         value={value}
         onChange={handleTimeChange}
-        className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="sr-only"
       />
-      <div className="flex flex-col items-center">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 px-2"
-          onClick={incrementMinutes}
-          type="button"
-        >
-          <ChevronUp className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 px-2"
-          onClick={decrementMinutes}
-          type="button"
-        >
-          <ChevronDown className="h-4 w-4" />
-        </Button>
-      </div>
     </div>
   );
 };
