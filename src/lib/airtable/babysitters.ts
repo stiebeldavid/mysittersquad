@@ -1,7 +1,5 @@
 import { base } from './config';
 import { Babysitter } from '@/types/babysitter';
-import { validateBabysitterInput } from './validators/babysitterValidators';
-import { mapBabysitterFields, mapToBabysitter } from './mappers/babysitterMappers';
 import { formatPhoneWithCountryCode } from '@/utils/phoneNumber';
 
 export const createBabysitter = async (
@@ -16,28 +14,32 @@ export const createBabysitter = async (
   notes?: string,
   email?: string
 ) => {
+  if (!parentOwnerMobile) {
+    console.error('No parent mobile number provided to createBabysitter');
+    throw new Error('Parent mobile number is required');
+  }
+
   try {
-    const { formattedParentMobile, formattedMobile } = validateBabysitterInput(
-      firstName,
-      mobile || undefined,
-      email,
-      parentOwnerMobile
-    );
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
+    const formattedParentMobile = formatPhoneWithCountryCode(parentOwnerMobile);
 
-    const fields = mapBabysitterFields(
-      firstName,
-      lastName,
-      formattedMobile,
-      formattedParentMobile,
-      age,
-      grade,
-      rate,
-      specialties,
-      notes,
-      email
-    );
-
-    const records = await base('Babysitters').create([{ fields }]);
+    const records = await base('Babysitters').create([
+      {
+        fields: {
+          'First Name': firstName,
+          'Last Name': lastName || '',
+          'Mobile': formattedMobile,
+          'Parent Owner Mobile': formattedParentMobile,
+          'Age': age || '',
+          'Grade': grade || '',
+          'Hourly rate (USD)': rate || '',
+          'Specialties': specialties || '',
+          'Notes': notes || '',
+          'Email': email || '',
+          'Deleted': false,
+        },
+      },
+    ]);
     return records[0];
   } catch (error) {
     console.error('Error creating babysitter:', error);
@@ -58,41 +60,19 @@ export const updateBabysitter = async (
   email?: string
 ) => {
   try {
-    const { formattedMobile } = validateBabysitterInput(
-      firstName,
-      mobile || undefined,
-      email,
-      "dummy" // Parent mobile not needed for update
-    );
+    const formattedMobile = formatPhoneWithCountryCode(mobile);
 
-    const fields = mapBabysitterFields(
-      firstName,
-      lastName,
-      formattedMobile,
-      "", // Parent mobile not needed for update
-      age,
-      grade,
-      rate,
-      specialties,
-      notes,
-      email
-    );
-
-    // Remove fields that shouldn't be updated
-    delete fields['Parent Owner Mobile'];
-    delete fields['Deleted'];
-
-    // Only include mobile if it's provided
-    if (!mobile) {
-      delete fields['Mobile'];
-    }
-
-    // Only include email if it's provided
-    if (!email) {
-      delete fields['Email'];
-    }
-
-    const record = await base('Babysitters').update(id, fields);
+    const record = await base('Babysitters').update(id, {
+      'First Name': firstName,
+      'Last Name': lastName || '',
+      'Mobile': formattedMobile,
+      'Age': age || '',
+      'Grade': grade || '',
+      'Hourly rate (USD)': rate || '',
+      'Specialties': specialties || '',
+      'Notes': notes || '',
+      'Email': email || '',
+    });
     return record;
   } catch (error) {
     console.error('Error updating babysitter:', error);
@@ -113,6 +93,8 @@ export const deleteBabysitter = async (id: string) => {
 };
 
 export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babysitter[]> => {
+  console.log('Fetching babysitters for parent mobile:', parentOwnerMobile);
+  
   if (!parentOwnerMobile) {
     console.error('No parent mobile number provided to fetchBabysitters');
     return [];
@@ -121,6 +103,7 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
   try {
     const formattedParentMobile = formatPhoneWithCountryCode(parentOwnerMobile);
     const filterFormula = `AND({Parent Owner Mobile}='${formattedParentMobile}', {Deleted}!=1)`;
+    console.log('Using filter formula:', filterFormula);
     
     const records = await base('Babysitters')
       .select({
@@ -128,7 +111,21 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
       })
       .all();
 
-    return records.map(mapToBabysitter);
+    console.log('Found babysitters records:', records.length);
+    console.log('Raw records:', records.map(record => record.fields));
+
+    return records.map((record) => ({
+      id: record.id,
+      firstName: record.get('First Name') as string,
+      lastName: record.get('Last Name') as string,
+      mobile: record.get('Mobile') as string,
+      age: record.get('Age') as string,
+      grade: record.get('Grade') as string,
+      rate: record.get('Hourly rate (USD)') as string,
+      specialties: record.get('Specialties') as string,
+      notes: record.get('Notes') as string,
+      email: record.get('Email') as string,
+    }));
   } catch (error) {
     console.error('Error fetching babysitters:', error);
     throw error;

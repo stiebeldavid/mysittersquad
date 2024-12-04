@@ -6,7 +6,6 @@ import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Babysitter } from "@/types/babysitter";
 import { useState, useEffect } from "react";
 import { formatPhoneWithCountryCode } from "@/utils/phoneNumber";
-import { useToast } from "@/components/ui/use-toast";
 
 interface BabysitterFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -15,8 +14,6 @@ interface BabysitterFormProps {
 
 export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormProps) => {
   const [mobile, setMobile] = useState("");
-  const [email, setEmail] = useState(currentBabysitter?.email || "");
-  const { toast } = useToast();
 
   useEffect(() => {
     if (currentBabysitter?.mobile) {
@@ -24,56 +21,13 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
     } else {
       setMobile("");
     }
-    setEmail(currentBabysitter?.email || "");
   }, [currentBabysitter]);
-
-  const validateEmail = (email: string) => {
-    return email === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const validateMobile = (mobile: string) => {
-    return mobile === "" || mobile.replace(/\D/g, '').length >= 10;
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    const emailValid = validateEmail(email);
-    const mobileValid = validateMobile(mobile);
-
-    // Check if at least one field is filled and valid
-    if ((!email && !mobile) || (!emailValid && !mobileValid)) {
-      toast({
-        title: "Validation Error",
-        description: "Please provide either a valid mobile number or email address",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (email && !emailValid) {
-      toast({
-        title: "Validation Error",
-        description: "Please enter a valid email address",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (mobile && !mobileValid) {
-      toast({
-        title: "Validation Error",
-        description: "Please enter a valid mobile number",
-        variant: "destructive",
-      });
-      return;
-    }
-
     const formElement = e.currentTarget;
     const formData = new FormData(formElement);
-    if (mobile) {
-      formData.set("mobile", mobile);
-    }
+    formData.set("mobile", mobile);
     onSubmit(e);
   };
 
@@ -113,6 +67,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
               name="mobile"
               value={mobile}
               onChange={(value) => setMobile(value || "")}
+              required
             />
           </div>
           <div className="space-y-2">
@@ -121,8 +76,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
               id="email"
               name="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              defaultValue={currentBabysitter?.email}
             />
           </div>
         </div>

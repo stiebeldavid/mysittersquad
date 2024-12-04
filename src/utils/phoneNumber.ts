@@ -1,8 +1,4 @@
 export const formatPhoneWithCountryCode = (phone: string): string => {
-  if (!phone || phone.trim() === '') {
-    return '';
-  }
-
   // Sanitize input: remove all non-digit characters
   const cleaned = phone.replace(/\D/g, '');
   
@@ -30,9 +26,6 @@ export const sanitizePhoneNumber = (phone: string): string => {
 };
 
 export const validatePhoneNumber = (phone: string): boolean => {
-  if (!phone || phone.trim() === '') {
-    return true; // Empty phone number is valid
-  }
   const cleaned = phone.replace(/\D/g, '');
   return (cleaned.length === 10) || (cleaned.length === 11 && cleaned.startsWith('1'));
 };
