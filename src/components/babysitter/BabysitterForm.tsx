@@ -5,7 +5,8 @@ import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog
 import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Babysitter } from "@/types/babysitter";
 import { useState, useEffect } from "react";
-import { formatPhoneWithCountryCode } from "@/utils/phoneNumber";
+import { formatPhoneWithCountryCode, validatePhoneNumber } from "@/utils/phoneNumber";
+import { useToast } from "@/components/ui/use-toast";
 
 interface BabysitterFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -14,6 +15,7 @@ interface BabysitterFormProps {
 
 export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormProps) => {
   const [mobile, setMobile] = useState("");
+  const { toast } = useToast();
 
   useEffect(() => {
     if (currentBabysitter?.mobile) {
@@ -23,11 +25,53 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
     }
   }, [currentBabysitter]);
 
+  const validateForm = (formData: FormData): boolean => {
+    const email = formData.get("email") as string;
+    const mobileNumber = mobile;
+
+    // Check if both are empty
+    if (!email && !mobileNumber) {
+      toast({
+        title: "Validation Error",
+        description: "Either Mobile Number or Email is required",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // Validate email if provided
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // Validate mobile if provided
+    if (mobileNumber && !validatePhoneNumber(mobileNumber)) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a valid mobile number",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElement = e.currentTarget;
     const formData = new FormData(formElement);
     formData.set("mobile", mobile);
+
+    if (!validateForm(formData)) {
+      return;
+    }
+
     onSubmit(e);
   };
 
@@ -67,7 +111,6 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
               name="mobile"
               value={mobile}
               onChange={(value) => setMobile(value || "")}
-              required
             />
           </div>
           <div className="space-y-2">
