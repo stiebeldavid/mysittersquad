@@ -18,8 +18,8 @@ import { fetchBabysitters } from "@/lib/airtable";
 
 const CreateRequest = () => {
   const [date, setDate] = useState<Date>();
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState("18:00");  // Default to 6:00 PM
+  const [endTime, setEndTime] = useState("21:00");      // Default to 9:00 PM
   const [selectedBabysitters, setSelectedBabysitters] = useState<string[]>([]);
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
