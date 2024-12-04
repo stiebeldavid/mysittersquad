@@ -31,13 +31,40 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
   };
 
   const incrementMinutes = () => {
-    const newMinutes = Math.min(Math.ceil(minutes / 5) * 5, 55);
-    onChange(`${hours.toString().padStart(2, "0")}:${newMinutes.toString().padStart(2, "0")}`);
+    const currentMinutes = minutes;
+    let newMinutes;
+    
+    if (currentMinutes % 5 === 0) {
+      // If we're already at a 5-minute mark, go to the next one
+      newMinutes = (currentMinutes + 5) % 60;
+    } else {
+      // Round up to the next 5-minute mark
+      newMinutes = Math.ceil(currentMinutes / 5) * 5;
+      if (newMinutes === currentMinutes) {
+        newMinutes = (Math.floor(currentMinutes / 5) * 5 + 5) % 60;
+      }
+    }
+    
+    // Handle hour rollover
+    const newHours = newMinutes < minutes ? (hours + 1) % 24 : hours;
+    onChange(`${newHours.toString().padStart(2, "0")}:${newMinutes.toString().padStart(2, "0")}`);
   };
 
   const decrementMinutes = () => {
-    const newMinutes = Math.max(Math.floor(minutes / 5) * 5 - 5, 0);
-    onChange(`${hours.toString().padStart(2, "0")}:${newMinutes.toString().padStart(2, "0")}`);
+    const currentMinutes = minutes;
+    let newMinutes;
+    
+    if (currentMinutes % 5 === 0) {
+      // If we're already at a 5-minute mark, go to the previous one
+      newMinutes = (currentMinutes - 5 + 60) % 60;
+    } else {
+      // Round down to the previous 5-minute mark
+      newMinutes = Math.floor(currentMinutes / 5) * 5;
+    }
+    
+    // Handle hour rollback
+    const newHours = newMinutes > minutes ? (hours - 1 + 24) % 24 : hours;
+    onChange(`${newHours.toString().padStart(2, "0")}:${newMinutes.toString().padStart(2, "0")}`);
   };
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
