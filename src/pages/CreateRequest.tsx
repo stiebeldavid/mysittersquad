@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { BabysitterSelector } from "@/components/create-request/BabysitterSelector";
 import { AddressInput } from "@/components/create-request/AddressInput";
 import { PreviewDialog } from "@/components/create-request/PreviewDialog";
+import { TimeInput } from "@/components/create-request/TimeInput";
 import { createRequest } from "@/lib/airtable";
 import { useAuthStore } from "@/store/authStore";
 import { useQuery } from "@tanstack/react-query";
@@ -115,23 +116,19 @@ const CreateRequest = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="startTime">Start Time</Label>
-                  <Input
+                  <TimeInput
                     id="startTime"
-                    type="time"
                     value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    required
+                    onChange={setStartTime}
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="endTime">End Time</Label>
-                  <Input
+                  <TimeInput
                     id="endTime"
-                    type="time"
                     value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                    required
+                    onChange={setEndTime}
                   />
                 </div>
               </div>
