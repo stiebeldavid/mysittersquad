@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,6 +41,21 @@ const BabysitterResponse = () => {
     mutation.mutate({ response, comments });
   };
 
+  if (!requestId) {
+    return (
+      <div className="container max-w-2xl mx-auto p-4">
+        <Card>
+          <CardContent className="p-6">
+            <div className="text-center space-y-4">
+              <h2 className="text-2xl font-bold text-red-600">Invalid Request</h2>
+              <p className="text-lg">Sorry, we could not find that Babysitting Request.</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="container max-w-2xl mx-auto p-4">
@@ -57,8 +73,9 @@ const BabysitterResponse = () => {
       <div className="container max-w-2xl mx-auto p-4">
         <Card>
           <CardContent className="p-6">
-            <div className="text-center text-red-500">
-              Could not find that babysitting request
+            <div className="text-center space-y-4">
+              <h2 className="text-2xl font-bold text-red-600">Request Not Found</h2>
+              <p className="text-lg">Sorry, we could not find that Babysitting Request.</p>
             </div>
           </CardContent>
         </Card>
