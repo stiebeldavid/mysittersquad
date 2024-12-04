@@ -9,7 +9,16 @@ interface TimeInputProps {
 }
 
 export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
+  // Convert 24h to 12h format for display
+  const get12HourTime = (hour: number) => {
+    if (hour === 0) return 12;
+    if (hour > 12) return hour - 12;
+    return hour;
+  };
+
   const [hours, minutes] = value.split(":").map(Number);
+  const isPM = hours >= 12;
+  const display12Hour = get12HourTime(hours);
 
   const incrementHour = () => {
     const newHours = (hours + 1) % 24;
@@ -39,8 +48,8 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
   };
 
   return (
-    <div className="inline-flex items-center gap-1">
-      <div className="flex flex-col">
+    <div className="inline-flex items-center gap-2">
+      <div className="flex flex-col items-center">
         <Button
           variant="ghost"
           size="sm"
@@ -50,8 +59,8 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
         >
           <ChevronUp className="h-3 w-3" />
         </Button>
-        <span className="text-center text-sm py-1">
-          {hours.toString().padStart(2, "0")}
+        <span className="text-center text-sm font-medium w-6">
+          {display12Hour.toString().padStart(2, "0")}
         </span>
         <Button
           variant="ghost"
@@ -64,9 +73,9 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
         </Button>
       </div>
 
-      <span className="text-sm px-0.5">:</span>
+      <span className="text-sm font-medium">:</span>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col items-center">
         <Button
           variant="ghost"
           size="sm"
@@ -76,7 +85,7 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
         >
           <ChevronUp className="h-3 w-3" />
         </Button>
-        <span className="text-center text-sm py-1">
+        <span className="text-center text-sm font-medium w-6">
           {minutes.toString().padStart(2, "0")}
         </span>
         <Button
@@ -89,6 +98,10 @@ export const TimeInput = ({ value, onChange, id }: TimeInputProps) => {
           <ChevronDown className="h-3 w-3" />
         </Button>
       </div>
+
+      <span className="text-sm font-medium ml-1">
+        {isPM ? 'PM' : 'AM'}
+      </span>
 
       <input
         id={id}
