@@ -30,10 +30,22 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
   }, [currentBabysitter]);
 
   const validateForm = (formData: FormData): boolean => {
+    // Required fields validation
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
     const email = formData.get("email") as string;
     const mobileNumber = mobile;
 
-    // Check if both are empty
+    if (!firstName || !lastName) {
+      toast({
+        title: "Validation Error",
+        description: "First Name and Last Name are required",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // Check if both mobile and email are empty
     if (!email && !mobileNumber) {
       toast({
         title: "Validation Error",
@@ -43,7 +55,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
       return false;
     }
 
-    // Validate email if provided
+    // Validate email format if provided
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       toast({
         title: "Validation Error",
@@ -53,7 +65,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
       return false;
     }
 
-    // Validate mobile if provided
+    // Validate mobile format if provided
     if (mobileNumber && !validatePhoneNumber(mobileNumber)) {
       toast({
         title: "Validation Error",
@@ -70,7 +82,11 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
     e.preventDefault();
     const formElement = e.currentTarget;
     const formData = new FormData(formElement);
-    formData.set("mobile", mobile);
+    
+    // Only set mobile in formData if it's not empty
+    if (mobile) {
+      formData.set("mobile", mobile);
+    }
 
     if (!validateForm(formData)) {
       return;
@@ -138,7 +154,6 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
               name="age"
               type="number"
               defaultValue={currentBabysitter?.age}
-              required
             />
           </div>
           <div className="space-y-2">
@@ -147,7 +162,6 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
               id="grade"
               name="grade"
               defaultValue={currentBabysitter?.grade}
-              required
             />
           </div>
         </div>
@@ -159,7 +173,6 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             type="number"
             step="0.01"
             defaultValue={currentBabysitter?.rate}
-            required
           />
         </div>
         <div className="space-y-2">
