@@ -17,11 +17,14 @@ export const ResponseForm = ({ request, onSubmit, isPending }: ResponseFormProps
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!response) {
-      toast.error("Please select a response");
+    
+    // Validate that either a response is selected or comments are provided
+    if (!response && !comments.trim()) {
+      toast.error("Please either select a response or provide comments");
       return;
     }
-    onSubmit(response, comments);
+
+    onSubmit(response || "", comments);
   };
 
   return (

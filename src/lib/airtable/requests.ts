@@ -110,6 +110,7 @@ export const fetchRequestByVerificationId = async (verificationId: string) => {
       notes: record.get('Additional Notes') as string,
       babysitterFirstName: record.get('First Name (from Babysitter)') as string,
       parent: parent,
+      verificationId: verificationId,
     };
   } catch (error) {
     console.error('Error fetching request by verification ID:', error);
@@ -141,14 +142,27 @@ const findParentByMobile = async (mobile: string) => {
 };
 
 export const updateBabysitterResponse = async (
-  recordId: string,
+  verificationId: string,
   update: {
     status: string;
     response: string;
   }
 ) => {
   try {
-    const record = await base('Requests').update(recordId, {
+    // First, find the record by Verification_ID
+    const records = await base('Requests')
+      .select({
+        filterByFormula: `{Verification_ID}='${verificationId}'`,
+        maxRecords: 1,
+      })
+      .firstPage();
+
+    if (records.length === 0) {
+      throw new Error('Request not found');
+    }
+
+    // Update the record using its ID
+    const record = await base('Requests').update(records[0].id, {
       'Status': update.status,
       'Babysitter Response': update.response,
     });
