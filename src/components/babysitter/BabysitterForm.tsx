@@ -1,7 +1,10 @@
-import { Button } from "@/components/ui/button";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PhoneNumberInput } from "@/components/ui/phone-input";
 import { Babysitter } from "@/types/babysitter";
 import { useState, useEffect } from "react";
@@ -10,7 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface BabysitterFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  currentBabysitter: Babysitter | null;
+  currentBabysitter?: Babysitter | null;
 }
 
 export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormProps) => {
@@ -19,9 +22,10 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
 
   useEffect(() => {
     if (currentBabysitter?.mobile) {
-      setMobile(formatPhoneWithCountryCode(currentBabysitter.mobile));
-    } else {
-      setMobile("");
+      const formattedMobile = formatPhoneWithCountryCode(currentBabysitter.mobile);
+      if (formattedMobile) {
+        setMobile(formattedMobile);
+      }
     }
   }, [currentBabysitter]);
 
@@ -81,11 +85,14 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
         <DialogTitle>
           {currentBabysitter ? "Edit Babysitter" : "Add New Babysitter"}
         </DialogTitle>
+        <DialogDescription>
+          Fill in the babysitter's information below. Either mobile number or email is required.
+        </DialogDescription>
       </DialogHeader>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="firstName">First Name</Label>
+            <label htmlFor="firstName">First Name</label>
             <Input
               id="firstName"
               name="firstName"
@@ -94,7 +101,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="lastName">Last Name</Label>
+            <label htmlFor="lastName">Last Name</label>
             <Input
               id="lastName"
               name="lastName"
@@ -105,7 +112,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="mobile">Mobile Number</Label>
+            <label htmlFor="mobile">Mobile Number</label>
             <PhoneNumberInput
               id="mobile"
               name="mobile"
@@ -114,7 +121,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <label htmlFor="email">Email</label>
             <Input
               id="email"
               name="email"
@@ -123,37 +130,40 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
             />
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="age">Age</Label>
+            <label htmlFor="age">Age</label>
             <Input
               id="age"
               name="age"
-              type="text"
+              type="number"
               defaultValue={currentBabysitter?.age}
+              required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="grade">Grade</Label>
+            <label htmlFor="grade">Grade/Year</label>
             <Input
               id="grade"
               name="grade"
-              type="text"
               defaultValue={currentBabysitter?.grade}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="rate">Hourly rate (USD)</Label>
-            <Input
-              id="rate"
-              name="rate"
-              type="text"
-              defaultValue={currentBabysitter?.rate}
+              required
             />
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="specialties">Specialties</Label>
+          <label htmlFor="rate">Rate ($/hr)</label>
+          <Input
+            id="rate"
+            name="rate"
+            type="number"
+            step="0.01"
+            defaultValue={currentBabysitter?.rate}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="specialties">Specialties</label>
           <Input
             id="specialties"
             name="specialties"
@@ -161,16 +171,21 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="notes">Notes</Label>
+          <label htmlFor="notes">Notes</label>
           <Input
             id="notes"
             name="notes"
             defaultValue={currentBabysitter?.notes}
           />
         </div>
-        <Button type="submit" className="w-full">
-          {currentBabysitter ? "Update" : "Add"} Babysitter
-        </Button>
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md"
+          >
+            {currentBabysitter ? "Update" : "Add"} Babysitter
+          </button>
+        </div>
       </form>
     </DialogContent>
   );
