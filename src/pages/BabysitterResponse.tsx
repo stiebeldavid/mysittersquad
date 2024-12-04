@@ -21,11 +21,20 @@ const BabysitterResponse = () => {
   const mutation = useMutation({
     mutationFn: ({ response, comments }: { response: string; comments: string }) => {
       if (!request?.verificationId) return Promise.reject("Invalid data");
+      
+      // Determine status based on response
+      let status;
+      if (response === "Yes, I can babysit then") {
+        status = "Available";
+      } else if (response === "No, I am not available then") {
+        status = "Declined";
+      } else {
+        status = "Received Comment";
+      }
+
       return updateBabysitterResponse(request.verificationId, {
-        status: response === "yes" ? "Available" : "Declined",
-        response: `${response === "yes" ? "Yes, I can babysit then" : "No, I am not available then"}${
-          comments ? `. ${comments}` : ""
-        }`,
+        status,
+        response: response ? `${response}${comments ? `. ${comments}` : ''}` : comments,
       });
     },
     onSuccess: () => {
