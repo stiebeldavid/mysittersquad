@@ -25,7 +25,6 @@ const CreateRequest = () => {
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [showPreview, setShowPreview] = useState(false);
-  const [dateError, setDateError] = useState(false);
   const { toast } = useToast();
   const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
@@ -42,36 +41,11 @@ const CreateRequest = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setDateError(false);
     
-    let hasError = false;
-    let errorMessage = "";
-
-    if (!date) {
-      setDateError(true);
-      hasError = true;
-      errorMessage = "Please select a date for your request.";
-    }
-    
-    if (!startTime || !endTime) {
-      hasError = true;
-      errorMessage = errorMessage || "Please specify both start and end times.";
-    }
-    
-    if (selectedBabysitters.length === 0) {
-      hasError = true;
-      errorMessage = errorMessage || "Please select at least one babysitter.";
-    }
-    
-    if (!user) {
-      hasError = true;
-      errorMessage = errorMessage || "User information is missing.";
-    }
-
-    if (hasError) {
+    if (!date || !startTime || !endTime || selectedBabysitters.length === 0 || !user) {
       toast({
         title: "Missing Information",
-        description: errorMessage,
+        description: "Please fill in all required fields and select at least one babysitter.",
         variant: "destructive",
       });
       return;
@@ -133,19 +107,13 @@ const CreateRequest = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className={dateError ? "text-destructive" : ""}>Date</Label>
+                <Label>Date</Label>
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={(newDate) => {
-                    setDate(newDate);
-                    setDateError(false);
-                  }}
-                  className={cn("rounded-md border", dateError && "border-destructive")}
+                  onSelect={setDate}
+                  className="rounded-md border"
                 />
-                {dateError && (
-                  <p className="text-sm text-destructive">Please select a date</p>
-                )}
               </div>
               
               <div className="space-y-6">
