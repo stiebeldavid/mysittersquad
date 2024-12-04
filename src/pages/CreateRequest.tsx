@@ -113,9 +113,9 @@ const CreateRequest = () => {
                 />
               </div>
               
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="startTime">Start Time</Label>
+              <div className="space-y-6">
+                <div>
+                  <Label htmlFor="startTime" className="mb-2 block">Start Time</Label>
                   <TimeInput
                     id="startTime"
                     value={startTime}
@@ -123,8 +123,8 @@ const CreateRequest = () => {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="endTime">End Time</Label>
+                <div>
+                  <Label htmlFor="endTime" className="mb-2 block">End Time</Label>
                   <TimeInput
                     id="endTime"
                     value={endTime}
