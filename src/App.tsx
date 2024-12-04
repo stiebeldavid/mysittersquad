@@ -61,6 +61,12 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return user ? <>{children}</> : <Navigate to="/login" />;
 };
 
+// New component to handle public routes that should redirect if user is logged in
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = useAuthStore((state) => state.user);
+  return user ? <Navigate to="/" /> : <>{children}</>;
+};
+
 const AppContent = () => {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
@@ -71,8 +77,22 @@ const AppContent = () => {
       {user && !isResponsePage && <Navbar />}
       <div className="max-w-full">
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route 
+            path="/login" 
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            } 
+          />
+          <Route 
+            path="/signup" 
+            element={
+              <PublicRoute>
+                <Signup />
+              </PublicRoute>
+            } 
+          />
           <Route path="/r/:requestId" element={<BabysitterResponse />} />
           <Route path="/confirm_upgrade" element={<ConfirmUpgrade />} />
           <Route
