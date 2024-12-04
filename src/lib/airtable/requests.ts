@@ -85,19 +85,17 @@ export const fetchRequests = async (parentRequestorMobile: string) => {
   }
 };
 
-export const verifyBabysitterRequest = async (requestId: string, mobile: string) => {
+export const fetchRequestByVerificationId = async (verificationId: string) => {
   try {
-    const formattedMobile = formatPhoneWithCountryCode(mobile);
-    
     const requestRecords = await base('Requests')
       .select({
-        filterByFormula: `AND({Request ID}='${requestId}', {Mobile (from Babysitter)}='${formattedMobile}')`,
+        filterByFormula: `{Verification_ID}='${verificationId}'`,
         maxRecords: 1,
       })
       .firstPage();
     
     if (requestRecords.length === 0) {
-      console.log('No matching request found for:', { requestId, formattedMobile });
+      console.log('No matching request found for verification ID:', verificationId);
       return null;
     }
     
@@ -107,7 +105,6 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string)
     
     return {
       id: record.id,
-      requestId: requestId,
       date: record.get('Request Date') as string,
       timeRange: record.get('Time Range') as string,
       notes: record.get('Additional Notes') as string,
@@ -115,7 +112,7 @@ export const verifyBabysitterRequest = async (requestId: string, mobile: string)
       parent: parent,
     };
   } catch (error) {
-    console.error('Error verifying babysitter request:', error);
+    console.error('Error fetching request by verification ID:', error);
     return null;
   }
 };

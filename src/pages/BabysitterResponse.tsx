@@ -1,19 +1,21 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
-import { verifyBabysitterRequest, updateBabysitterResponse } from "@/lib/airtable";
-import { VerificationForm } from "@/components/babysitter-response/VerificationForm";
+import { fetchRequestByVerificationId, updateBabysitterResponse } from "@/lib/airtable";
 import { ResponseForm } from "@/components/babysitter-response/ResponseForm";
 import { SuccessMessage } from "@/components/babysitter-response/SuccessMessage";
 
 const BabysitterResponse = () => {
   const { requestId } = useParams();
-  const [isVerifying, setIsVerifying] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [request, setRequest] = useState<any>(null);
+
+  const { data: request, isLoading, error } = useQuery({
+    queryKey: ['request', requestId],
+    queryFn: () => fetchRequestByVerificationId(requestId || ''),
+    enabled: !!requestId,
+  });
 
   const mutation = useMutation({
     mutationFn: ({ response, comments }: { response: string; comments: string }) => {
@@ -34,28 +36,11 @@ const BabysitterResponse = () => {
     },
   });
 
-  const handleVerify = async (mobile: string) => {
-    try {
-      setIsVerifying(true);
-      const result = await verifyBabysitterRequest(requestId || "", mobile);
-      
-      if (!result) {
-        toast.error("Could not find that babysitting request");
-      } else {
-        setRequest(result);
-      }
-    } catch (error) {
-      toast.error("Invalid mobile number format");
-    } finally {
-      setIsVerifying(false);
-    }
-  };
-
   const handleSubmit = (response: string, comments: string) => {
     mutation.mutate({ response, comments });
   };
 
-  if (isVerifying) {
+  if (isLoading) {
     return (
       <div className="container max-w-2xl mx-auto p-4">
         <Card>
@@ -67,12 +52,24 @@ const BabysitterResponse = () => {
     );
   }
 
+  if (error || !request) {
+    return (
+      <div className="container max-w-2xl mx-auto p-4">
+        <Card>
+          <CardContent className="p-6">
+            <div className="text-center text-red-500">
+              Could not find that babysitting request
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container max-w-2xl mx-auto p-4">
       {isSubmitted && request?.parent ? (
         <SuccessMessage parent={request.parent} />
-      ) : !request ? (
-        <VerificationForm onVerify={handleVerify} isVerifying={isVerifying} />
       ) : (
         <Card>
           <CardHeader>
