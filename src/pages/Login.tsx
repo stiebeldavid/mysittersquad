@@ -21,6 +21,10 @@ const Login = () => {
       const record = await findUserByMobile(mobile);
       
       if (record) {
+        // Set login time
+        localStorage.setItem('loginTime', Date.now().toString());
+        localStorage.setItem('lastActivity', Date.now().toString());
+        
         setUser({
           id: record.id,
           firstName: record.fields['First Name'] as string,

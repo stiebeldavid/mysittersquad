@@ -31,9 +31,22 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { toast } = useToast();
   
   useEffect(() => {
+    // Only check session expiration if we have a user
+    if (!user) return;
+
+    // Check if this is the first login (within last 5 seconds)
+    const loginTime = localStorage.getItem('loginTime');
+    const now = Date.now();
+    const isRecentLogin = loginTime && (now - parseInt(loginTime) < 5000);
+    
+    if (isRecentLogin) {
+      // Skip session check for recent logins
+      return;
+    }
+
     // Check if session is expired
     const lastActivity = localStorage.getItem('lastActivity');
-    if (lastActivity && Date.now() - parseInt(lastActivity) > SESSION_TIMEOUT) {
+    if (lastActivity && (now - parseInt(lastActivity) > SESSION_TIMEOUT)) {
       toast({
         title: "Session Expired",
         description: "Please log in again for security reasons.",
@@ -44,7 +57,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     }
     
     // Update last activity
-    localStorage.setItem('lastActivity', Date.now().toString());
+    localStorage.setItem('lastActivity', now.toString());
     
     // Set up activity listener
     const updateActivity = () => {
@@ -58,7 +71,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
       window.removeEventListener('mousemove', updateActivity);
       window.removeEventListener('keydown', updateActivity);
     };
-  }, [logout, toast]);
+  }, [user, logout, toast]);
   
   return user ? <>{children}</> : <Navigate to="/login" />;
 };
