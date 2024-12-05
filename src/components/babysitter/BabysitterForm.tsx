@@ -101,10 +101,7 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
           {currentBabysitter ? "Edit Babysitter" : "Add New Babysitter"}
         </DialogTitle>
         <DialogDescription>
-          Fill in the babysitter's information below. Either mobile number or email is required.
-          <p className="mt-2 text-sm text-muted-foreground">
-            Note: Adding a babysitter only stores their information. No message will be sent to them until you create a sitting request.
-          </p>
+          Note: No message will be sent to any babysitter you add. They are only notified if you send them a babysitting request.
         </DialogDescription>
       </DialogHeader>
       <form onSubmit={handleSubmit} className="space-y-4">
