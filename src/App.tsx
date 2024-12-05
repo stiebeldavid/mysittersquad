@@ -17,6 +17,7 @@ import RequestDashboard from "./pages/RequestDashboard";
 import BabysitterResponse from "./pages/BabysitterResponse";
 import Upgrade from "./pages/Upgrade";
 import ConfirmUpgrade from "./pages/ConfirmUpgrade";
+import FAQ from "./pages/FAQ";
 import { useEffect } from "react";
 import { useToast } from "./hooks/use-toast";
 
@@ -72,7 +73,7 @@ const AppContent = () => {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
   const isResponsePage = location.pathname.startsWith('/r/');
-  usePageTracking(); // Add this line to enable page tracking
+  usePageTracking();
 
   return (
     <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
@@ -97,6 +98,7 @@ const AppContent = () => {
           />
           <Route path="/r/:requestId" element={<BabysitterResponse />} />
           <Route path="/confirm_upgrade" element={<ConfirmUpgrade />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route
             path="/"
             element={

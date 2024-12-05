@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Baby, Users, Calendar, Menu, LogOut, Plus } from "lucide-react";
+import { Home, Baby, Users, Calendar, Menu, LogOut, Plus, HelpCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -42,6 +42,7 @@ const Navbar = () => {
     { path: "/", icon: Home, label: "Home", alwaysShow: true },
     { path: "/babysitters", icon: Users, label: hasBabysitters ? "My Babysitters" : "Add Babysitters", alwaysShow: true },
     { path: "/requests", icon: Calendar, label: "My Requests", requiresBabysitters: true },
+    { path: "/faq", icon: HelpCircle, label: "FAQ", alwaysShow: true },
   ];
 
   const visibleNavItems = allNavItems.filter(item => 
