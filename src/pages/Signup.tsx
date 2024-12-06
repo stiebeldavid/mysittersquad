@@ -41,6 +41,8 @@ const Signup = () => {
           backgroundImage: "url('/lovable-uploads/174009da-8c34-4772-9bae-d734e0d5f625.png')",
           backgroundSize: '1200px auto',
           backgroundRepeat: 'repeat',
+          role: 'img',
+          'aria-label': 'Decorative pattern of childcare-related icons and symbols'
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-white/20" />
