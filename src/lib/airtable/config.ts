@@ -1,13 +1,5 @@
 import Airtable from 'airtable';
 
-if (!import.meta.env.VITE_AIRTABLE_API_KEY) {
-  throw new Error('Airtable API key is missing. Please set VITE_AIRTABLE_API_KEY in your .env file');
-}
-
-if (!import.meta.env.VITE_AIRTABLE_BASE_ID) {
-  throw new Error('Airtable Base ID is missing. Please set VITE_AIRTABLE_BASE_ID in your .env file');
-}
-
 export const base = new Airtable({ 
-  apiKey: import.meta.env.VITE_AIRTABLE_API_KEY
-}).base(import.meta.env.VITE_AIRTABLE_BASE_ID);
+  apiKey: 'patXl1omFaUIAE61b.65020a5523d7b3110d0914ffcc4c6e3ba32e58dd1b6e2a213fb5f639edb5b79a' 
+}).base('appbQPN6CeEmayzz1');
