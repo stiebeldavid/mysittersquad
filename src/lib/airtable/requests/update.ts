@@ -1,25 +1,14 @@
 import { base } from '../config';
 
 export const updateBabysitterResponse = async (
-  verificationId: string,
+  requestId: string,
   update: {
     status: string;
     response: string;
   }
 ) => {
   try {
-    const records = await base('Requests')
-      .select({
-        filterByFormula: `{Verification_ID}='${verificationId}'`,
-        maxRecords: 1,
-      })
-      .firstPage();
-
-    if (records.length === 0) {
-      throw new Error('Request not found');
-    }
-
-    const record = await base('Requests').update(records[0].id, {
+    const record = await base('Requests').update(requestId, {
       'Status': update.status,
       'Babysitter Response': update.response,
     });
