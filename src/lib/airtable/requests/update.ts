@@ -1,4 +1,5 @@
 import { base } from '../config';
+import { AirtableFields } from './types';
 
 export const updateBabysitterResponse = async (
   requestId: string,
@@ -8,9 +9,9 @@ export const updateBabysitterResponse = async (
 ) => {
   try {
     console.log('Updating request:', requestId, 'with:', update);
-    await base('tblz6LOxHesVWmmYI').update(requestId, {
+    await base('tblz6LOxHesVWmmYI').update<AirtableFields>(requestId, {
       fields: {
-        'Status': update.status,
+        Status: update.status,
       }
     });
     return true;

@@ -34,7 +34,6 @@ const BabysitterResponse = () => {
 
       return updateBabysitterResponse(request.verificationId, {
         status,
-        response: response ? `${response}${comments ? `. ${comments}` : ''}` : comments,
       });
     },
     onSuccess: () => {

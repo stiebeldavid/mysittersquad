@@ -25,3 +25,8 @@ export interface RequestDetails {
   parent: Parent | null;
   verificationId: string;
 }
+
+export interface AirtableFields {
+  Status: string;
+  // Add other fields as needed
+}
