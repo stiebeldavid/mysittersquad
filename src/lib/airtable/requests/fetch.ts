@@ -28,6 +28,7 @@ export const fetchRequests = async (parentRequestorMobile: string): Promise<Requ
 
       return {
         id: record.id,
+        recordId: record.id, // Added this field
         date: record.get('Request Date') as string,
         timeRange: record.get('Time Range') as string,
         babysitterId: Array.isArray(record.get('Babysitter')) 
