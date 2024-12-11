@@ -9,7 +9,7 @@ export const updateBabysitterResponse = async (
 ) => {
   try {
     console.log('Updating request:', requestId, 'with:', update);
-    await base('tblz6LOxHesVWmmYI').update<AirtableFields>(requestId, {
+    await base('tblz6LOxHesVWmmYI').update(requestId, {
       fields: {
         Status: update.status,
       }
