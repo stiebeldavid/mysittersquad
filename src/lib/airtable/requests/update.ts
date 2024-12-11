@@ -9,7 +9,9 @@ export const updateBabysitterResponse = async (
   try {
     console.log('Updating request:', requestId, 'with:', update);
     await base('tblz6LOxHesVWmmYI').update(requestId, {
-      'Status': update.status,
+      fields: {
+        'Status': update.status,
+      }
     });
     return true;
   } catch (error) {
