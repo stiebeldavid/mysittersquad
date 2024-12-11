@@ -8,12 +8,10 @@ export const updateBabysitterResponse = async (
 ) => {
   try {
     console.log('Updating request:', requestId, 'with:', update);
-    const url = `https://api.airtable.com/v0/appbQPN6CeEmayzz1/tblz6LOxHesVWmmYI/${requestId}`;
-    const record = await base('Requests').update(requestId, {
+    await base('tblz6LOxHesVWmmYI').update(requestId, {
       'Status': update.status,
     });
-    console.log('Update successful:', record);
-    return record;
+    return true;
   } catch (error) {
     console.error('Error updating babysitter response:', error);
     throw error;
