@@ -4,12 +4,12 @@ export const updateBabysitterResponse = async (
   requestId: string,
   update: {
     status: string;
-    response: string;
+    response?: string;
   }
 ) => {
   try {
     console.log('Updating request:', requestId, 'with:', update);
-    const record = await base('Requests').update(requestId, {
+    const record = await base('tblz6LOxHesVWmmYI').update(requestId, {
       'Status': update.status,
     });
     console.log('Update successful:', record);
