@@ -1,5 +1,9 @@
 import { base } from '../config';
 
+interface RequestFields {
+  Status: string;
+}
+
 export const updateBabysitterResponse = async (
   requestId: string,
   update: {
@@ -8,7 +12,7 @@ export const updateBabysitterResponse = async (
 ) => {
   try {
     console.log('Updating request:', requestId, 'with:', update);
-    await base('Requests').update(requestId, {
+    await base('Requests').update<RequestFields>(requestId, {
       fields: {
         Status: update.status,
       }
