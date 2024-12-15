@@ -62,6 +62,7 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
       const newStatus = selectedBabysitter.action === "confirm" ? "Confirmed" : "Cancelled";
       await updateBabysitterResponse(selectedBabysitter.id, {
         status: newStatus,
+        response: `Parent ${newStatus.toLowerCase()} the request`,
       });
 
       toast({

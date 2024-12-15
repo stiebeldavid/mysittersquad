@@ -1,21 +1,18 @@
 import { base } from '../config';
 
-interface RequestFields {
-  Status: string;
-}
-
 export const updateBabysitterResponse = async (
   requestId: string,
   update: {
     status: string;
+    response: string;
   }
 ) => {
   try {
-    console.log('Updating request:', requestId, 'with:', update);
-    await base('tblz6LOxHesVWmmYI').update<RequestFields>(requestId, {
-      Status: update.status,
+    const record = await base('Requests').update(requestId, {
+      'Status': update.status,
+      'Babysitter Response': update.response,
     });
-    return true;
+    return record;
   } catch (error) {
     console.error('Error updating babysitter response:', error);
     throw error;

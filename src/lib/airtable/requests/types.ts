@@ -1,6 +1,5 @@
 export interface Request {
   id: string;
-  recordId: string; // Added this field
   date: string;
   timeRange: string;
   babysitterId: string;
@@ -24,9 +23,4 @@ export interface RequestDetails {
   babysitterFirstName: string;
   parent: Parent | null;
   verificationId: string;
-}
-
-export interface AirtableFields {
-  Status: string;
-  // Add other fields as needed
 }
