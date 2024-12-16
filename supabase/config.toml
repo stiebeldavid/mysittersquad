@@ -1,1 +1,10 @@
 project_id = "ydflnpjndyowjkhaoabi"
+
+[functions.users]
+verify_jwt = false
+
+[functions.babysitters]
+verify_jwt = false
+
+[functions.requests]
+verify_jwt = false

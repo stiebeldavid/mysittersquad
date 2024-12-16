@@ -1,5 +1,4 @@
-import { base } from './config';
-import { formatPhoneWithCountryCode } from '@/utils/phoneNumber';
+import { supabase } from "@/integrations/supabase/client";
 
 export const findUserByMobile = async (mobile: string) => {
   if (!mobile) {
@@ -8,20 +7,12 @@ export const findUserByMobile = async (mobile: string) => {
   }
 
   try {
-    const formattedMobile = formatPhoneWithCountryCode(mobile);
-    const records = await base('Users')
-      .select({
-        filterByFormula: `{Mobile}='${formattedMobile}'`,
-        maxRecords: 1,
-      })
-      .firstPage();
-    
-    if (records.length === 0) {
-      console.warn(`No user found for mobile: ${mobile}`);
-      return null;
-    }
-    
-    return records[0];
+    const { data, error } = await supabase.functions.invoke('users', {
+      body: { action: 'findByMobile', mobile }
+    });
+
+    if (error) throw error;
+    return data.record;
   } catch (error) {
     console.error('Error finding user:', error);
     return null;
@@ -30,17 +21,16 @@ export const findUserByMobile = async (mobile: string) => {
 
 export const createUser = async (firstName: string, lastName: string, mobile: string) => {
   try {
-    const formattedMobile = formatPhoneWithCountryCode(mobile);
-    const records = await base('Users').create([
-      {
-        fields: {
-          'First Name': firstName,
-          'Last Name': lastName,
-          Mobile: formattedMobile,
-        },
-      },
-    ]);
-    return records[0];
+    const { data, error } = await supabase.functions.invoke('users', {
+      body: { 
+        action: 'create', 
+        mobile,
+        data: { firstName, lastName }
+      }
+    });
+
+    if (error) throw error;
+    return data.record;
   } catch (error) {
     console.error('Error creating user:', error);
     return null;
@@ -60,24 +50,16 @@ export const updateUserAddress = async (
   }
 
   try {
-    const formattedMobile = formatPhoneWithCountryCode(mobile);
-    const records = await base('Users')
-      .select({
-        filterByFormula: `{Mobile}='${formattedMobile}'`,
-        maxRecords: 1,
-      })
-      .firstPage();
+    const { data, error } = await supabase.functions.invoke('users', {
+      body: { 
+        action: 'updateAddress', 
+        mobile,
+        data: { streetAddress, city, state, zipCode }
+      }
+    });
 
-    if (records.length > 0) {
-      const record = await base('Users').update(records[0].id, {
-        'Street Address': streetAddress,
-        'City': city,
-        'State': state,
-        'Zip Code': zipCode,
-      });
-      return record;
-    }
-    return null;
+    if (error) throw error;
+    return data.record;
   } catch (error) {
     console.error('Error updating user address:', error);
     throw error;

@@ -1,4 +1,4 @@
-import { base } from '../config';
+import { supabase } from "@/integrations/supabase/client";
 
 export const updateBabysitterResponse = async (
   requestId: string,
@@ -8,11 +8,19 @@ export const updateBabysitterResponse = async (
   }
 ) => {
   try {
-    const record = await base('Requests').update(requestId, {
-      'Status': update.status,
-      'Babysitter Response': update.response,
+    const { data, error } = await supabase.functions.invoke('requests', {
+      body: {
+        action: 'updateResponse',
+        data: {
+          requestId,
+          status: update.status,
+          response: update.response,
+        }
+      }
     });
-    return record;
+
+    if (error) throw error;
+    return data.record;
   } catch (error) {
     console.error('Error updating babysitter response:', error);
     throw error;
