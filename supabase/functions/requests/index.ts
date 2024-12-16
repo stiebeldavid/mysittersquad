@@ -22,106 +22,52 @@ serve(async (req) => {
     console.log('Processing request:', { action, data })
 
     switch (action) {
-      case 'fetch':
-        const records = await base('Requests')
-          .select({
-            filterByFormula: `{Parent Requestor Mobile}='${data.parentMobile}'`,
-            sort: [{ field: 'Created Time', direction: 'desc' }],
-          })
-          .all();
-
-        const requests = records.map((record) => ({
-          id: record.id,
-          date: record.get('Request Date'),
-          timeRange: record.get('Time Range'),
-          babysitterId: Array.isArray(record.get('Babysitter')) 
-            ? record.get('Babysitter')[0] 
-            : '',
-          babysitterName: `${record.get('First Name (from Babysitter)')} ${record.get('Last Name (from Babysitter)')}`,
-          status: record.get('Status') || 'Pending',
-          createdAt: record.get('Created Time') || new Date().toISOString(),
-          babysitterDeleted: record.get('Deleted (from Babysitter)') || false,
-          notes: record.get('Additional Notes') || '',
-        }));
-        
-        return new Response(
-          JSON.stringify({ requests }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-
       case 'create':
-        const createdRecord = await base('Requests').create([
+        const record = await base('Requests').create([
           {
             fields: {
-              'Request Date': data.date,
-              'Time Range': data.timeRange,
-              'Babysitter': [data.babysitterId],
-              'Parent Requestor Mobile': data.parentMobile,
+              'Parent Mobile': data.parentMobile,
+              'Babysitter Mobile': data.babysitterMobile,
+              'Start Time': data.startTime,
+              'End Time': data.endTime,
               'Status': 'Pending',
-              'Request Group ID': data.requestGroupId,
-              'Additional Notes': data.notes || '',
+              'Created At': new Date().toISOString(),
+              'Kids': data.kids,
+              'Street Address': data.streetAddress,
+              'City': data.city,
+              'State': data.state,
+              'Zip Code': data.zipCode,
+              'Notes': data.notes || '',
             },
           },
         ]);
-        
+
         return new Response(
-          JSON.stringify({ record: createdRecord[0] }),
+          JSON.stringify({ record: record[0] }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
 
-      case 'updateResponse':
-        const updatedRecord = await base('Requests').update(data.requestId, {
+      case 'fetch':
+        const records = await base('Requests')
+          .select({
+            filterByFormula: `OR({Parent Mobile}='${data.mobile}', {Babysitter Mobile}='${data.mobile}')`,
+            sort: [{ field: 'Created At', direction: 'desc' }],
+          })
+          .all();
+
+        return new Response(
+          JSON.stringify({ records }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+
+      case 'update':
+        const updatedRecord = await base('Requests').update(data.id, {
           'Status': data.status,
-          'Babysitter Response': data.response,
+          'Response Notes': data.responseNotes || '',
         });
-        
+
         return new Response(
           JSON.stringify({ record: updatedRecord }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-
-      case 'fetchByVerificationId':
-        const requestRecords = await base('Requests')
-          .select({
-            filterByFormula: `{Verification_ID}='${data.verificationId}'`,
-            maxRecords: 1,
-          })
-          .firstPage();
-        
-        if (requestRecords.length === 0) {
-          return new Response(
-            JSON.stringify({ record: null }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          )
-        }
-
-        const record = requestRecords[0];
-        const parentMobile = record.get('Parent Requestor Mobile');
-        
-        const parentRecords = await base('Users')
-          .select({
-            filterByFormula: `{Mobile}='${parentMobile}'`,
-            maxRecords: 1,
-          })
-          .firstPage();
-
-        const parent = parentRecords.length > 0 ? {
-          firstName: parentRecords[0].get('First Name'),
-          lastName: parentRecords[0].get('Last Name'),
-        } : null;
-
-        const requestDetails = {
-          id: record.id,
-          date: record.get('Request Date'),
-          timeRange: record.get('Time Range'),
-          notes: record.get('Additional Notes'),
-          babysitterFirstName: record.get('First Name (from Babysitter)'),
-          parent,
-          verificationId: data.verificationId,
-        };
-        
-        return new Response(
-          JSON.stringify({ record: requestDetails }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
 
