@@ -15,7 +15,6 @@ const base = Airtable.base('appbQPN6CeEmayzz1')
 const REQUESTS_TABLE = 'tblz6LOxHesVWmmYI'
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -39,6 +38,8 @@ serve(async (req) => {
           })
           .all()
 
+        console.log(`Found ${records.length} requests`)
+
         const requests = records.map(record => ({
           id: record.id,
           date: record.get('Date'),
@@ -50,12 +51,10 @@ serve(async (req) => {
           babysitterDeleted: record.get('Babysitter Deleted'),
           notes: record.get('Notes'),
         }))
-
-        console.log(`Found ${requests.length} requests`)
         
         return new Response(
           JSON.stringify({ requests }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         )
       }
 
@@ -85,7 +84,7 @@ serve(async (req) => {
         
         return new Response(
           JSON.stringify({ record: records[0] }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         )
       }
 
@@ -110,7 +109,7 @@ serve(async (req) => {
         
         return new Response(
           JSON.stringify({ record: records[0] }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         )
       }
 
