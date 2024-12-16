@@ -1,3 +1,4 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'npm:@supabase/supabase-js'
 import Airtable from 'npm:airtable'
 
@@ -7,12 +8,14 @@ const corsHeaders = {
 }
 
 Airtable.configure({
-  apiKey: process.env.AIRTABLE_API_KEY,
-});
+  apiKey: Deno.env.get('AIRTABLE_API_KEY'),
+})
 
-const base = Airtable.base('appbQPN6CeEmayzz1');
+const base = Airtable.base('appbQPN6CeEmayzz1')
+const REQUESTS_TABLE = 'tblz6LOxHesVWmmYI'
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -22,54 +25,94 @@ serve(async (req) => {
     console.log('Processing request:', { action, data })
 
     switch (action) {
-      case 'create':
-        const record = await base('Requests').create([
+      case 'fetch': {
+        if (!data?.parentMobile) {
+          throw new Error('Parent mobile number is required for fetch action')
+        }
+
+        console.log('Fetching requests for parent mobile:', data.parentMobile)
+        
+        const records = await base(REQUESTS_TABLE)
+          .select({
+            filterByFormula: `{Parent Requestor Mobile}='${data.parentMobile}'`,
+            sort: [{ field: 'Created At', direction: 'desc' }]
+          })
+          .all()
+
+        const requests = records.map(record => ({
+          id: record.id,
+          date: record.get('Date'),
+          timeRange: record.get('Time Range'),
+          babysitterId: record.get('Babysitter ID'),
+          babysitterName: record.get('Babysitter Name'),
+          status: record.get('Status'),
+          createdAt: record.get('Created At'),
+          babysitterDeleted: record.get('Babysitter Deleted'),
+          notes: record.get('Notes'),
+        }))
+
+        console.log(`Found ${requests.length} requests`)
+        
+        return new Response(
+          JSON.stringify({ requests }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      case 'create': {
+        if (!data?.date || !data?.timeRange || !data?.babysitterId || !data?.parentMobile || !data?.requestGroupId) {
+          throw new Error('Missing required fields for create action')
+        }
+
+        console.log('Creating new request:', data)
+
+        const records = await base(REQUESTS_TABLE).create([
           {
             fields: {
-              'Parent Mobile': data.parentMobile,
-              'Babysitter Mobile': data.babysitterMobile,
-              'Start Time': data.startTime,
-              'End Time': data.endTime,
-              'Status': 'Pending',
+              'Date': data.date,
+              'Time Range': data.timeRange,
+              'Babysitter ID': data.babysitterId,
+              'Parent Requestor Mobile': data.parentMobile,
+              'Request Group ID': data.requestGroupId,
+              'Status': 'Available',
               'Created At': new Date().toISOString(),
-              'Kids': data.kids,
-              'Street Address': data.streetAddress,
-              'City': data.city,
-              'State': data.state,
-              'Zip Code': data.zipCode,
               'Notes': data.notes || '',
             },
           },
-        ]);
+        ])
 
+        console.log('Created request:', records[0])
+        
         return new Response(
-          JSON.stringify({ record: record[0] }),
+          JSON.stringify({ record: records[0] }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
+      }
 
-      case 'fetch':
-        const records = await base('Requests')
-          .select({
-            filterByFormula: `OR({Parent Mobile}='${data.mobile}', {Babysitter Mobile}='${data.mobile}')`,
-            sort: [{ field: 'Created At', direction: 'desc' }],
-          })
-          .all();
+      case 'updateResponse': {
+        if (!data?.requestId || !data?.status) {
+          throw new Error('Request ID and status are required for updateResponse action')
+        }
 
+        console.log('Updating request response:', data)
+
+        const records = await base(REQUESTS_TABLE).update([
+          {
+            id: data.requestId,
+            fields: {
+              'Status': data.status,
+              'Response': data.response || '',
+            },
+          },
+        ])
+
+        console.log('Updated request:', records[0])
+        
         return new Response(
-          JSON.stringify({ records }),
+          JSON.stringify({ record: records[0] }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
-
-      case 'update':
-        const updatedRecord = await base('Requests').update(data.id, {
-          'Status': data.status,
-          'Response Notes': data.responseNotes || '',
-        });
-
-        return new Response(
-          JSON.stringify({ record: updatedRecord }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
+      }
 
       default:
         throw new Error(`Unsupported action: ${action}`)
