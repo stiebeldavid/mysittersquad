@@ -34,7 +34,7 @@ serve(async (req) => {
         const records = await base(REQUESTS_TABLE)
           .select({
             filterByFormula: `{Parent Requestor Mobile}='${data.parentMobile}'`,
-            sort: [{ field: 'Created Time', direction: 'desc' }]
+            sort: [{ field: 'Created At', direction: 'desc' }]
           })
           .all()
 
@@ -47,7 +47,7 @@ serve(async (req) => {
           babysitterId: record.get('Babysitter ID'),
           babysitterName: record.get('Babysitter Name'),
           status: record.get('Status'),
-          createdAt: record.get('Created Time'),
+          createdAt: record.get('Created At'),
           babysitterDeleted: record.get('Babysitter Deleted'),
           notes: record.get('Notes'),
         }))
@@ -74,7 +74,7 @@ serve(async (req) => {
               'Parent Requestor Mobile': data.parentMobile,
               'Request Group ID': data.requestGroupId,
               'Status': 'Available',
-              'Created Time': new Date().toISOString(),
+              'Created At': new Date().toISOString(),
               'Notes': data.notes || '',
             },
           },
