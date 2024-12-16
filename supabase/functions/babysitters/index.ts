@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import Airtable from 'airtable';
+import Airtable from 'npm:airtable'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
