@@ -3,7 +3,8 @@ export interface Request {
   requestDate: string;
   timeRange: string;
   babysitterId: string;
-  babysitterName: string;
+  "First Name (from Babysitter)": string;
+  "Last Name (from Babysitter)": string;
   status: string;
   createdAt: string;
   babysitterDeleted?: boolean;
@@ -23,4 +24,17 @@ export interface RequestDetails {
   babysitterFirstName: string;
   parent: Parent | null;
   verificationId: string;
+}
+
+export interface GroupedRequest {
+  requestDate: string;
+  timeRange: string;
+  createdAt: string;
+  additionalNotes?: string;
+  babysitters: {
+    id: string;
+    name: string;
+    status: string;
+    deleted?: boolean;
+  }[];
 }

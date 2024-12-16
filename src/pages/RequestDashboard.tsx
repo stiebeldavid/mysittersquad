@@ -8,20 +8,8 @@ import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 import { RequestCard } from "@/components/request/RequestCard";
 import { EmptyState } from "@/components/request/EmptyState";
-import type { Request } from "@/lib/airtable/requests/types";
-
-interface GroupedRequest {
-  requestDate: string;
-  timeRange: string;
-  createdAt: string;
-  additionalNotes?: string;
-  babysitters: {
-    id: string;
-    name: string;
-    status: string;
-    deleted?: boolean;
-  }[];
-}
+import { format, parseISO } from "date-fns";
+import type { Request, GroupedRequest } from "@/lib/airtable/requests/types";
 
 const getStatusPriority = (status: string): number => {
   switch (status.toLowerCase()) {
@@ -55,14 +43,12 @@ const RequestDashboard = () => {
     }
   };
 
+  // Group requests by unique combination of date and time range
   const groupedRequests = requests.reduce((acc: { [key: string]: GroupedRequest }, request: Request) => {
-    if (!request.requestGroupId) {
-      console.warn('Request missing requestGroupId:', request);
-      return acc;
-    }
+    const key = `${request.requestDate}-${request.timeRange}`;
 
-    if (!acc[request.requestGroupId]) {
-      acc[request.requestGroupId] = {
+    if (!acc[key]) {
+      acc[key] = {
         requestDate: request.requestDate,
         timeRange: request.timeRange,
         createdAt: request.createdAt,
@@ -71,15 +57,15 @@ const RequestDashboard = () => {
       };
     }
 
-    acc[request.requestGroupId].babysitters.push({
+    acc[key].babysitters.push({
       id: request.babysitterId,
-      name: request.babysitterName,
+      name: `${request["First Name (from Babysitter)"]} ${request["Last Name (from Babysitter)"]}`,
       status: request.status,
       deleted: request.babysitterDeleted,
     });
 
     // Sort babysitters by status priority
-    acc[request.requestGroupId].babysitters.sort((a, b) => 
+    acc[key].babysitters.sort((a, b) => 
       getStatusPriority(a.status) - getStatusPriority(b.status)
     );
 
@@ -141,7 +127,7 @@ const RequestDashboard = () => {
             key={`${request.requestDate}-${request.timeRange}`}
             date={request.requestDate}
             timeRange={request.timeRange}
-            createdAt={request.createdAt}
+            createdAt={format(parseISO(request.createdAt), "PPpp")}
             babysitters={request.babysitters}
             notes={request.additionalNotes}
           />
