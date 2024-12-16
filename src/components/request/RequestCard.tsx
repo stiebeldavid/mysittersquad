@@ -44,6 +44,34 @@ const getStatusColor = (status: string) => {
   }
 };
 
+const parseCreatedTime = (createdTimeStr: string): Date => {
+  if (!createdTimeStr) return new Date();
+  
+  // Handle format: "11/19/2024 6:39pm"
+  const match = createdTimeStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(am|pm)/i);
+  if (match) {
+    const [_, month, day, year, hours, minutes, period] = match;
+    let hour = parseInt(hours);
+    
+    // Convert to 24-hour format
+    if (period.toLowerCase() === 'pm' && hour !== 12) {
+      hour += 12;
+    } else if (period.toLowerCase() === 'am' && hour === 12) {
+      hour = 0;
+    }
+    
+    return new Date(
+      parseInt(year),
+      parseInt(month) - 1, // months are 0-based
+      parseInt(day),
+      hour,
+      parseInt(minutes)
+    );
+  }
+  
+  return new Date(createdTimeStr);
+};
+
 export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: RequestCardProps) => {
   const [selectedBabysitter, setSelectedBabysitter] = useState<{
     id: string;
@@ -54,7 +82,7 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
 
   // Add validation for date and createdAt
   const requestDate = date ? parseISO(date) : new Date();
-  const createdDate = createdAt ? new Date(createdAt) : new Date();
+  const createdDate = createdAt ? parseCreatedTime(createdAt) : new Date();
   const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
 
   const handleAction = async () => {
