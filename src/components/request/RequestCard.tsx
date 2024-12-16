@@ -71,11 +71,6 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
         description: `Request ${newStatus.toLowerCase()} for ${selectedBabysitter.name}`,
       });
 
-      // Update the local state to reflect the change
-      const updatedBabysitters = babysitters.map(b => 
-        b.id === selectedBabysitter.id ? { ...b, status: newStatus } : b
-      );
-      
       // Close the dialog
       setSelectedBabysitter(null);
     } catch (error) {

@@ -8,25 +8,13 @@ import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 import { RequestCard } from "@/components/request/RequestCard";
 import { EmptyState } from "@/components/request/EmptyState";
-
-interface Request {
-  id: string;
-  date: string;
-  timeRange: string;
-  babysitterId: string;
-  babysitterName: string;
-  status: string;
-  createdAt: string;
-  babysitterDeleted?: boolean;
-  notes?: string;
-  requestGroupId: string;
-}
+import type { Request } from "@/lib/airtable/requests/types";
 
 interface GroupedRequest {
-  date: string;
+  requestDate: string;
   timeRange: string;
   createdAt: string;
-  notes?: string;
+  additionalNotes?: string;
   babysitters: {
     id: string;
     name: string;
@@ -67,7 +55,7 @@ const RequestDashboard = () => {
     }
   };
 
-  const groupedRequests = requests.reduce((acc: { [key: string]: GroupedRequest }, request) => {
+  const groupedRequests = requests.reduce((acc: { [key: string]: GroupedRequest }, request: Request) => {
     if (!request.requestGroupId) {
       console.warn('Request missing requestGroupId:', request);
       return acc;
@@ -75,10 +63,10 @@ const RequestDashboard = () => {
 
     if (!acc[request.requestGroupId]) {
       acc[request.requestGroupId] = {
-        date: request.date,
+        requestDate: request.requestDate,
         timeRange: request.timeRange,
         createdAt: request.createdAt,
-        notes: request.notes,
+        additionalNotes: request.additionalNotes,
         babysitters: [],
       };
     }
@@ -102,7 +90,7 @@ const RequestDashboard = () => {
     if (sortBy === "created") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
+    return new Date(b.requestDate).getTime() - new Date(a.requestDate).getTime();
   });
 
   if (isLoading) {
@@ -150,12 +138,12 @@ const RequestDashboard = () => {
       <div className="space-y-4">
         {sortedRequests.map((request) => (
           <RequestCard
-            key={`${request.date}-${request.timeRange}`}
-            date={request.date}
+            key={`${request.requestDate}-${request.timeRange}`}
+            date={request.requestDate}
             timeRange={request.timeRange}
             createdAt={request.createdAt}
             babysitters={request.babysitters}
-            notes={request.notes}
+            notes={request.additionalNotes}
           />
         ))}
       </div>

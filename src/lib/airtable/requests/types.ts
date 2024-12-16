@@ -1,13 +1,13 @@
 export interface Request {
   id: string;
-  date: string;
+  requestDate: string;
   timeRange: string;
   babysitterId: string;
   babysitterName: string;
   status: string;
   createdAt: string;
   babysitterDeleted?: boolean;
-  notes?: string;
+  additionalNotes?: string;
 }
 
 export interface Parent {
@@ -17,9 +17,9 @@ export interface Parent {
 
 export interface RequestDetails {
   id: string;
-  date: string;
+  requestDate: string;
   timeRange: string;
-  notes: string;
+  additionalNotes: string;
   babysitterFirstName: string;
   parent: Parent | null;
   verificationId: string;

@@ -42,14 +42,15 @@ serve(async (req) => {
 
         const requests = records.map(record => ({
           id: record.id,
-          date: record.get('Date'),
+          requestDate: record.get('Request Date'),
           timeRange: record.get('Time Range'),
           babysitterId: record.get('Babysitter ID'),
           babysitterName: record.get('Babysitter Name'),
           status: record.get('Status'),
           createdAt: record.get('Created At'),
           babysitterDeleted: record.get('Babysitter Deleted'),
-          notes: record.get('Notes'),
+          additionalNotes: record.get('Additional Notes'),
+          requestGroupId: record.get('Request Group ID'),
         }))
         
         return new Response(
@@ -59,7 +60,7 @@ serve(async (req) => {
       }
 
       case 'create': {
-        if (!data?.date || !data?.timeRange || !data?.babysitterId || !data?.parentMobile || !data?.requestGroupId) {
+        if (!data?.requestDate || !data?.timeRange || !data?.babysitterId || !data?.parentMobile || !data?.requestGroupId) {
           throw new Error('Missing required fields for create action')
         }
 
@@ -68,14 +69,14 @@ serve(async (req) => {
         const records = await base(REQUESTS_TABLE).create([
           {
             fields: {
-              'Date': data.date,
+              'Request Date': data.requestDate,
               'Time Range': data.timeRange,
               'Babysitter ID': data.babysitterId,
               'Parent Requestor Mobile': data.parentMobile,
               'Request Group ID': data.requestGroupId,
               'Status': 'Available',
               'Created At': new Date().toISOString(),
-              'Notes': data.notes || '',
+              'Additional Notes': data.additionalNotes || '',
             },
           },
         ])
