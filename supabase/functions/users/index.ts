@@ -7,12 +7,13 @@ const corsHeaders = {
 }
 
 Airtable.configure({
-  apiKey: process.env.AIRTABLE_API_KEY,
+  apiKey: Deno.env.get('AIRTABLE_API_KEY'),
 });
 
 const base = Airtable.base('appbQPN6CeEmayzz1');
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -23,6 +24,7 @@ serve(async (req) => {
 
     switch (action) {
       case 'findByMobile':
+        console.log('Looking up user by mobile:', mobile)
         const records = await base('Users')
           .select({
             filterByFormula: `{Mobile}='${mobile}'`,
@@ -30,12 +32,14 @@ serve(async (req) => {
           })
           .firstPage();
         
+        console.log('Found records:', records)
         return new Response(
           JSON.stringify({ record: records[0] || null }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
 
       case 'create':
+        console.log('Creating new user:', data)
         const createdRecords = await base('Users').create([
           {
             fields: {
@@ -46,12 +50,14 @@ serve(async (req) => {
           },
         ]);
         
+        console.log('Created record:', createdRecords[0])
         return new Response(
           JSON.stringify({ record: createdRecords[0] }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
 
       case 'updateAddress':
+        console.log('Updating user address:', { mobile, data })
         const userRecords = await base('Users')
           .select({
             filterByFormula: `{Mobile}='${mobile}'`,
@@ -67,6 +73,7 @@ serve(async (req) => {
             'Zip Code': data.zipCode,
           });
           
+          console.log('Updated record:', updatedRecord)
           return new Response(
             JSON.stringify({ record: updatedRecord }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
