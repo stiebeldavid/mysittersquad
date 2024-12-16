@@ -19,6 +19,7 @@ interface Request {
   createdAt: string;
   babysitterDeleted?: boolean;
   notes?: string;
+  requestGroupId: string;
 }
 
 interface GroupedRequest {
@@ -66,42 +67,38 @@ const RequestDashboard = () => {
     }
   };
 
-  const groupedRequests = requests.reduce((acc: GroupedRequest[], request) => {
-    const key = `${request.date}-${request.timeRange}`;
-    const existingGroup = acc.find(
-      (group) => group.date === request.date && group.timeRange === request.timeRange
-    );
+  const groupedRequests = requests.reduce((acc: { [key: string]: GroupedRequest }, request) => {
+    if (!request.requestGroupId) {
+      console.warn('Request missing requestGroupId:', request);
+      return acc;
+    }
 
-    if (existingGroup) {
-      existingGroup.babysitters.push({
-        id: request.babysitterId,
-        name: request.babysitterName,
-        status: request.status,
-        deleted: request.babysitterDeleted,
-      });
-      // Sort babysitters by status priority
-      existingGroup.babysitters.sort((a, b) => 
-        getStatusPriority(a.status) - getStatusPriority(b.status)
-      );
-    } else {
-      acc.push({
+    if (!acc[request.requestGroupId]) {
+      acc[request.requestGroupId] = {
         date: request.date,
         timeRange: request.timeRange,
         createdAt: request.createdAt,
         notes: request.notes,
-        babysitters: [{
-          id: request.babysitterId,
-          name: request.babysitterName,
-          status: request.status,
-          deleted: request.babysitterDeleted,
-        }],
-      });
+        babysitters: [],
+      };
     }
 
-    return acc;
-  }, []);
+    acc[request.requestGroupId].babysitters.push({
+      id: request.babysitterId,
+      name: request.babysitterName,
+      status: request.status,
+      deleted: request.babysitterDeleted,
+    });
 
-  const sortedRequests = [...groupedRequests].sort((a, b) => {
+    // Sort babysitters by status priority
+    acc[request.requestGroupId].babysitters.sort((a, b) => 
+      getStatusPriority(a.status) - getStatusPriority(b.status)
+    );
+
+    return acc;
+  }, {});
+
+  const sortedRequests = Object.values(groupedRequests).sort((a, b) => {
     if (sortBy === "created") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }

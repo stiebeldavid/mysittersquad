@@ -52,9 +52,8 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
   } | null>(null);
   const { toast } = useToast();
 
-  // Safely parse dates with validation
+  // Only parse the request date, leave createdAt as is
   const requestDate = date ? parseISO(date) : new Date();
-  const createdDate = createdAt ? new Date(createdAt) : new Date();
   const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
 
   const handleAction = async () => {
@@ -155,7 +154,7 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
               </div>
             ))}
             <p className="text-sm text-muted-foreground pt-2">
-              Request Created: {format(createdDate, "MMM d, yyyy")}
+              Request Created: {createdAt}
             </p>
           </div>
         </CardContent>
