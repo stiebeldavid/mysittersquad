@@ -51,8 +51,10 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
     action: "confirm" | "cancel";
   } | null>(null);
   const { toast } = useToast();
-  const requestDate = parseISO(date);
-  const createdDate = new Date(createdAt);
+
+  // Add validation for date and createdAt
+  const requestDate = date ? parseISO(date) : new Date();
+  const createdDate = createdAt ? new Date(createdAt) : new Date();
   const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
 
   const handleAction = async () => {
