@@ -1,148 +1,156 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'npm:@supabase/supabase-js';
-import Airtable from 'npm:airtable';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'npm:@supabase/supabase-js'
+import Airtable from 'npm:airtable'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+}
+
+Airtable.configure({
+  apiKey: Deno.env.get('AIRTABLE_API_KEY'),
+})
+
+const base = Airtable.base('appbQPN6CeEmayzz1')
+const BABYSITTERS_TABLE = 'tblOHkVqPWEus4ENk'
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    const AIRTABLE_API_KEY = Deno.env.get('AIRTABLE_API_KEY');
-    if (!AIRTABLE_API_KEY) {
-      throw new Error('AIRTABLE_API_KEY is required');
-    }
-
-    Airtable.configure({
-      apiKey: AIRTABLE_API_KEY,
-    });
-
-    const base = Airtable.base('appbQPN6CeEmayzz1');
-    const { action, data } = await req.json();
-    console.log('Processing babysitter request:', { action, data });
+    const { action, data } = await req.json()
+    console.log('Processing request:', { action, data })
 
     switch (action) {
       case 'fetch': {
         if (!data?.parentMobile) {
-          throw new Error('Parent mobile number is required for fetch action');
+          throw new Error('Parent mobile number is required for fetch action')
         }
-        console.log('Fetching babysitters for parent:', data.parentMobile);
-        
-        const records = await base('tblpKMKxnmPHj0pRs')
-          .select({
-            filterByFormula: `AND({Parent Owner Mobile}='${data.parentMobile}', {Deleted}!=1)`,
-          })
-          .all();
 
-        const babysitters = records.map((record) => ({
+        console.log('Fetching babysitters for parent mobile:', data.parentMobile)
+        
+        const records = await base(BABYSITTERS_TABLE)
+          .select({
+            filterByFormula: `{Parent Owner Mobile}='${data.parentMobile}'`,
+          })
+          .all()
+
+        console.log(`Found ${records.length} babysitters`)
+
+        const babysitters = records.map(record => ({
           id: record.id,
           firstName: record.get('First Name'),
           lastName: record.get('Last Name'),
           mobile: record.get('Mobile'),
+          email: record.get('Email'),
           age: record.get('Age'),
           grade: record.get('Grade'),
-          rate: record.get('Hourly rate (USD)'),
+          rate: record.get('Rate'),
           specialties: record.get('Specialties'),
           notes: record.get('Notes'),
-          email: record.get('Email'),
-        }));
+          babysitterId: record.get('Babysitter ID'), // Make sure to map the Babysitter ID field
+        }))
         
-        console.log(`Found ${babysitters.length} babysitters`);
         return new Response(
           JSON.stringify({ babysitters }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        )
       }
 
       case 'create': {
         if (!data?.firstName || !data?.mobile || !data?.parentMobile) {
-          throw new Error('First name, mobile, and parent mobile are required for create action');
+          throw new Error('First name, mobile number, and parent mobile are required for create action')
         }
-        console.log('Creating new babysitter:', data);
-        
-        const createdRecords = await base('tblpKMKxnmPHj0pRs').create([
+
+        console.log('Creating new babysitter:', data)
+
+        const records = await base(BABYSITTERS_TABLE).create([
           {
             fields: {
               'First Name': data.firstName,
-              'Last Name': data.lastName || '',
+              'Last Name': data.lastName,
               'Mobile': data.mobile,
               'Parent Owner Mobile': data.parentMobile,
-              'Age': data.age || '',
-              'Grade': data.grade || '',
-              'Hourly rate (USD)': data.rate || '',
-              'Specialties': data.specialties || '',
-              'Notes': data.notes || '',
-              'Email': data.email || '',
-              'Deleted': false,
+              'Age': data.age,
+              'Grade': data.grade,
+              'Rate': data.rate,
+              'Specialties': data.specialties,
+              'Notes': data.notes,
+              'Email': data.email,
             },
           },
-        ]);
+        ])
+
+        console.log('Created babysitter:', records[0])
         
-        console.log('Created babysitter record:', createdRecords[0]);
         return new Response(
-          JSON.stringify({ record: createdRecords[0] }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+          JSON.stringify({ record: records[0] }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        )
       }
 
       case 'update': {
         if (!data?.id || !data?.firstName || !data?.mobile) {
-          throw new Error('ID, first name, and mobile are required for update action');
+          throw new Error('ID, first name, and mobile number are required for update action')
         }
-        console.log('Updating babysitter:', data);
+
+        console.log('Updating babysitter:', data)
+
+        const records = await base(BABYSITTERS_TABLE).update([
+          {
+            id: data.id,
+            fields: {
+              'First Name': data.firstName,
+              'Last Name': data.lastName,
+              'Mobile': data.mobile,
+              'Age': data.age,
+              'Grade': data.grade,
+              'Rate': data.rate,
+              'Specialties': data.specialties,
+              'Notes': data.notes,
+              'Email': data.email,
+            },
+          },
+        ])
+
+        console.log('Updated babysitter:', records[0])
         
-        const updatedRecord = await base('tblpKMKxnmPHj0pRs').update(data.id, {
-          'First Name': data.firstName,
-          'Last Name': data.lastName || '',
-          'Mobile': data.mobile,
-          'Age': data.age || '',
-          'Grade': data.grade || '',
-          'Hourly rate (USD)': data.rate || '',
-          'Specialties': data.specialties || '',
-          'Notes': data.notes || '',
-          'Email': data.email || '',
-        });
-        
-        console.log('Updated babysitter record:', updatedRecord);
         return new Response(
-          JSON.stringify({ record: updatedRecord }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+          JSON.stringify({ record: records[0] }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        )
       }
 
       case 'delete': {
         if (!data?.id) {
-          throw new Error('Babysitter ID is required for delete action');
+          throw new Error('ID is required for delete action')
         }
-        console.log('Soft deleting babysitter:', data.id);
+
+        console.log('Deleting babysitter:', data)
+
+        const records = await base(BABYSITTERS_TABLE).destroy([data.id])
+
+        console.log('Deleted babysitter:', records[0])
         
-        const deletedRecord = await base('tblpKMKxnmPHj0pRs').update(data.id, {
-          'Deleted': true
-        });
-        
-        console.log('Soft deleted babysitter record:', deletedRecord);
         return new Response(
-          JSON.stringify({ record: deletedRecord }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+          JSON.stringify({ record: records[0] }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        )
       }
 
       default:
-        throw new Error(`Unsupported action: ${action}`);
+        throw new Error(`Unsupported action: ${action}`)
     }
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error('Error processing request:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
-    );
+    )
   }
-});
+})
