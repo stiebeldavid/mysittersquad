@@ -21,7 +21,7 @@ interface RequestListProps {
 }
 
 export const RequestList = ({ groupedRequests, sortBy }: RequestListProps) => {
-  const sortedRequests = Object.values(groupedRequests).sort((a, b) => {
+  const sortedRequests = Object.entries(groupedRequests).sort(([, a], [, b]) => {
     if (sortBy === "created") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
@@ -34,9 +34,9 @@ export const RequestList = ({ groupedRequests, sortBy }: RequestListProps) => {
 
   return (
     <div className="space-y-4">
-      {sortedRequests.map((request) => (
+      {sortedRequests.map(([groupId, request]) => (
         <RequestCard
-          key={`${request.requestDate}-${request.timeRange}`}
+          key={groupId}
           date={request.requestDate}
           timeRange={request.timeRange}
           createdAt={request.createdAt}
