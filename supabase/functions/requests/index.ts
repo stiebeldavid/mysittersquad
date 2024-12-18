@@ -67,12 +67,13 @@ serve(async (req) => {
 
         console.log('Creating new request:', data)
 
+        // Format babysitterId as an array of record IDs for Airtable
         const records = await base(REQUESTS_TABLE).create([
           {
             fields: {
               'Request Date': data.requestDate,
               'Time Range': data.timeRange,
-              'Babysitter': data.babysitterId,
+              'Babysitter': [data.babysitterId], // Wrap in array for Airtable's record linking
               'Parent Requestor Mobile': data.parentMobile,
               'Request Group ID': data.requestGroupId,
               'Status': 'Available',
