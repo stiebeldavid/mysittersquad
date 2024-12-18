@@ -37,6 +37,13 @@ const getNameStyle = (status: string) => {
   return "";
 };
 
+const getDisplayStatus = (status: string) => {
+  const statusLower = status.toLowerCase();
+  if (statusLower === "parent confirmed") return "Confirmed";
+  if (statusLower === "parent cancelled") return "Cancelled";
+  return status;
+};
+
 export const BabysitterListItem = ({
   id,
   requestId,
@@ -78,7 +85,7 @@ export const BabysitterListItem = ({
         </div>
       </div>
       <Badge className={getStatusColor(status)}>
-        {status}
+        {getDisplayStatus(status)}
       </Badge>
     </div>
   );
