@@ -152,7 +152,7 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
               </div>
             ))}
             <p className="text-sm text-muted-foreground pt-2">
-              Request Created: {format(createdAtDate, "MMMM dd, yyyy hh:mm a")}
+              Request Created: {format(createdAtDate, "MMM dd, yyyy HH:mm")}
             </p>
           </div>
         </CardContent>
