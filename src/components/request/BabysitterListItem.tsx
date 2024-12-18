@@ -3,10 +3,11 @@ import { CheckCircle, XCircle } from "lucide-react";
 
 interface BabysitterListItemProps {
   id: string;
+  requestId: string;  // Added requestId
   name: string;
   status: string;
   deleted?: boolean;
-  onAction?: (id: string, name: string, action: "confirm" | "cancel") => void;
+  onAction?: (requestId: string, id: string, name: string, action: "confirm" | "cancel") => void;
 }
 
 const getStatusColor = (status: string) => {
@@ -26,6 +27,7 @@ const getStatusColor = (status: string) => {
 
 export const BabysitterListItem = ({
   id,
+  requestId,  // Added requestId
   name,
   status,
   deleted,
@@ -38,13 +40,13 @@ export const BabysitterListItem = ({
          status.toLowerCase() !== "cancelled" && onAction && (
           <>
             <button
-              onClick={() => onAction(id, name, "confirm")}
+              onClick={() => onAction(requestId, id, name, "confirm")}
               className="text-green-600 hover:text-green-700 transition-colors"
             >
               <CheckCircle className="h-5 w-5" />
             </button>
             <button
-              onClick={() => onAction(id, name, "cancel")}
+              onClick={() => onAction(requestId, id, name, "cancel")}
               className="text-red-600 hover:text-red-700 transition-colors"
             >
               <XCircle className="h-5 w-5" />

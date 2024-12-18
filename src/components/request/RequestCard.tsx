@@ -13,6 +13,7 @@ interface RequestCardProps {
   createdAt: string;
   babysitters: {
     id: string;
+    requestId: string;  // Added requestId
     name: string;
     status: string;
     deleted?: boolean;
@@ -29,6 +30,7 @@ export const RequestCard = ({
 }: RequestCardProps) => {
   const [selectedBabysitter, setSelectedBabysitter] = useState<{
     id: string;
+    requestId: string;  // Added requestId
     name: string;
     action: "confirm" | "cancel";
   } | null>(null);
@@ -39,7 +41,7 @@ export const RequestCard = ({
 
     try {
       const newStatus = selectedBabysitter.action === "confirm" ? "Parent Confirmed" : "Parent Cancelled";
-      await updateBabysitterResponse(selectedBabysitter.id, {
+      await updateBabysitterResponse(selectedBabysitter.requestId, {
         status: newStatus,
         response: `Parent ${selectedBabysitter.action}ed the request`,
       });
@@ -78,8 +80,8 @@ export const RequestCard = ({
               <BabysitterListItem
                 key={babysitter.id}
                 {...babysitter}
-                onAction={(id, name, action) => 
-                  setSelectedBabysitter({ id, name, action })
+                onAction={(requestId, id, name, action) => 
+                  setSelectedBabysitter({ id, requestId, name, action })
                 }
               />
             ))}
