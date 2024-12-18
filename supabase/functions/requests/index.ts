@@ -102,7 +102,7 @@ serve(async (req) => {
             id: data.requestId,
             fields: {
               'Status': data.status,
-              'Response': data.response || '',
+              'Parent Response': data.response || '', // Changed 'Response' to 'Parent Response'
             },
           },
         ])
