@@ -77,7 +77,7 @@ serve(async (req) => {
               'Request Group ID': data.requestGroupId,
               'Status': 'Available',
               'Created At': new Date().toISOString(),
-              'Additional Notes': data.additionalNotes || '',
+              'Additional Notes': data.notes || '',
             },
           },
         ])
