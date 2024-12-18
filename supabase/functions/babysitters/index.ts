@@ -7,8 +7,14 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Configure Airtable
+const AIRTABLE_API_KEY = Deno.env.get('AIRTABLE_API_KEY')
+if (!AIRTABLE_API_KEY) {
+  throw new Error('AIRTABLE_API_KEY is required')
+}
+
 Airtable.configure({
-  apiKey: Deno.env.get('AIRTABLE_API_KEY'),
+  apiKey: AIRTABLE_API_KEY,
 })
 
 const base = Airtable.base('appbQPN6CeEmayzz1')
@@ -17,16 +23,22 @@ const BABYSITTERS_TABLE = 'tblOHkVqPWEus4ENk'
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, { 
+      headers: {
+        ...corsHeaders,
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      }
+    })
   }
 
   try {
-    // Verify the request has proper authorization
+    // Verify authorization
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      throw new Error('No authorization header')
+      throw new Error('Missing authorization header')
     }
 
+    // Get request body
     const { action, data } = await req.json()
     console.log('Processing request:', { action, data })
 
@@ -62,7 +74,12 @@ serve(async (req) => {
         
         return new Response(
           JSON.stringify({ babysitters }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          { 
+            headers: { 
+              ...corsHeaders, 
+              'Content-Type': 'application/json' 
+            }
+          }
         )
       }
 
@@ -153,10 +170,16 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error processing request:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.stack 
+      }),
       { 
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
       }
     )
   }
