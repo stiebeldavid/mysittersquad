@@ -15,11 +15,18 @@ const base = Airtable.base('appbQPN6CeEmayzz1')
 const BABYSITTERS_TABLE = 'tblOHkVqPWEus4ENk'
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
+    // Verify the request has proper authorization
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      throw new Error('No authorization header')
+    }
+
     const { action, data } = await req.json()
     console.log('Processing request:', { action, data })
 
@@ -50,7 +57,7 @@ serve(async (req) => {
           rate: record.get('Rate'),
           specialties: record.get('Specialties'),
           notes: record.get('Notes'),
-          babysitterId: record.get('Babysitter ID'), // Make sure to map the Babysitter ID field
+          babysitterId: record.get('Babysitter ID'),
         }))
         
         return new Response(
