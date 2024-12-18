@@ -26,23 +26,12 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const getStatusIcon = (status: string) => {
-  const statusLower = status.toLowerCase();
-  if (statusLower === "parent confirmed") {
-    return <CheckCircle className="h-5 w-5 text-green-500 mr-2" />;
-  }
-  if (statusLower === "parent cancelled") {
-    return <XCircle className="h-5 w-5 text-red-500 mr-2" />;
-  }
-  return null;
-};
-
 const getNameStyle = (status: string) => {
   const statusLower = status.toLowerCase();
   if (statusLower === "parent confirmed") {
     return "font-bold";
   }
-  if (statusLower === "parent cancelled") {
+  if (statusLower === "parent cancelled" || statusLower === "declined") {
     return "text-gray-400";
   }
   return "";
@@ -56,9 +45,8 @@ export const BabysitterListItem = ({
   deleted,
   onAction,
 }: BabysitterListItemProps) => {
-  const statusIcon = getStatusIcon(status);
   const nameStyle = getNameStyle(status);
-  const isActionable = !["parent confirmed", "parent cancelled"].includes(status.toLowerCase()) && onAction;
+  const isActionable = status.toLowerCase() === "available" && onAction;
 
   return (
     <div className="flex justify-between items-center py-2 border-b last:border-0">
@@ -80,7 +68,6 @@ export const BabysitterListItem = ({
           </>
         )}
         <div className="flex items-center">
-          {statusIcon}
           <span className={nameStyle}>
             {name}
             {deleted && (
