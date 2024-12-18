@@ -9,6 +9,7 @@ interface GroupedRequest {
   additionalNotes?: string;
   babysitters: {
     id: string;
+    requestId: string;  // Added requestId
     name: string;
     status: string;
     deleted?: boolean;

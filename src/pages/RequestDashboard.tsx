@@ -54,6 +54,7 @@ const RequestDashboard = () => {
 
     acc[request.requestGroupId].babysitters.push({
       id: request.babysitterId,
+      requestId: request.id,  // Add the request ID here
       name: fullName,
       status: request.status || 'Unknown',
       deleted: request.babysitterDeleted,
