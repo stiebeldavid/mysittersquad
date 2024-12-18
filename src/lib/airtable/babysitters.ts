@@ -19,7 +19,13 @@ export const createBabysitter = async (
   }
 
   try {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+
     const { data, error } = await supabase.functions.invoke('babysitters', {
+      headers: {
+        Authorization: `Bearer ${sessionData.session?.access_token}`,
+      },
       body: {
         action: 'create',
         data: {
@@ -58,7 +64,13 @@ export const updateBabysitter = async (
   email?: string
 ) => {
   try {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+
     const { data, error } = await supabase.functions.invoke('babysitters', {
+      headers: {
+        Authorization: `Bearer ${sessionData.session?.access_token}`,
+      },
       body: {
         action: 'update',
         data: {
@@ -86,7 +98,13 @@ export const updateBabysitter = async (
 
 export const deleteBabysitter = async (id: string) => {
   try {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+
     const { data, error } = await supabase.functions.invoke('babysitters', {
+      headers: {
+        Authorization: `Bearer ${sessionData.session?.access_token}`,
+      },
       body: {
         action: 'delete',
         data: { id }
@@ -110,7 +128,13 @@ export const fetchBabysitters = async (parentOwnerMobile: string): Promise<Babys
   }
 
   try {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+
     const { data, error } = await supabase.functions.invoke('babysitters', {
+      headers: {
+        Authorization: `Bearer ${sessionData.session?.access_token}`,
+      },
       body: {
         action: 'fetch',
         data: { parentMobile: parentOwnerMobile }
