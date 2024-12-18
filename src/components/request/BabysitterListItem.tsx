@@ -46,7 +46,8 @@ export const BabysitterListItem = ({
   onAction,
 }: BabysitterListItemProps) => {
   const nameStyle = getNameStyle(status);
-  const isActionable = status.toLowerCase() === "available" && onAction;
+  const nonActionableStatuses = ["parent confirmed", "parent cancelled", "declined", "pending"];
+  const isActionable = !nonActionableStatuses.includes(status.toLowerCase()) && onAction;
 
   return (
     <div className="flex justify-between items-center py-2 border-b last:border-0">
