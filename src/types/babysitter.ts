@@ -9,4 +9,5 @@ export interface Babysitter {
   rate?: string;
   specialties?: string;
   notes?: string;
+  babysitterId?: string;  // Added this field
 }

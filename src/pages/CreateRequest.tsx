@@ -71,13 +71,18 @@ const CreateRequest = () => {
         notes
       });
 
+      // Find the selected babysitters' full information including their babysitterId
+      const selectedBabysittersInfo = babysitters.filter(sitter => 
+        selectedBabysitters.includes(sitter.id)
+      );
+
       const requests = await Promise.all(
-        selectedBabysitters.map(babysitterId =>
+        selectedBabysittersInfo.map(babysitter =>
           createRequest(
             date,
             startTime,
             endTime,
-            babysitterId,
+            babysitter.babysitterId || '', // Use the babysitterId from Airtable
             user.mobile,
             requestGroupId,
             notes
