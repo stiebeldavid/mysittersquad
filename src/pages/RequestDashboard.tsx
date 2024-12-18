@@ -26,7 +26,7 @@ const RequestDashboard = () => {
   const user = useAuthStore((state) => state.user);
   const [sortBy, setSortBy] = useState<"created" | "date">("created");
 
-  const { data: requests = [], isLoading } = useQuery({
+  const { data: requests = [], isLoading } = useQuery<Request[]>({
     queryKey: ['requests', user?.mobile],
     queryFn: () => {
       if (!user?.mobile) {

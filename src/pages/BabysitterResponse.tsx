@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchRequestByVerificationId } from "@/lib/airtable/requests";
-import { ResponseForm } from "@/components/request/ResponseForm";
-import { VerificationForm } from "@/components/request/VerificationForm";
+import { ResponseForm } from "@/components/babysitter-response/ResponseForm";
+import { VerificationForm } from "@/components/babysitter-response/VerificationForm";
 import type { RequestDetails } from "@/lib/airtable/requests/types";
 
 const BabysitterResponse = () => {
@@ -25,15 +25,15 @@ const BabysitterResponse = () => {
         <div>Error loading request</div>
       ) : requestDetails ? (
         <ResponseForm
-          requestDate={requestDetails.requestDate}
-          timeRange={requestDetails.timeRange}
-          additionalNotes={requestDetails.additionalNotes}
-          babysitterName={requestDetails.babysitterFirstName}
-          parentName={requestDetails.parent ? `${requestDetails.parent.firstName} ${requestDetails.parent.lastName}` : ''}
-          verificationId={requestDetails.verificationId}
+          request={requestDetails}
+          onSubmit={() => {}}
+          isPending={false}
         />
       ) : (
-        <VerificationForm onSubmit={handleVerificationSubmit} />
+        <VerificationForm
+          onVerify={handleVerificationSubmit}
+          isVerifying={false}
+        />
       )}
     </div>
   );
