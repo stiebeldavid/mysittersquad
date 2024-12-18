@@ -44,7 +44,7 @@ serve(async (req) => {
           id: record.id,
           requestDate: record.get('Request Date'),
           timeRange: record.get('Time Range'),
-          babysitterId: record.get('Babysitter Record ID'),
+          babysitterId: record.get('Babysitter'),
           babysitterFirstName: record.get('First Name (from Babysitter)'),
           babysitterLastName: record.get('Last Name (from Babysitter)'),
           status: record.get('Status'),
@@ -72,7 +72,7 @@ serve(async (req) => {
             fields: {
               'Request Date': data.requestDate,
               'Time Range': data.timeRange,
-              'Babysitter Record ID': data.babysitterId,
+              'Babysitter': data.babysitterId,
               'Parent Requestor Mobile': data.parentMobile,
               'Request Group ID': data.requestGroupId,
               'Status': 'Available',
