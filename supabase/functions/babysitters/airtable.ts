@@ -25,11 +25,11 @@ export const fetchBabysittersFromAirtable = async (normalizedMobile: string) => 
   try {
     const records = await base(BABYSITTERS_TABLE)
       .select({
-        filterByFormula: `{Parent Owner Mobile}='${normalizedMobile}'`,
+        filterByFormula: `AND({Parent Owner Mobile}='${normalizedMobile}', NOT({Deleted}))`,
       })
       .all();
 
-    console.log(`Found ${records.length} babysitters`);
+    console.log(`Found ${records.length} active babysitters`);
 
     return records.map(record => ({
       id: record.id,
