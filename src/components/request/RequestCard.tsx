@@ -13,7 +13,7 @@ interface RequestCardProps {
   createdAt: string;
   babysitters: {
     id: string;
-    requestId: string;  // Added requestId
+    requestId: string;
     name: string;
     status: string;
     deleted?: boolean;
@@ -25,12 +25,13 @@ export const RequestCard = ({
   date, 
   timeRange, 
   createdAt, 
-  babysitters, 
+  babysitters: initialBabysitters, 
   notes 
 }: RequestCardProps) => {
+  const [babysitters, setBabysitters] = useState(initialBabysitters);
   const [selectedBabysitter, setSelectedBabysitter] = useState<{
     id: string;
-    requestId: string;  // Added requestId
+    requestId: string;
     name: string;
     action: "confirm" | "cancel";
   } | null>(null);
@@ -43,8 +44,14 @@ export const RequestCard = ({
       const newStatus = selectedBabysitter.action === "confirm" ? "Parent Confirmed" : "Parent Cancelled";
       await updateBabysitterResponse(selectedBabysitter.requestId, {
         status: newStatus,
-        response: `Parent ${selectedBabysitter.action}ed the request`,
       });
+
+      // Update the local state immediately
+      setBabysitters(prev => prev.map(babysitter => 
+        babysitter.id === selectedBabysitter.id 
+          ? { ...babysitter, status: newStatus }
+          : babysitter
+      ));
 
       toast({
         title: "Success",

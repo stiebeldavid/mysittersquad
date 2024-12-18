@@ -3,7 +3,7 @@ import { CheckCircle, XCircle } from "lucide-react";
 
 interface BabysitterListItemProps {
   id: string;
-  requestId: string;  // Added requestId
+  requestId: string;
   name: string;
   status: string;
   deleted?: boolean;
@@ -11,33 +11,47 @@ interface BabysitterListItemProps {
 }
 
 const getStatusColor = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "confirmed":
-      return "bg-green-500";
-    case "declined":
-      return "bg-red-500";
+  const statusLower = status.toLowerCase();
+  switch (statusLower) {
+    case "parent confirmed":
+      return "bg-green-500 text-white";
+    case "parent cancelled":
+      return "bg-red-500 text-white";
     case "available":
       return "bg-emerald-400";
-    case "cancelled":
+    case "declined":
       return "bg-red-500";
     default:
       return "bg-yellow-500";
   }
 };
 
+const getStatusIcon = (status: string) => {
+  const statusLower = status.toLowerCase();
+  if (statusLower === "parent confirmed") {
+    return <CheckCircle className="h-5 w-5 text-green-500 mr-2" />;
+  }
+  if (statusLower === "parent cancelled") {
+    return <XCircle className="h-5 w-5 text-red-500 mr-2" />;
+  }
+  return null;
+};
+
 export const BabysitterListItem = ({
   id,
-  requestId,  // Added requestId
+  requestId,
   name,
   status,
   deleted,
   onAction,
 }: BabysitterListItemProps) => {
+  const statusIcon = getStatusIcon(status);
+  const isActionable = !["parent confirmed", "parent cancelled"].includes(status.toLowerCase()) && onAction;
+
   return (
     <div className="flex justify-between items-center py-2 border-b last:border-0">
       <div className="flex items-center gap-3">
-        {status.toLowerCase() !== "confirmed" && 
-         status.toLowerCase() !== "cancelled" && onAction && (
+        {isActionable && (
           <>
             <button
               onClick={() => onAction(requestId, id, name, "confirm")}
@@ -53,12 +67,15 @@ export const BabysitterListItem = ({
             </button>
           </>
         )}
-        <span>
-          {name}
-          {deleted && (
-            <span className="text-muted-foreground ml-1">(deleted)</span>
-          )}
-        </span>
+        <div className="flex items-center">
+          {statusIcon}
+          <span>
+            {name}
+            {deleted && (
+              <span className="text-muted-foreground ml-1">(deleted)</span>
+            )}
+          </span>
+        </div>
       </div>
       <Badge className={getStatusColor(status)}>
         {status}
