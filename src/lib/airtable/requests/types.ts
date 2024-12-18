@@ -3,11 +3,13 @@ export interface Request {
   requestDate: string;
   timeRange: string;
   babysitterId: string;
-  babysitterName: string;
+  babysitterFirstName: string;
+  babysitterLastName: string;
   status: string;
   createdAt: string;
   babysitterDeleted?: boolean;
   additionalNotes?: string;
+  requestGroupId: string;
 }
 
 export interface Parent {

@@ -24,6 +24,7 @@ interface GroupedRequest {
 }
 
 const getStatusPriority = (status: string): number => {
+  if (!status) return 3;
   switch (status.toLowerCase()) {
     case "available":
       return 1;
@@ -71,10 +72,12 @@ const RequestDashboard = () => {
       };
     }
 
+    const fullName = `${request.babysitterFirstName} ${request.babysitterLastName}`.trim();
+
     acc[request.requestGroupId].babysitters.push({
       id: request.babysitterId,
-      name: request.babysitterName,
-      status: request.status,
+      name: fullName,
+      status: request.status || 'Unknown',
       deleted: request.babysitterDeleted,
     });
 
