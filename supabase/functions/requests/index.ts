@@ -76,8 +76,7 @@ serve(async (req) => {
               'Babysitter': [data.babysitterId], // Wrap in array for Airtable's record linking
               'Parent Requestor Mobile': data.parentMobile,
               'Request Group ID': data.requestGroupId,
-              'Status': 'Available',
-              'Created At': new Date().toISOString(),
+              'Status': 'Pending',
               'Additional Notes': data.notes || '',
             },
           },
