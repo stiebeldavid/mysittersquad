@@ -1,6 +1,8 @@
 import { RequestCard } from "./RequestCard";
 import { EmptyState } from "./EmptyState";
 import { Request } from "@/lib/airtable/requests/types";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Info } from "lucide-react";
 
 interface GroupedRequest {
   requestDate: string;
@@ -49,7 +51,7 @@ export const RequestList = ({ groupedRequests, sortBy }: RequestListProps) => {
       (a, b) => getStatusPriority(a.status) - getStatusPriority(b.status)
     );
 
-    return [groupId, { ...request, babysitters: sortedBabysitters }];
+    return [groupId, { ...request, babysitters: sortedBabysitters }] as [string, GroupedRequest];
   });
 
   if (sortedRequestsWithSortedBabysitters.length === 0) {
@@ -58,6 +60,13 @@ export const RequestList = ({ groupedRequests, sortBy }: RequestListProps) => {
 
   return (
     <div className="space-y-4">
+      <Alert variant="default" className="bg-muted border-muted-foreground/20">
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          Use the green checkmark to confirm a babysitter or the red X to cancel. Once confirmed, the babysitter will be notified of your decision.
+        </AlertDescription>
+      </Alert>
+
       {sortedRequestsWithSortedBabysitters.map(([groupId, request]) => (
         <RequestCard
           key={groupId}
