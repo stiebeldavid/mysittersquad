@@ -61,33 +61,44 @@ const CreateRequest = () => {
       }
 
       const requestGroupId = generateRequestGroupId();
-      console.log('Creating requests with:', {
-        date,
-        startTime,
-        endTime,
-        selectedBabysitters,
-        parentMobile: user.mobile,
-        requestGroupId,
-        notes
-      });
-
+      
       // Find the selected babysitters' full information including their babysitterId
       const selectedBabysittersInfo = babysitters.filter(sitter => 
         selectedBabysitters.includes(sitter.id)
       );
 
+      // Validate that all selected babysitters have a babysitterId
+      const missingIds = selectedBabysittersInfo.filter(sitter => !sitter.babysitterId);
+      if (missingIds.length > 0) {
+        console.error('Babysitters missing babysitterId:', missingIds);
+        throw new Error(`Some babysitters are missing their Airtable IDs: ${missingIds.map(s => s.firstName).join(', ')}`);
+      }
+
+      console.log('Creating requests with:', {
+        date,
+        startTime,
+        endTime,
+        selectedBabysitters: selectedBabysittersInfo.map(s => s.babysitterId),
+        parentMobile: user.mobile,
+        requestGroupId,
+        notes
+      });
+
       const requests = await Promise.all(
-        selectedBabysittersInfo.map(babysitter =>
-          createRequest(
+        selectedBabysittersInfo.map(babysitter => {
+          if (!babysitter.babysitterId) {
+            throw new Error(`Missing babysitterId for ${babysitter.firstName}`);
+          }
+          return createRequest(
             date,
             startTime,
             endTime,
-            babysitter.babysitterId || '', // Use the babysitterId from Airtable
+            babysitter.babysitterId,
             user.mobile,
             requestGroupId,
             notes
-          )
-        )
+          );
+        })
       );
 
       toast({
@@ -99,7 +110,7 @@ const CreateRequest = () => {
       console.error('Error creating request:', error);
       toast({
         title: "Error",
-        description: "Failed to create requests. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to create requests. Please try again.",
         variant: "destructive",
       });
     }
