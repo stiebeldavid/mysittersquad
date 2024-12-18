@@ -21,7 +21,8 @@ export interface RequestDetails {
   id: string;
   requestDate: string;
   timeRange: string;
-  additionalNotes: string;
+  notes?: string;
+  date: string;
   babysitterFirstName: string;
   parent: Parent | null;
   verificationId: string;
