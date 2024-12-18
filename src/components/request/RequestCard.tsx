@@ -38,15 +38,15 @@ export const RequestCard = ({
     if (!selectedBabysitter) return;
 
     try {
-      const newStatus = selectedBabysitter.action === "confirm" ? "Confirmed" : "Cancelled";
+      const newStatus = selectedBabysitter.action === "confirm" ? "Parent Confirmed" : "Parent Cancelled";
       await updateBabysitterResponse(selectedBabysitter.id, {
         status: newStatus,
-        response: `Parent ${newStatus.toLowerCase()} the request`,
+        response: `Parent ${selectedBabysitter.action}ed the request`,
       });
 
       toast({
         title: "Success",
-        description: `Request ${newStatus.toLowerCase()} for ${selectedBabysitter.name}`,
+        description: `Request ${selectedBabysitter.action}ed for ${selectedBabysitter.name}`,
       });
 
       setSelectedBabysitter(null);
