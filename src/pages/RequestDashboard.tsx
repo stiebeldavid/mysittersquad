@@ -8,12 +8,22 @@ import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 import { RequestCard } from "@/components/request/RequestCard";
 import { EmptyState } from "@/components/request/EmptyState";
-import { format, parseISO } from "date-fns";
-import type { Request, GroupedRequest } from "@/lib/airtable/requests/types";
+import type { Request } from "@/lib/airtable/requests/types";
 
-const getStatusPriority = (status: string | undefined): number => {
-  if (!status) return 3; // Default priority for undefined status
-  
+interface GroupedRequest {
+  requestDate: string;
+  timeRange: string;
+  createdAt: string;
+  additionalNotes?: string;
+  babysitters: {
+    id: string;
+    name: string;
+    status: string;
+    deleted?: boolean;
+  }[];
+}
+
+const getStatusPriority = (status: string): number => {
   switch (status.toLowerCase()) {
     case "available":
       return 1;
@@ -28,7 +38,7 @@ const RequestDashboard = () => {
   const user = useAuthStore((state) => state.user);
   const [sortBy, setSortBy] = useState<"created" | "date">("created");
 
-  const { data: requests = [], isLoading } = useQuery<Request[]>({
+  const { data: requests = [], isLoading } = useQuery({
     queryKey: ['requests', user?.mobile],
     queryFn: () => {
       if (!user?.mobile) {
@@ -45,29 +55,31 @@ const RequestDashboard = () => {
     }
   };
 
-  // Group requests by unique combination of date and time range
   const groupedRequests = requests.reduce((acc: { [key: string]: GroupedRequest }, request: Request) => {
-    const key = `${request["Request Date"]}-${request["Time Range"]}`;
+    if (!request.requestGroupId) {
+      console.warn('Request missing requestGroupId:', request);
+      return acc;
+    }
 
-    if (!acc[key]) {
-      acc[key] = {
-        requestDate: request["Request Date"],
-        timeRange: request["Time Range"],
-        createdAt: request["Created At"],
-        additionalNotes: request["Additional Notes"],
+    if (!acc[request.requestGroupId]) {
+      acc[request.requestGroupId] = {
+        requestDate: request.requestDate,
+        timeRange: request.timeRange,
+        createdAt: request.createdAt,
+        additionalNotes: request.additionalNotes,
         babysitters: [],
       };
     }
 
-    acc[key].babysitters.push({
-      id: request["Babysitter ID"],
-      name: `${request["First Name (from Babysitter)"]} ${request["Last Name (from Babysitter)"]}`,
-      status: request["Status"] || "Unknown", // Provide a default status if undefined
-      deleted: request["Babysitter Deleted"],
+    acc[request.requestGroupId].babysitters.push({
+      id: request.babysitterId,
+      name: request.babysitterName,
+      status: request.status,
+      deleted: request.babysitterDeleted,
     });
 
     // Sort babysitters by status priority
-    acc[key].babysitters.sort((a, b) => 
+    acc[request.requestGroupId].babysitters.sort((a, b) => 
       getStatusPriority(a.status) - getStatusPriority(b.status)
     );
 
@@ -129,7 +141,7 @@ const RequestDashboard = () => {
             key={`${request.requestDate}-${request.timeRange}`}
             date={request.requestDate}
             timeRange={request.timeRange}
-            createdAt={format(parseISO(request.createdAt), "PPpp")}
+            createdAt={request.createdAt}
             babysitters={request.babysitters}
             notes={request.additionalNotes}
           />
