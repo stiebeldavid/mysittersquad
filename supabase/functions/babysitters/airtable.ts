@@ -42,7 +42,7 @@ export const fetchBabysittersFromAirtable = async (normalizedMobile: string) => 
       rate: record.get('Rate'),
       specialties: record.get('Specialties'),
       notes: record.get('Notes'),
-      babysitterId: record.get('Babysitter ID'),
+      babysitterId: record.id, // This is the Airtable Record ID
     }));
   } catch (error) {
     console.error('Airtable error:', {
