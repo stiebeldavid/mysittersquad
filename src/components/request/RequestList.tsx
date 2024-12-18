@@ -9,7 +9,7 @@ interface GroupedRequest {
   additionalNotes?: string;
   babysitters: {
     id: string;
-    requestId: string;  // Added requestId
+    requestId: string;
     name: string;
     status: string;
     deleted?: boolean;
@@ -21,6 +21,20 @@ interface RequestListProps {
   sortBy: "created" | "date";
 }
 
+const getStatusPriority = (status: string): number => {
+  if (!status) return 4;
+  switch (status.toLowerCase()) {
+    case "parent confirmed":
+      return 0;
+    case "available":
+      return 1;
+    case "declined":
+      return 2;
+    default:
+      return 3;
+  }
+};
+
 export const RequestList = ({ groupedRequests, sortBy }: RequestListProps) => {
   const sortedRequests = Object.entries(groupedRequests).sort(([, a], [, b]) => {
     if (sortBy === "created") {
@@ -29,13 +43,22 @@ export const RequestList = ({ groupedRequests, sortBy }: RequestListProps) => {
     return new Date(b.requestDate).getTime() - new Date(a.requestDate).getTime();
   });
 
-  if (sortedRequests.length === 0) {
+  // Sort babysitters within each request
+  const sortedRequestsWithSortedBabysitters = sortedRequests.map(([groupId, request]) => {
+    const sortedBabysitters = [...request.babysitters].sort(
+      (a, b) => getStatusPriority(a.status) - getStatusPriority(b.status)
+    );
+
+    return [groupId, { ...request, babysitters: sortedBabysitters }];
+  });
+
+  if (sortedRequestsWithSortedBabysitters.length === 0) {
     return <EmptyState />;
   }
 
   return (
     <div className="space-y-4">
-      {sortedRequests.map(([groupId, request]) => (
+      {sortedRequestsWithSortedBabysitters.map(([groupId, request]) => (
         <RequestCard
           key={groupId}
           date={request.requestDate}
