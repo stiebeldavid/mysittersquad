@@ -83,6 +83,9 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
     }
   };
 
+  // Parse the createdAt date for formatting
+  const createdAtDate = createdAt ? parseISO(createdAt) : new Date();
+
   return (
     <>
       <Card className="card-hover text-left">
@@ -149,7 +152,7 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
               </div>
             ))}
             <p className="text-sm text-muted-foreground pt-2">
-              Request Created: {createdAt}
+              Request Created: {format(createdAtDate, "MMM dd, yyyy HH:mm")}
             </p>
           </div>
         </CardContent>
