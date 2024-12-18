@@ -1,20 +1,11 @@
-import { format, isThisYear, parseISO } from "date-fns";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { format, parseISO } from "date-fns";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useState } from "react";
 import { updateBabysitterResponse } from "@/lib/airtable/requests";
 import { useToast } from "@/components/ui/use-toast";
+import { RequestHeader } from "./RequestHeader";
+import { BabysitterListItem } from "./BabysitterListItem";
+import { ConfirmationDialog } from "./ConfirmationDialog";
 
 interface RequestCardProps {
   date: string;
@@ -29,32 +20,19 @@ interface RequestCardProps {
   notes?: string;
 }
 
-const getStatusColor = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "confirmed":
-      return "bg-green-500";
-    case "declined":
-      return "bg-red-500";
-    case "available":
-      return "bg-emerald-400";
-    case "cancelled":
-      return "bg-red-500";
-    default:
-      return "bg-yellow-500";
-  }
-};
-
-export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: RequestCardProps) => {
+export const RequestCard = ({ 
+  date, 
+  timeRange, 
+  createdAt, 
+  babysitters, 
+  notes 
+}: RequestCardProps) => {
   const [selectedBabysitter, setSelectedBabysitter] = useState<{
     id: string;
     name: string;
     action: "confirm" | "cancel";
   } | null>(null);
   const { toast } = useToast();
-
-  // Only parse the request date, leave createdAt as is
-  const requestDate = date ? parseISO(date) : new Date();
-  const dateFormat = isThisYear(requestDate) ? "EEEE, MMMM d" : "EEEE, MMMM d, yyyy";
 
   const handleAction = async () => {
     if (!selectedBabysitter) return;
@@ -71,7 +49,6 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
         description: `Request ${newStatus.toLowerCase()} for ${selectedBabysitter.name}`,
       });
 
-      // Close the dialog
       setSelectedBabysitter(null);
     } catch (error) {
       console.error("Error updating request:", error);
@@ -83,73 +60,28 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
     }
   };
 
-  // Parse the createdAt date for formatting
   const createdAtDate = createdAt ? parseISO(createdAt) : new Date();
 
   return (
     <>
       <Card className="card-hover text-left">
         <CardHeader className="pb-2">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
-            <CardTitle className="text-lg font-semibold">
-              {format(requestDate, dateFormat)}
-            </CardTitle>
-            <div className="flex flex-col items-start">
-              <span className="text-sm font-medium text-muted-foreground tracking-wide">
-                {timeRange}
-              </span>
-              {notes && (
-                <span className="text-sm text-muted-foreground">
-                  Note: {notes}
-                </span>
-              )}
-            </div>
-          </div>
+          <RequestHeader 
+            date={date}
+            timeRange={timeRange}
+            notes={notes}
+          />
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
             {babysitters.map((babysitter) => (
-              <div
+              <BabysitterListItem
                 key={babysitter.id}
-                className="flex justify-between items-center py-2 border-b last:border-0"
-              >
-                <div className="flex items-center gap-3">
-                  {babysitter.status.toLowerCase() !== "confirmed" && 
-                   babysitter.status.toLowerCase() !== "cancelled" && (
-                    <>
-                      <button
-                        onClick={() => setSelectedBabysitter({
-                          id: babysitter.id,
-                          name: babysitter.name,
-                          action: "confirm"
-                        })}
-                        className="text-green-600 hover:text-green-700 transition-colors"
-                      >
-                        <CheckCircle className="h-5 w-5" />
-                      </button>
-                      <button
-                        onClick={() => setSelectedBabysitter({
-                          id: babysitter.id,
-                          name: babysitter.name,
-                          action: "cancel"
-                        })}
-                        className="text-red-600 hover:text-red-700 transition-colors"
-                      >
-                        <XCircle className="h-5 w-5" />
-                      </button>
-                    </>
-                  )}
-                  <span>
-                    {babysitter.name}
-                    {babysitter.deleted && (
-                      <span className="text-muted-foreground ml-1">(deleted)</span>
-                    )}
-                  </span>
-                </div>
-                <Badge className={getStatusColor(babysitter.status)}>
-                  {babysitter.status}
-                </Badge>
-              </div>
+                {...babysitter}
+                onAction={(id, name, action) => 
+                  setSelectedBabysitter({ id, name, action })
+                }
+              />
             ))}
             <p className="text-sm text-muted-foreground pt-2">
               Created: {format(createdAtDate, "MMMM dd, yyyy hh:mm a")}
@@ -158,24 +90,15 @@ export const RequestCard = ({ date, timeRange, createdAt, babysitters, notes }: 
         </CardContent>
       </Card>
 
-      <AlertDialog open={!!selectedBabysitter} onOpenChange={() => setSelectedBabysitter(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {selectedBabysitter?.action === "confirm" ? "Confirm" : "Cancel"} Request
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to {selectedBabysitter?.action === "confirm" ? "confirm" : "cancel"} the request for {selectedBabysitter?.name}?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleAction}>
-              {selectedBabysitter?.action === "confirm" ? "Confirm" : "Cancel"} Request
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {selectedBabysitter && (
+        <ConfirmationDialog
+          isOpen={!!selectedBabysitter}
+          onClose={() => setSelectedBabysitter(null)}
+          onConfirm={handleAction}
+          action={selectedBabysitter.action}
+          babysitterName={selectedBabysitter.name}
+        />
+      )}
     </>
   );
 };
