@@ -1,14 +1,14 @@
 export interface Request {
   id: string;
-  requestDate: string;
-  timeRange: string;
-  babysitterId: string;
+  "Request Date": string;
+  "Time Range": string;
+  "Babysitter ID": string;
   "First Name (from Babysitter)": string;
   "Last Name (from Babysitter)": string;
-  status: string;
-  createdAt: string;
-  babysitterDeleted?: boolean;
-  additionalNotes?: string;
+  "Status": string;
+  "Created At": string;
+  "Babysitter Deleted"?: boolean;
+  "Additional Notes"?: string;
 }
 
 export interface Parent {

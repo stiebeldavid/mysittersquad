@@ -45,23 +45,23 @@ const RequestDashboard = () => {
 
   // Group requests by unique combination of date and time range
   const groupedRequests = requests.reduce((acc: { [key: string]: GroupedRequest }, request: Request) => {
-    const key = `${request.requestDate}-${request.timeRange}`;
+    const key = `${request["Request Date"]}-${request["Time Range"]}`;
 
     if (!acc[key]) {
       acc[key] = {
-        requestDate: request.requestDate,
-        timeRange: request.timeRange,
-        createdAt: request.createdAt,
-        additionalNotes: request.additionalNotes,
+        requestDate: request["Request Date"],
+        timeRange: request["Time Range"],
+        createdAt: request["Created At"],
+        additionalNotes: request["Additional Notes"],
         babysitters: [],
       };
     }
 
     acc[key].babysitters.push({
-      id: request.babysitterId,
+      id: request["Babysitter ID"],
       name: `${request["First Name (from Babysitter)"]} ${request["Last Name (from Babysitter)"]}`,
-      status: request.status,
-      deleted: request.babysitterDeleted,
+      status: request["Status"],
+      deleted: request["Babysitter Deleted"],
     });
 
     // Sort babysitters by status priority
