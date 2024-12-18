@@ -20,7 +20,22 @@ Airtable.configure({
 const base = Airtable.base('appbQPN6CeEmayzz1')
 const BABYSITTERS_TABLE = 'tblOHkVqPWEus4ENk'
 
+// Helper function to normalize phone numbers
+const normalizePhoneNumber = (phone: string) => {
+  // Remove all non-digit characters
+  const cleaned = phone.replace(/\D/g, '')
+  // Ensure it starts with +
+  return cleaned.startsWith('1') ? `+${cleaned}` : `+1${cleaned}`
+}
+
 serve(async (req) => {
+  // Add detailed logging
+  console.log('Received request:', {
+    method: req.method,
+    url: req.url,
+    headers: Object.fromEntries(req.headers.entries()),
+  })
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { 
@@ -35,6 +50,7 @@ serve(async (req) => {
     // Verify authorization
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
+      console.error('Missing authorization header')
       throw new Error('Missing authorization header')
     }
 
@@ -45,14 +61,16 @@ serve(async (req) => {
     switch (action) {
       case 'fetch': {
         if (!data?.parentMobile) {
+          console.error('Parent mobile number is required for fetch action')
           throw new Error('Parent mobile number is required for fetch action')
         }
 
-        console.log('Fetching babysitters for parent mobile:', data.parentMobile)
+        const normalizedMobile = normalizePhoneNumber(data.parentMobile)
+        console.log('Fetching babysitters for normalized parent mobile:', normalizedMobile)
         
         const records = await base(BABYSITTERS_TABLE)
           .select({
-            filterByFormula: `{Parent Owner Mobile}='${data.parentMobile}'`,
+            filterByFormula: `{Parent Owner Mobile}='${normalizedMobile}'`,
           })
           .all()
 
