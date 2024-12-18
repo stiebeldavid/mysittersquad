@@ -11,7 +11,9 @@ import { EmptyState } from "@/components/request/EmptyState";
 import { format, parseISO } from "date-fns";
 import type { Request, GroupedRequest } from "@/lib/airtable/requests/types";
 
-const getStatusPriority = (status: string): number => {
+const getStatusPriority = (status: string | undefined): number => {
+  if (!status) return 3; // Default priority for undefined status
+  
   switch (status.toLowerCase()) {
     case "available":
       return 1;
@@ -60,7 +62,7 @@ const RequestDashboard = () => {
     acc[key].babysitters.push({
       id: request["Babysitter ID"],
       name: `${request["First Name (from Babysitter)"]} ${request["Last Name (from Babysitter)"]}`,
-      status: request["Status"],
+      status: request["Status"] || "Unknown", // Provide a default status if undefined
       deleted: request["Babysitter Deleted"],
     });
 
