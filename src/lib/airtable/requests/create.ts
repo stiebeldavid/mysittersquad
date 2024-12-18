@@ -18,11 +18,20 @@ export const createRequest = async (
     const formattedDate = date.toISOString().split('T')[0];
     const timeRange = `${startTime} - ${endTime}`;
 
+    console.log('Invoking requests function with:', {
+      date: formattedDate,
+      timeRange,
+      babysitterId,
+      parentMobile: parentRequestorMobile,
+      requestGroupId,
+      notes,
+    });
+
     const { data, error } = await supabase.functions.invoke('requests', {
       body: {
         action: 'create',
         data: {
-          date: formattedDate,
+          requestDate: formattedDate,
           timeRange,
           babysitterId,
           parentMobile: parentRequestorMobile,
@@ -32,7 +41,11 @@ export const createRequest = async (
       }
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase function error:', error);
+      throw error;
+    }
+
     return data.record;
   } catch (error) {
     console.error('Error creating request:', error);

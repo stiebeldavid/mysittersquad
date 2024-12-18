@@ -19,8 +19,8 @@ import { fetchBabysitters } from "@/lib/airtable";
 
 const CreateRequest = () => {
   const [date, setDate] = useState<Date>();
-  const [startTime, setStartTime] = useState("18:00");  // Default to 6:00 PM
-  const [endTime, setEndTime] = useState("21:00");      // Default to 9:00 PM
+  const [startTime, setStartTime] = useState("18:00");
+  const [endTime, setEndTime] = useState("21:00");
   const [selectedBabysitters, setSelectedBabysitters] = useState<string[]>([]);
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
@@ -42,7 +42,7 @@ const CreateRequest = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!date || !startTime || !endTime || selectedBabysitters.length === 0 || !user) {
+    if (!date || !startTime || !endTime || selectedBabysitters.length === 0 || !user?.mobile) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields and select at least one babysitter.",
@@ -56,15 +56,29 @@ const CreateRequest = () => {
 
   const handleSendRequests = async () => {
     try {
+      if (!date || !user?.mobile) {
+        throw new Error("Missing required fields");
+      }
+
       const requestGroupId = generateRequestGroupId();
+      console.log('Creating requests with:', {
+        date,
+        startTime,
+        endTime,
+        selectedBabysitters,
+        parentMobile: user.mobile,
+        requestGroupId,
+        notes
+      });
+
       const requests = await Promise.all(
         selectedBabysitters.map(babysitterId =>
           createRequest(
-            date!,
+            date,
             startTime,
             endTime,
             babysitterId,
-            user!.mobile,
+            user.mobile,
             requestGroupId,
             notes
           )
@@ -77,6 +91,7 @@ const CreateRequest = () => {
       });
       navigate("/requests");
     } catch (error) {
+      console.error('Error creating request:', error);
       toast({
         title: "Error",
         description: "Failed to create requests. Please try again.",
