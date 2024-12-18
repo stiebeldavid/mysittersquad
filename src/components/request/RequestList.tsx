@@ -62,7 +62,7 @@ export const RequestList = ({ groupedRequests, sortBy }: RequestListProps) => {
     <div className="space-y-4">
       <Alert variant="default" className="bg-muted border-muted-foreground/20">
         <Info className="h-4 w-4" />
-        <AlertDescription className="flex items-center gap-1">
+        <AlertDescription className="flex items-center gap-1 flex-wrap">
           Click <CheckCircle className="h-4 w-4 text-green-600" /> to confirm a babysitter, or click <XCircle className="h-4 w-4 text-red-600" /> to cancel. The babysitter will be notified of your decision.
         </AlertDescription>
       </Alert>
