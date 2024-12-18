@@ -13,6 +13,14 @@ if (!AIRTABLE_API_KEY) {
   throw new Error('AIRTABLE_API_KEY is required')
 }
 
+// Log Airtable configuration (without exposing the full API key)
+console.log('Airtable Configuration:', {
+  apiKeyPresent: !!AIRTABLE_API_KEY,
+  apiKeyLength: AIRTABLE_API_KEY.length,
+  baseId: 'appbQPN6CeEmayzz1',
+  tableId: 'tblOHkVqPWEus4ENk'
+});
+
 Airtable.configure({
   apiKey: AIRTABLE_API_KEY,
 })
@@ -68,37 +76,50 @@ serve(async (req) => {
         const normalizedMobile = normalizePhoneNumber(data.parentMobile)
         console.log('Fetching babysitters for normalized parent mobile:', normalizedMobile)
         
-        const records = await base(BABYSITTERS_TABLE)
-          .select({
-            filterByFormula: `{Parent Owner Mobile}='${normalizedMobile}'`,
-          })
-          .all()
+        try {
+          const records = await base(BABYSITTERS_TABLE)
+            .select({
+              filterByFormula: `{Parent Owner Mobile}='${normalizedMobile}'`,
+            })
+            .all()
 
-        console.log(`Found ${records.length} babysitters`)
+          console.log(`Found ${records.length} babysitters`)
 
-        const babysitters = records.map(record => ({
-          id: record.id,
-          firstName: record.get('First Name'),
-          lastName: record.get('Last Name'),
-          mobile: record.get('Mobile'),
-          email: record.get('Email'),
-          age: record.get('Age'),
-          grade: record.get('Grade'),
-          rate: record.get('Rate'),
-          specialties: record.get('Specialties'),
-          notes: record.get('Notes'),
-          babysitterId: record.get('Babysitter ID'),
-        }))
-        
-        return new Response(
-          JSON.stringify({ babysitters }),
-          { 
-            headers: { 
-              ...corsHeaders, 
-              'Content-Type': 'application/json' 
+          const babysitters = records.map(record => ({
+            id: record.id,
+            firstName: record.get('First Name'),
+            lastName: record.get('Last Name'),
+            mobile: record.get('Mobile'),
+            email: record.get('Email'),
+            age: record.get('Age'),
+            grade: record.get('Grade'),
+            rate: record.get('Rate'),
+            specialties: record.get('Specialties'),
+            notes: record.get('Notes'),
+            babysitterId: record.get('Babysitter ID'),
+          }))
+          
+          return new Response(
+            JSON.stringify({ babysitters }),
+            { 
+              headers: { 
+                ...corsHeaders, 
+                'Content-Type': 'application/json' 
+              }
             }
-          }
-        )
+          )
+        } catch (airtableError) {
+          console.error('Airtable error:', {
+            error: airtableError,
+            config: {
+              baseId: 'appbQPN6CeEmayzz1',
+              tableId: BABYSITTERS_TABLE,
+              apiKeyPresent: !!AIRTABLE_API_KEY,
+              apiKeyLength: AIRTABLE_API_KEY.length
+            }
+          });
+          throw airtableError;
+        }
       }
 
       case 'create': {
