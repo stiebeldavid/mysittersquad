@@ -37,6 +37,17 @@ const getStatusIcon = (status: string) => {
   return null;
 };
 
+const getNameStyle = (status: string) => {
+  const statusLower = status.toLowerCase();
+  if (statusLower === "parent confirmed") {
+    return "font-bold";
+  }
+  if (statusLower === "parent cancelled") {
+    return "text-gray-400";
+  }
+  return "";
+};
+
 export const BabysitterListItem = ({
   id,
   requestId,
@@ -46,6 +57,7 @@ export const BabysitterListItem = ({
   onAction,
 }: BabysitterListItemProps) => {
   const statusIcon = getStatusIcon(status);
+  const nameStyle = getNameStyle(status);
   const isActionable = !["parent confirmed", "parent cancelled"].includes(status.toLowerCase()) && onAction;
 
   return (
@@ -69,7 +81,7 @@ export const BabysitterListItem = ({
         )}
         <div className="flex items-center">
           {statusIcon}
-          <span>
+          <span className={nameStyle}>
             {name}
             {deleted && (
               <span className="text-muted-foreground ml-1">(deleted)</span>
