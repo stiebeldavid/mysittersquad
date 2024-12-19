@@ -33,6 +33,8 @@
   }
   body {
     @apply bg-background text-foreground overflow-x-hidden;
+    background-size: contain;
+    background-repeat: repeat-y;
   }
 }
 
