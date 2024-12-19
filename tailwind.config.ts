@@ -20,8 +20,8 @@ export default {
     extend: {
       textShadow: {
         sm: '0 1px 2px rgba(0, 0, 0, 0.25)',
-        DEFAULT: '0 2px 4px rgba(0, 0, 0, 0.25)',
-        lg: '0 4px 8px rgba(0, 0, 0, 0.25)',
+        DEFAULT: '0 2px 4px rgba(0, 0, 0, 0.35)',
+        lg: '0 4px 8px rgba(0, 0, 0, 0.45)',
       },
       colors: {
         border: "hsl(var(--border))",
