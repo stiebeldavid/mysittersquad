@@ -158,7 +158,7 @@ serve(async (req) => {
         try {
           const records = await base(REQUESTS_TABLE)
             .select({
-              filterByFormula: `{Verification ID}='${data.verificationId}'`,
+              filterByFormula: `{Verification_ID}='${data.verificationId}'`,
               maxRecords: 1
             })
             .all()
@@ -183,7 +183,7 @@ serve(async (req) => {
               firstName: record.get('Parent First Name'),
               lastName: record.get('Parent Last Name')
             },
-            verificationId: record.get('Verification ID')
+            verificationId: record.get('Verification_ID')
           }
 
           console.log('Found request details:', requestDetails);
