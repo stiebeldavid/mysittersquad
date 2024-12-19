@@ -53,7 +53,7 @@ export const BabysitterListItem = ({
   onAction,
 }: BabysitterListItemProps) => {
   const nameStyle = getNameStyle(status);
-  const nonActionableStatuses = ["parent confirmed", "parent cancelled", "declined", "pending"];
+  const nonActionableStatuses = ["pending", "declined"];
   const isActionable = !nonActionableStatuses.includes(status.toLowerCase()) && onAction;
 
   return (
