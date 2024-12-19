@@ -59,22 +59,9 @@ export const BabysitterListItem = ({
   return (
     <div className="flex justify-between items-center py-2 border-b last:border-0">
       <div className="flex items-center gap-3">
-        {isActionable && (
-          <>
-            <button
-              onClick={() => onAction(requestId, id, name, "confirm")}
-              className="text-green-600 hover:text-green-700 transition-colors"
-            >
-              <CheckCircle className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() => onAction(requestId, id, name, "cancel")}
-              className="text-red-600 hover:text-red-700 transition-colors"
-            >
-              <XCircle className="h-5 w-5" />
-            </button>
-          </>
-        )}
+        <Badge className={getStatusColor(status)}>
+          {getDisplayStatus(status)}
+        </Badge>
         <div className="flex items-center">
           <span className={nameStyle}>
             {name}
@@ -84,9 +71,22 @@ export const BabysitterListItem = ({
           </span>
         </div>
       </div>
-      <Badge className={getStatusColor(status)}>
-        {getDisplayStatus(status)}
-      </Badge>
+      {isActionable && (
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onAction(requestId, id, name, "confirm")}
+            className="text-green-600 hover:text-green-700 transition-colors"
+          >
+            <CheckCircle className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => onAction(requestId, id, name, "cancel")}
+            className="text-red-600 hover:text-red-700 transition-colors"
+          >
+            <XCircle className="h-5 w-5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
