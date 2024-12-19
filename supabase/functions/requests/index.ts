@@ -35,8 +35,11 @@ const formatTimeRange = (startTime: string, endTime: string) => {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, {
+      headers: corsHeaders
+    })
   }
 
   try {
@@ -140,56 +143,83 @@ serve(async (req) => {
 
       case 'fetchByVerificationId': {
         if (!data?.verificationId) {
-          throw new Error('Verification ID is required for fetchByVerificationId action')
+          console.error('Missing verification ID');
+          return new Response(
+            JSON.stringify({ error: 'Verification ID is required' }),
+            { 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              status: 400 
+            }
+          )
         }
 
         console.log('Fetching request by verification ID:', data.verificationId)
         
-        const records = await base(REQUESTS_TABLE)
-          .select({
-            filterByFormula: `{Verification ID}='${data.verificationId}'`,
-            maxRecords: 1
-          })
-          .all()
+        try {
+          const records = await base(REQUESTS_TABLE)
+            .select({
+              filterByFormula: `{Verification ID}='${data.verificationId}'`,
+              maxRecords: 1
+            })
+            .all()
 
-        if (records.length === 0) {
+          if (records.length === 0) {
+            console.log('No request found with verification ID:', data.verificationId);
+            return new Response(
+              JSON.stringify({ record: null }),
+              { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+            )
+          }
+
+          const record = records[0]
+          const requestDetails = {
+            id: record.id,
+            requestDate: record.get('Request Date'),
+            timeRange: record.get('Time Range'),
+            notes: record.get('Additional Notes'),
+            date: record.get('Request Date'),
+            babysitterFirstName: record.get('First Name (from Babysitter)'),
+            parent: {
+              firstName: record.get('Parent First Name'),
+              lastName: record.get('Parent Last Name')
+            },
+            verificationId: record.get('Verification ID')
+          }
+
+          console.log('Found request details:', requestDetails);
           return new Response(
-            JSON.stringify({ record: null }),
+            JSON.stringify({ record: requestDetails }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
           )
+        } catch (error) {
+          console.error('Error fetching from Airtable:', error);
+          return new Response(
+            JSON.stringify({ error: 'Failed to fetch request details' }),
+            { 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              status: 500 
+            }
+          )
         }
-
-        const record = records[0]
-        const requestDetails = {
-          id: record.id,
-          requestDate: record.get('Request Date'),
-          timeRange: record.get('Time Range'),
-          notes: record.get('Additional Notes'),
-          date: record.get('Request Date'),
-          babysitterFirstName: record.get('First Name (from Babysitter)'),
-          parent: {
-            firstName: record.get('Parent First Name'),
-            lastName: record.get('Parent Last Name')
-          },
-          verificationId: record.get('Verification ID')
-        }
-
-        return new Response(
-          JSON.stringify({ record: requestDetails }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-        )
       }
 
       default:
-        throw new Error(`Unsupported action: ${action}`)
+        console.error(`Unsupported action: ${action}`);
+        return new Response(
+          JSON.stringify({ error: `Unsupported action: ${action}` }),
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 400 
+          }
+        )
     }
   } catch (error) {
     console.error('Error processing request:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400
       }
     )
   }
