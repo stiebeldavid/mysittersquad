@@ -35,7 +35,6 @@ const formatTimeRange = (startTime: string, endTime: string) => {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, {
       headers: corsHeaders
@@ -129,6 +128,7 @@ serve(async (req) => {
             id: data.requestId,
             fields: {
               'Status': data.status,
+              'Response': data.response,
             },
           },
         ])
@@ -183,7 +183,8 @@ serve(async (req) => {
               firstName: record.get('Parent First Name'),
               lastName: record.get('Parent Last Name')
             },
-            verificationId: record.get('Verification_ID')
+            verificationId: record.get('Verification_ID'),
+            recordId: record.id // Added this line to include the record ID
           }
 
           console.log('Found request details:', requestDetails);
@@ -194,7 +195,7 @@ serve(async (req) => {
         } catch (error) {
           console.error('Error fetching from Airtable:', error);
           return new Response(
-            JSON.stringify({ error: 'Failed to fetch request details' }),
+            JSON.stringify({ error: error.message }),
             { 
               headers: { ...corsHeaders, 'Content-Type': 'application/json' },
               status: 500 

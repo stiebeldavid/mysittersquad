@@ -20,7 +20,7 @@ const BabysitterResponse = () => {
 
   const mutation = useMutation({
     mutationFn: ({ response, comments }: { response: string; comments: string }) => {
-      if (!request?.verificationId) return Promise.reject("Invalid data");
+      if (!request?.recordId) return Promise.reject("Invalid data");
       
       // Determine status based on response
       let status;
@@ -32,7 +32,7 @@ const BabysitterResponse = () => {
         status = "Received Comment";
       }
 
-      return updateBabysitterResponse(request.verificationId, {
+      return updateBabysitterResponse(request.recordId, {
         status,
         response: response ? `${response}${comments ? `. ${comments}` : ''}` : comments,
       });

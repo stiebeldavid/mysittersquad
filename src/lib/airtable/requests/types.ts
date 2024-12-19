@@ -26,4 +26,5 @@ export interface RequestDetails {
   babysitterFirstName: string;
   parent: Parent | null;
   verificationId: string;
+  recordId: string; // Added this field
 }
