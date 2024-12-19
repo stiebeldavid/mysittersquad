@@ -84,7 +84,9 @@ export const BabysitterForm = ({ onSubmit, currentBabysitter }: BabysitterFormPr
     const formData = new FormData(formElement);
     
     if (mobile) {
-      formData.set("mobile", mobile);
+      // Remove any spaces from the mobile number before saving
+      const cleanedMobile = mobile.replace(/\s+/g, '');
+      formData.set("mobile", cleanedMobile);
     }
 
     if (!validateForm(formData)) {
