@@ -10,8 +10,13 @@ const Signup = () => {
 
   return (
     <div 
-      className="min-h-screen bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: 'url("/lovable-uploads/ba8bdb57-a6ba-4ff3-a3b3-a8892f151b01.png")' }}
+      className="min-h-screen bg-[#FEF7CD] md:bg-none md:bg-cover md:bg-center md:bg-no-repeat"
+      style={{ 
+        backgroundImage: 'url("/lovable-uploads/b02f1de1-fe5e-423b-a316-dfd6c7518396.png")',
+        '@media (max-width: 768px)': {
+          backgroundImage: 'none'
+        }
+      }}
     >
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-md mx-auto bg-white/95 rounded-lg shadow-lg p-6 backdrop-blur-sm signup-form">
