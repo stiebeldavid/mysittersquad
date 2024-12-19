@@ -56,8 +56,8 @@ const Signup = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight animate-slide-up">
                 Coordinate Your Trusted Babysitters, All in One Place
               </h1>
-              <div className="bg-black/40 backdrop-blur-sm rounded-lg p-4">
-                <p className="text-xl text-white leading-relaxed font-medium">
+              <div className="rounded-lg">
+                <p className="text-xl text-white leading-relaxed font-medium text-shadow">
                   Stop juggling multiple text threads. MySitterSquad helps you quickly find available time slots from your existing, trusted babysitters.
                 </p>
               </div>
