@@ -18,11 +18,22 @@ const Index = () => {
   const { kids } = useFamilyStore();
   const user = useAuthStore((state) => state.user);
   
-  const { data: babysitters = [] } = useQuery({
+  const { data: babysitters = [], isLoading } = useQuery({
     queryKey: ['babysitters', user?.mobile],
     queryFn: () => fetchBabysitters(user?.mobile || ''),
     enabled: !!user?.mobile,
   });
+
+  // Don't render anything while loading
+  if (isLoading) {
+    return (
+      <div className="page-container">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Loading...</h1>
+        </div>
+      </div>
+    );
+  }
 
   const hasBabysitters = babysitters.length > 0;
 
