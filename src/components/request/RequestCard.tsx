@@ -44,7 +44,7 @@ export const RequestCard = ({
       const newStatus = selectedBabysitter.action === "confirm" ? "Parent Confirmed" : "Parent Cancelled";
       await updateBabysitterResponse(selectedBabysitter.requestId, {
         status: newStatus,
-        response: newStatus, // Add this line to satisfy the type requirement
+        response: "", // Empty string for parent actions
       });
 
       // Update the local state immediately

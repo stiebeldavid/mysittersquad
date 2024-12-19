@@ -14,7 +14,8 @@ export const updateBabysitterResponse = async (
         data: {
           requestId,
           status: update.status,
-          response: update.response,
+          // Only pass response if it's provided (not for parent confirmations/cancellations)
+          ...(update.response && { response: update.response }),
         }
       }
     });
