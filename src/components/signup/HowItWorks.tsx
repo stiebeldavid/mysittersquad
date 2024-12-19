@@ -7,7 +7,7 @@ interface HowItWorksProps {
 
 export const HowItWorks = ({ onGetStarted }: HowItWorksProps) => {
   return (
-    <div className="bg-white/95 py-16 mt-16">
+    <div className="bg-white/80 py-16 mt-16">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">How MySitterSquad Works</h2>
