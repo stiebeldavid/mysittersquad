@@ -24,7 +24,13 @@ export const fetchRequests = async (parentRequestorMobile: string): Promise<Requ
 };
 
 export const fetchRequestByVerificationId = async (verificationId: string): Promise<RequestDetails | null> => {
+  if (!verificationId) {
+    console.error('No verification ID provided to fetchRequestByVerificationId');
+    return null;
+  }
+
   try {
+    console.log('Fetching request with verification ID:', verificationId);
     const { data, error } = await supabase.functions.invoke('requests', {
       body: {
         action: 'fetchByVerificationId',
@@ -32,7 +38,16 @@ export const fetchRequestByVerificationId = async (verificationId: string): Prom
       }
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase function error:', error);
+      throw error;
+    }
+
+    if (!data?.record) {
+      console.log('No request found with verification ID:', verificationId);
+      return null;
+    }
+
     return data.record;
   } catch (error) {
     console.error('Error fetching request by verification ID:', error);

@@ -138,6 +138,48 @@ serve(async (req) => {
         )
       }
 
+      case 'fetchByVerificationId': {
+        if (!data?.verificationId) {
+          throw new Error('Verification ID is required for fetchByVerificationId action')
+        }
+
+        console.log('Fetching request by verification ID:', data.verificationId)
+        
+        const records = await base(REQUESTS_TABLE)
+          .select({
+            filterByFormula: `{Verification ID}='${data.verificationId}'`,
+            maxRecords: 1
+          })
+          .all()
+
+        if (records.length === 0) {
+          return new Response(
+            JSON.stringify({ record: null }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          )
+        }
+
+        const record = records[0]
+        const requestDetails = {
+          id: record.id,
+          requestDate: record.get('Request Date'),
+          timeRange: record.get('Time Range'),
+          notes: record.get('Additional Notes'),
+          date: record.get('Request Date'),
+          babysitterFirstName: record.get('First Name (from Babysitter)'),
+          parent: {
+            firstName: record.get('Parent First Name'),
+            lastName: record.get('Parent Last Name')
+          },
+          verificationId: record.get('Verification ID')
+        }
+
+        return new Response(
+          JSON.stringify({ record: requestDetails }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        )
+      }
+
       default:
         throw new Error(`Unsupported action: ${action}`)
     }
