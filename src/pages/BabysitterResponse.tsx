@@ -22,7 +22,6 @@ const BabysitterResponse = () => {
     mutationFn: ({ response, comments }: { response: string; comments: string }) => {
       if (!request?.recordId) return Promise.reject("Invalid data");
       
-      // Determine status based on response
       let status;
       if (response === "Yes, I can babysit then") {
         status = "Available";

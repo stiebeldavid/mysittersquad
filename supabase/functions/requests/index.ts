@@ -1,153 +1,54 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'npm:@supabase/supabase-js'
-import Airtable from 'npm:airtable'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
-
-Airtable.configure({
-  apiKey: Deno.env.get('AIRTABLE_API_KEY'),
-})
-
-const base = Airtable.base('appbQPN6CeEmayzz1')
-const REQUESTS_TABLE = 'tblz6LOxHesVWmmYI'
-const USERS_TABLE = 'tblV7kcHyLgVt9QHZ'
-
-// Helper function to format time range
-const formatTimeRange = (startTime: string, endTime: string) => {
-  const [startHour, startMinute] = startTime.split(":").map(Number);
-  const [endHour, endMinute] = endTime.split(":").map(Number);
-  
-  const startHour12 = startHour % 12 || 12;
-  const startPeriod = startHour >= 12 ? 'pm' : 'am';
-  const formattedStart = `${startHour12}:${startMinute.toString().padStart(2, '0')}`;
-  
-  const endHour12 = endHour % 12 || 12;
-  const endPeriod = endHour >= 12 ? 'pm' : 'am';
-  const formattedEnd = `${endHour12}:${endMinute.toString().padStart(2, '0')}`;
-  
-  if (startPeriod === endPeriod) {
-    return `${formattedStart}-${formattedEnd}${endPeriod}`;
-  }
-  
-  return `${formattedStart}${startPeriod}-${formattedEnd}${endPeriod}`;
-};
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { corsHeaders } from './corsHeaders.ts';
+import { fetchRequests } from './handlers/fetchRequests.ts';
+import { createRequest } from './handlers/createRequest.ts';
+import { updateResponse } from './handlers/updateResponse.ts';
+import { fetchRequestByVerificationId } from './handlers/fetchRequestByVerificationId.ts';
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: corsHeaders
-    })
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { action, data } = await req.json()
-    console.log('Processing request:', { action, data })
+    const { action, data } = await req.json();
+    console.log('Processing request:', { action, data });
 
     switch (action) {
       case 'fetch': {
         if (!data?.parentMobile) {
-          throw new Error('Parent mobile number is required for fetch action')
+          throw new Error('Parent mobile number is required for fetch action');
         }
-
-        console.log('Fetching requests for parent mobile:', data.parentMobile)
         
-        const records = await base(REQUESTS_TABLE)
-          .select({
-            filterByFormula: `{Parent Requestor Mobile}='${data.parentMobile}'`,
-            sort: [{ field: 'Created At', direction: 'desc' }]
-          })
-          .all()
-
-        console.log(`Found ${records.length} requests`)
-
-        const requests = records.map(record => ({
-          id: record.id,
-          requestDate: record.get('Request Date'),
-          timeRange: record.get('Time Range'),
-          babysitterId: record.get('Babysitter'),
-          babysitterFirstName: record.get('First Name (from Babysitter)'),
-          babysitterLastName: record.get('Last Name (from Babysitter)'),
-          status: record.get('Status'),
-          createdAt: record.get('Created At'),
-          babysitterDeleted: record.get('Babysitter Deleted'),
-          additionalNotes: record.get('Additional Notes'),
-          requestGroupId: record.get('Request Group ID'),
-        }))
-        
+        const requests = await fetchRequests(data.parentMobile);
         return new Response(
           JSON.stringify({ requests }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-        )
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
 
       case 'create': {
         if (!data?.requestDate || !data?.timeRange || !data?.babysitterId || !data?.parentMobile || !data?.requestGroupId) {
-          throw new Error('Missing required fields for create action')
+          throw new Error('Missing required fields for create action');
         }
 
-        console.log('Creating new request:', data)
-
-        // Format the time range if start and end times are provided separately
-        const formattedTimeRange = data.startTime && data.endTime 
-          ? formatTimeRange(data.startTime, data.endTime)
-          : data.timeRange;
-
-        const records = await base(REQUESTS_TABLE).create([
-          {
-            fields: {
-              'Request Date': data.requestDate,
-              'Time Range': formattedTimeRange,
-              'Babysitter': [data.babysitterId],
-              'Parent Requestor Mobile': data.parentMobile,
-              'Request Group ID': data.requestGroupId,
-              'Status': 'Pending',
-              'Additional Notes': data.notes || '',
-            },
-          },
-        ])
-
-        console.log('Created request:', records[0])
-        
+        const record = await createRequest(data);
         return new Response(
-          JSON.stringify({ record: records[0] }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-        )
+          JSON.stringify({ record }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
 
       case 'updateResponse': {
         if (!data?.requestId || !data?.status) {
-          throw new Error('Request ID and status are required for updateResponse action')
+          throw new Error('Request ID and status are required for updateResponse action');
         }
 
-        console.log('Updating request response:', data)
-
-        try {
-          const records = await base(REQUESTS_TABLE).update([
-            {
-              id: data.requestId,
-              fields: {
-                'Status': data.status,
-                'Babysitter Response': data.response,
-              },
-            },
-          ])
-
-          console.log('Updated request:', records[0])
-          
-          return new Response(
-            JSON.stringify({ record: records[0] }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-          )
-        } catch (error) {
-          console.error('Error updating request in Airtable:', error)
-          return new Response(
-            JSON.stringify({ error: error.message }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
-          )
-        }
+        const record = await updateResponse(data.requestId, data.status, data.response);
+        return new Response(
+          JSON.stringify({ record }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
 
       case 'fetchByVerificationId': {
@@ -155,95 +56,25 @@ serve(async (req) => {
           console.error('Missing verification ID');
           return new Response(
             JSON.stringify({ error: 'Verification ID is required' }),
-            { 
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-              status: 400 
-            }
-          )
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+          );
         }
 
-        console.log('Fetching request by verification ID:', data.verificationId)
-        
-        try {
-          const records = await base(REQUESTS_TABLE)
-            .select({
-              filterByFormula: `{Verification_ID}='${data.verificationId}'`,
-              maxRecords: 1
-            })
-            .all()
-
-          if (records.length === 0) {
-            console.log('No request found with verification ID:', data.verificationId);
-            return new Response(
-              JSON.stringify({ record: null }),
-              { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-            )
-          }
-
-          const record = records[0];
-          const parentMobile = record.get('Parent Requestor Mobile');
-
-          // Fetch parent information from Users table
-          const parentRecords = await base(USERS_TABLE)
-            .select({
-              filterByFormula: `{Mobile}='${parentMobile}'`,
-              maxRecords: 1
-            })
-            .all();
-
-          const parentRecord = parentRecords[0];
-          const parent = parentRecord ? {
-            firstName: parentRecord.get('First Name'),
-            lastName: parentRecord.get('Last Name')
-          } : null;
-
-          const requestDetails = {
-            id: record.id,
-            requestDate: record.get('Request Date'),
-            timeRange: record.get('Time Range'),
-            notes: record.get('Additional Notes'),
-            date: record.get('Request Date'),
-            babysitterFirstName: record.get('First Name (from Babysitter)'),
-            parent,
-            verificationId: record.get('Verification_ID'),
-            recordId: record.id
-          }
-
-          console.log('Found request details:', requestDetails);
-          return new Response(
-            JSON.stringify({ record: requestDetails }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-          )
-        } catch (error) {
-          console.error('Error fetching from Airtable:', error);
-          return new Response(
-            JSON.stringify({ error: error.message }),
-            { 
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-              status: 500 
-            }
-          )
-        }
+        const record = await fetchRequestByVerificationId(data.verificationId);
+        return new Response(
+          JSON.stringify({ record }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
 
       default:
-        console.error(`Unsupported action: ${action}`);
-        return new Response(
-          JSON.stringify({ error: `Unsupported action: ${action}` }),
-          { 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 400 
-          }
-        )
+        throw new Error(`Unsupported action: ${action}`);
     }
   } catch (error) {
-    console.error('Error processing request:', error)
+    console.error('Error processing request:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      }
-    )
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+    );
   }
-})
+});
