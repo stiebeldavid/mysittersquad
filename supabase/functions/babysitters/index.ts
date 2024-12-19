@@ -83,7 +83,7 @@ serve(async (req) => {
         );
       }
 
-      case 'softDelete': { // Changed from 'delete' to 'softDelete'
+      case 'softDelete': {
         if (!data?.id) {
           throw new Error('ID is required for soft delete action');
         }
