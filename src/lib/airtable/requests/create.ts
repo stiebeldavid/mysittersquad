@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { formatTimeRange } from "@/utils/timeFormatting";
 
 export const createRequest = async (
   date: Date,
@@ -16,7 +17,7 @@ export const createRequest = async (
 
   try {
     const formattedDate = date.toISOString().split('T')[0];
-    const timeRange = `${startTime} - ${endTime}`;
+    const timeRange = formatTimeRange(startTime, endTime);
 
     console.log('Invoking requests function with:', {
       date: formattedDate,
