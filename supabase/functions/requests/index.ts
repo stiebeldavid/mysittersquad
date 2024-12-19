@@ -123,22 +123,30 @@ serve(async (req) => {
 
         console.log('Updating request response:', data)
 
-        const records = await base(REQUESTS_TABLE).update([
-          {
-            id: data.requestId,
-            fields: {
-              'Status': data.status,
-              'Response': data.response,
+        try {
+          const records = await base(REQUESTS_TABLE).update([
+            {
+              id: data.requestId,
+              fields: {
+                'Status': data.status,
+                'Babysitter Response': data.response, // Updated field name to match Airtable
+              },
             },
-          },
-        ])
+          ])
 
-        console.log('Updated request:', records[0])
-        
-        return new Response(
-          JSON.stringify({ record: records[0] }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-        )
+          console.log('Updated request:', records[0])
+          
+          return new Response(
+            JSON.stringify({ record: records[0] }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          )
+        } catch (error) {
+          console.error('Error updating request in Airtable:', error)
+          return new Response(
+            JSON.stringify({ error: error.message }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+          )
+        }
       }
 
       case 'fetchByVerificationId': {
