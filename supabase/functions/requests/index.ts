@@ -13,6 +13,7 @@ Airtable.configure({
 
 const base = Airtable.base('appbQPN6CeEmayzz1')
 const REQUESTS_TABLE = 'tblz6LOxHesVWmmYI'
+const USERS_TABLE = 'tblV7kcHyLgVt9QHZ'
 
 // Helper function to format time range
 const formatTimeRange = (startTime: string, endTime: string) => {
@@ -129,7 +130,7 @@ serve(async (req) => {
               id: data.requestId,
               fields: {
                 'Status': data.status,
-                'Babysitter Response': data.response, // Updated field name to match Airtable
+                'Babysitter Response': data.response,
               },
             },
           ])
@@ -179,7 +180,23 @@ serve(async (req) => {
             )
           }
 
-          const record = records[0]
+          const record = records[0];
+          const parentMobile = record.get('Parent Requestor Mobile');
+
+          // Fetch parent information from Users table
+          const parentRecords = await base(USERS_TABLE)
+            .select({
+              filterByFormula: `{Mobile}='${parentMobile}'`,
+              maxRecords: 1
+            })
+            .all();
+
+          const parentRecord = parentRecords[0];
+          const parent = parentRecord ? {
+            firstName: parentRecord.get('First Name'),
+            lastName: parentRecord.get('Last Name')
+          } : null;
+
           const requestDetails = {
             id: record.id,
             requestDate: record.get('Request Date'),
@@ -187,12 +204,9 @@ serve(async (req) => {
             notes: record.get('Additional Notes'),
             date: record.get('Request Date'),
             babysitterFirstName: record.get('First Name (from Babysitter)'),
-            parent: {
-              firstName: record.get('Parent First Name'),
-              lastName: record.get('Parent Last Name')
-            },
+            parent,
             verificationId: record.get('Verification_ID'),
-            recordId: record.id // Added this line to include the record ID
+            recordId: record.id
           }
 
           console.log('Found request details:', requestDetails);
