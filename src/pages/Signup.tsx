@@ -36,15 +36,16 @@ const Signup = () => {
 
       {/* Background Image with Overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-center z-0 opacity-90"
+        className="absolute inset-0 bg-cover bg-center z-0"
         style={{
-          backgroundImage: "url('/lovable-uploads/174009da-8c34-4772-9bae-d734e0d5f625.png')",
-          backgroundSize: '1200px auto',
-          backgroundRepeat: 'repeat'
+          backgroundImage: "url('/lovable-uploads/3023de26-3051-4198-acf9-42d455f0c06b.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
         }}
         aria-hidden="true"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-white/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-accent/20 to-white/40" />
       </div>
 
       {/* Main Content */}
