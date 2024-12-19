@@ -14,6 +14,26 @@ Airtable.configure({
 const base = Airtable.base('appbQPN6CeEmayzz1')
 const REQUESTS_TABLE = 'tblz6LOxHesVWmmYI'
 
+// Helper function to format time range
+const formatTimeRange = (startTime: string, endTime: string) => {
+  const [startHour, startMinute] = startTime.split(":").map(Number);
+  const [endHour, endMinute] = endTime.split(":").map(Number);
+  
+  const startHour12 = startHour % 12 || 12;
+  const startPeriod = startHour >= 12 ? 'pm' : 'am';
+  const formattedStart = `${startHour12}:${startMinute.toString().padStart(2, '0')}`;
+  
+  const endHour12 = endHour % 12 || 12;
+  const endPeriod = endHour >= 12 ? 'pm' : 'am';
+  const formattedEnd = `${endHour12}:${endMinute.toString().padStart(2, '0')}`;
+  
+  if (startPeriod === endPeriod) {
+    return `${formattedStart}-${formattedEnd}${endPeriod}`;
+  }
+  
+  return `${formattedStart}${startPeriod}-${formattedEnd}${endPeriod}`;
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -67,13 +87,17 @@ serve(async (req) => {
 
         console.log('Creating new request:', data)
 
-        // Format babysitterId as an array of record IDs for Airtable
+        // Format the time range if start and end times are provided separately
+        const formattedTimeRange = data.startTime && data.endTime 
+          ? formatTimeRange(data.startTime, data.endTime)
+          : data.timeRange;
+
         const records = await base(REQUESTS_TABLE).create([
           {
             fields: {
               'Request Date': data.requestDate,
-              'Time Range': data.timeRange,
-              'Babysitter': [data.babysitterId], // Wrap in array for Airtable's record linking
+              'Time Range': formattedTimeRange,
+              'Babysitter': [data.babysitterId],
               'Parent Requestor Mobile': data.parentMobile,
               'Request Group ID': data.requestGroupId,
               'Status': 'Pending',
