@@ -34,18 +34,16 @@ const Signup = () => {
         </div>
       </nav>
 
-      {/* Background Image with Overlay */}
+      {/* Background Pattern */}
       <div 
-        className="absolute inset-0 bg-cover bg-center z-0"
+        className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url('/lovable-uploads/3023de26-3051-4198-acf9-42d455f0c06b.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundImage: "url('/lovable-uploads/bb6c7296-3446-4131-8a77-3219492d05f9.png')",
+          backgroundSize: '400px 400px',
+          backgroundRepeat: 'repeat',
         }}
-        aria-hidden="true"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-accent/20 to-white/40" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-accent/20 to-white/40 backdrop-blur-[2px]" />
       </div>
 
       {/* Main Content */}
@@ -54,12 +52,12 @@ const Signup = () => {
         <div className="container mx-auto px-4 pt-12 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left Column - Headlines */}
-            <div className="space-y-6 p-6 pt-3 sm:pt-6 rounded-lg bg-gradient-to-br from-primary/20 via-accent/10 to-white/30 backdrop-blur-sm">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white/90 leading-tight animate-slide-up text-shadow-lg">
+            <div className="space-y-6 p-6 pt-3 sm:pt-6 rounded-lg bg-black/30 backdrop-blur-sm">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight animate-slide-up">
                 Coordinate Your Trusted Babysitters, All in One Place
               </h1>
-              <div className="bg-black/20 backdrop-blur-sm rounded-lg p-4">
-                <p className="text-xl text-white/95 leading-relaxed font-medium text-shadow">
+              <div className="bg-black/40 backdrop-blur-sm rounded-lg p-4">
+                <p className="text-xl text-white leading-relaxed font-medium">
                   Stop juggling multiple text threads. MySitterSquad helps you quickly find available time slots from your existing, trusted babysitters.
                 </p>
               </div>
