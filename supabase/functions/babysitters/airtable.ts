@@ -42,7 +42,7 @@ export const fetchBabysittersFromAirtable = async (normalizedMobile: string) => 
       rate: record.get('Hourly rate (USD)'),
       specialties: record.get('Specialties'),
       notes: record.get('Notes'),
-      babysitterId: record.id, // This is the Airtable Record ID
+      babysitterId: record.id,
     }));
   } catch (error) {
     console.error('Airtable error:', {
@@ -72,6 +72,7 @@ export const createBabysitterInAirtable = async (data: any) => {
         'Specialties': data.specialties,
         'Notes': data.notes,
         'Email': data.email,
+        'Deleted': false,
       },
     },
   ]);
@@ -99,6 +100,14 @@ export const updateBabysitterInAirtable = async (id: string, data: any) => {
 };
 
 export const deleteBabysitterFromAirtable = async (id: string) => {
-  const records = await base(BABYSITTERS_TABLE).destroy([id]);
+  // Instead of destroying the record, update the Deleted field to true
+  const records = await base(BABYSITTERS_TABLE).update([
+    {
+      id,
+      fields: {
+        'Deleted': true,
+      },
+    },
+  ]);
   return records[0];
 };

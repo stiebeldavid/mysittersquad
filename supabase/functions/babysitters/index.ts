@@ -83,12 +83,12 @@ serve(async (req) => {
         );
       }
 
-      case 'delete': {
+      case 'softDelete': { // Changed from 'delete' to 'softDelete'
         if (!data?.id) {
-          throw new Error('ID is required for delete action');
+          throw new Error('ID is required for soft delete action');
         }
 
-        console.log('Deleting babysitter:', data);
+        console.log('Soft deleting babysitter:', data);
         const record = await deleteBabysitterFromAirtable(data.id);
         
         return new Response(

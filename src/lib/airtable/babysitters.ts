@@ -106,7 +106,7 @@ export const deleteBabysitter = async (id: string) => {
         Authorization: `Bearer ${sessionData.session?.access_token}`,
       },
       body: {
-        action: 'delete',
+        action: 'softDelete', // Changed from 'delete' to 'softDelete'
         data: { id }
       }
     });
@@ -114,7 +114,7 @@ export const deleteBabysitter = async (id: string) => {
     if (error) throw error;
     return data.record;
   } catch (error) {
-    console.error('Error deleting babysitter:', error);
+    console.error('Error soft-deleting babysitter:', error);
     throw error;
   }
 };
